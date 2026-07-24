@@ -28,6 +28,7 @@ import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { SpeakButton } from '../components/SpeakButton'
 import { CardExplain } from '../components/CardExplain'
 import { CardVisual } from '../components/CardVisual'
+import { ChapterMark } from '../components/ChapterMark'
 import { ChapterProgress } from '../components/ChapterProgress'
 
 export const COLORS_KEY = 'habla:colors:v1'
@@ -317,9 +318,10 @@ export function ColorsTrack({ onBack }: Props) {
                     <button
                       key={f.id}
                       type="button"
-                      className={`chapter-list-item ${filter === f.id ? 'is-active' : ''}`}
+                      className={`chapter-list-item chapter-row ${filter === f.id ? 'is-active' : ''}`}
                       onClick={() => setFilter(f.id)}
                     >
+                      <ChapterMark seed={String(f.id)} label={f.label} />
                       <ChapterProgress
                         size="sm"
                         label={f.label}

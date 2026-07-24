@@ -701,6 +701,20 @@ function Icon({ name }: { name: VisualKey }) {
 function NumberDots({ value }: { value: number }) {
   const n = Math.max(0, Math.min(12, Math.floor(value)))
   if (n === 0 || value > 12) return <Icon name="number" />
+  const palette = [
+    '#f43f5e',
+    '#f97316',
+    '#eab308',
+    '#22c55e',
+    '#14b8a6',
+    '#3b82f6',
+    '#8b5cf6',
+    '#ec4899',
+    '#06b6d4',
+    '#84cc16',
+    '#a855f7',
+    '#fb7185',
+  ]
   return (
     <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
       {Array.from({ length: n }, (_, i) => {
@@ -715,8 +729,8 @@ function NumberDots({ value }: { value: number }) {
             key={i}
             cx={gap * (col + 1)}
             cy={yGap * (row + 1)}
-            r="5"
-            fill="currentColor"
+            r="6"
+            fill={palette[i % palette.length]}
           />
         )
       })}
@@ -737,13 +751,18 @@ export function CardVisual({
       className={`card-visual ${TONE_CLASS[tone]} card-visual-${size}${hints.swatch ? ' card-visual-swatch-wrap' : ''} ${className}`.trim()}
       aria-hidden="true"
     >
-      <div className="card-visual-blob" />
+      <div className="card-visual-blob card-visual-blob-a" />
+      <div className="card-visual-blob card-visual-blob-b" />
+      <div className="card-visual-blob card-visual-blob-c" />
+      <span className="card-visual-spark card-visual-spark-1" />
+      <span className="card-visual-spark card-visual-spark-2" />
+      <span className="card-visual-spark card-visual-spark-3" />
       <div className="card-visual-icon">
         {hints.swatch ? (
           <span
             className="card-visual-swatch"
             style={{
-              background: hints.swatch,
+              background: `radial-gradient(circle at 30% 28%, #fff8, transparent 42%), ${hints.swatch}`,
               boxShadow:
                 hints.swatch === '#f8fafc' || hints.swatch === '#fce7f3'
                   ? 'inset 0 0 0 1px rgba(28, 25, 23, 0.18)'

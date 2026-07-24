@@ -12,6 +12,7 @@ import { TENSE_META } from '../data/verbs'
 import { canUseStorage } from '../lib/progress'
 import { SpeakButton } from '../components/SpeakButton'
 import { ChapterProgress } from '../components/ChapterProgress'
+import { StoryVisual } from '../components/StoryVisual'
 
 export const STORIES_KEY = 'habla:stories:v1'
 
@@ -176,13 +177,12 @@ export function StoriesTrack({ onBack }: Props) {
               <p className="brand">Habla</p>
               <h1>Stories</h1>
               <p className="subtitle">
-                30 one-page nights — present, past & future
+                31 storybook nights — soft, clear, and fun
               </p>
               <p className="lede">
-                Read one short page a night. Spanish on top, English underneath.
-                Regular verbs (hablar, comer, vivir) plus irregulars, with family,
-                food, travel, hotel, doctor, shopping, colors, numbers, and polite
-                requests from the rest of Habla.
+                One illustrated page each night. Spanish on top, English
+                underneath. Warm stories you can actually enjoy — with the words
+                and tenses you’ve been practicing.
               </p>
 
               <ChapterProgress
@@ -247,13 +247,22 @@ export function StoriesTrack({ onBack }: Props) {
                           </span>
                         ) : null}
                       </div>
-                      <strong className="story-list-title">{story.title}</strong>
-                      <span className="story-list-en">{story.titleEn}</span>
-                      <span className="story-list-blurb">{story.blurb}</span>
+                      <div className="story-list-main">
+                        <StoryVisual
+                          scene={story.scene}
+                          size="thumb"
+                          title={story.titleEn}
+                        />
+                        <div className="story-list-copy">
+                          <strong className="story-list-title">{story.title}</strong>
+                          <span className="story-list-en">{story.titleEn}</span>
+                          <span className="story-list-blurb">{story.blurb}</span>
+                        </div>
+                      </div>
                       <ChapterProgress
                         size="sm"
                         percent={done ? 100 : linePct * 0.5}
-                        detail={`~${story.minutes} min · ${story.lines.length} lines · ${story.verbs.length} verbs`}
+                        detail={`~${story.minutes} min · ${story.lines.length} lines`}
                       />
                     </button>
                   )
@@ -297,6 +306,12 @@ export function StoriesTrack({ onBack }: Props) {
                 </div>
               </header>
 
+              <StoryVisual
+                scene={active.scene}
+                size="hero"
+                title={active.titleEn}
+              />
+
               <p className="story-tense-kicker">
                 Night {active.night} · {TENSE_META[active.tense].label} · ~
                 {active.minutes} min
@@ -305,24 +320,27 @@ export function StoriesTrack({ onBack }: Props) {
               <p className="story-reader-en">{active.titleEn}</p>
               <p className="lede story-reader-blurb">{active.blurb}</p>
 
-              <div className="story-meta-chips" aria-label="Grammar covered">
-                <div className="story-chip-row">
-                  <span className="story-chip-label">Pronouns</span>
-                  {active.pronouns.map((p) => (
-                    <span key={p} className="story-chip">
-                      {p === 'tu' ? 'tú' : p === 'el' ? 'él/ella/usted' : p}
-                    </span>
-                  ))}
+              <details className="story-notes">
+                <summary>Language notes</summary>
+                <div className="story-meta-chips" aria-label="Grammar covered">
+                  <div className="story-chip-row">
+                    <span className="story-chip-label">Pronouns</span>
+                    {active.pronouns.map((p) => (
+                      <span key={p} className="story-chip">
+                        {p === 'tu' ? 'tú' : p === 'el' ? 'él/ella/usted' : p}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="story-chip-row">
+                    <span className="story-chip-label">Verbs</span>
+                    {active.verbs.map((v) => (
+                      <span key={v} className="story-chip story-chip-verb">
+                        {v}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <div className="story-chip-row">
-                  <span className="story-chip-label">Verbs</span>
-                  {active.verbs.map((v) => (
-                    <span key={v} className="story-chip story-chip-verb">
-                      {v}
-                    </span>
-                  ))}
-                </div>
-              </div>
+              </details>
 
               <div className="options">
                 <label className="option">

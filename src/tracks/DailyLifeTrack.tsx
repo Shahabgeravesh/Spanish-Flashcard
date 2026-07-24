@@ -31,6 +31,7 @@ import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { SpeakButton } from '../components/SpeakButton'
 import { CardExplain } from '../components/CardExplain'
 import { CardVisual } from '../components/CardVisual'
+import { ChapterMark } from '../components/ChapterMark'
 import { ChapterProgress } from '../components/ChapterProgress'
 
 export const DAILY_KEY = 'habla:daily-phrases:v1'
@@ -338,9 +339,10 @@ export function DailyLifeTrack({ onBack }: Props) {
                     <button
                       key={c.id}
                       type="button"
-                      className={`chapter-list-item ${category === c.id ? 'is-active' : ''}`}
+                      className={`chapter-list-item chapter-row ${category === c.id ? 'is-active' : ''}`}
                       onClick={() => setCategory(c.id)}
                     >
+                      <ChapterMark seed={`cat-${c.id}`} label={c.label} />
                       <ChapterProgress
                         size="sm"
                         label={c.label}
@@ -366,9 +368,10 @@ export function DailyLifeTrack({ onBack }: Props) {
                     <button
                       key={s.id}
                       type="button"
-                      className={`chapter-list-item ${situation === s.id ? 'is-active' : ''}`}
+                      className={`chapter-list-item chapter-row ${situation === s.id ? 'is-active' : ''}`}
                       onClick={() => setSituation(s.id)}
                     >
+                      <ChapterMark seed={`sit-${s.id}`} label={s.label} />
                       <ChapterProgress
                         size="sm"
                         label={s.label}

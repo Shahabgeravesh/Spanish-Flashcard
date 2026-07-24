@@ -10,6 +10,7 @@ export type DailySituation =
   | 'doctor'
   | 'directions'
   | 'home'
+  | 'routine'
   | 'work'
   | 'phone'
   | 'general'
@@ -24,6 +25,7 @@ export type DailyCategory =
   | 'greetings'
   | 'politeness'
   | 'home'
+  | 'routine'
   | 'food'
   | 'shopping'
   | 'travel'
@@ -44,6 +46,7 @@ export const DAILY_CATEGORIES: {
   { id: 'greetings', label: 'Greetings' },
   { id: 'politeness', label: 'Politeness' },
   { id: 'home', label: 'Home' },
+  { id: 'routine', label: 'Daily routine' },
   { id: 'food', label: 'Food' },
   { id: 'shopping', label: 'Shopping' },
   { id: 'travel', label: 'Travel' },
@@ -71,6 +74,7 @@ export const DAILY_SITUATIONS: {
   { id: 'doctor', label: 'Doctor' },
   { id: 'directions', label: 'Getting around' },
   { id: 'home', label: 'At home' },
+  { id: 'routine', label: 'Morning & night routine' },
   { id: 'work', label: 'At work' },
   { id: 'phone', label: 'On the phone' },
   { id: 'general', label: 'Everyday' },
@@ -424,6 +428,148 @@ const RAW: {
     category: 'home',
     situation: 'home',
     tip: 'lavar la ropa = do laundry. Also: estoy haciendo la colada (Spain).',
+  },
+
+  // Morning & night hygiene / routine
+  {
+    en: 'I brush my teeth',
+    es: 'Me cepillo los dientes',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'cepillarse. Body parts take the article: los dientes (not mis dientes) when the owner is clear.',
+  },
+  {
+    en: 'I comb my hair',
+    es: 'Me peino',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'peinarse. Also: Me peino el pelo.',
+  },
+  {
+    en: 'I brush my hair',
+    es: 'Me cepillo el pelo',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'cepillarse el pelo / el cabello. Different from peinarse (comb).',
+  },
+  {
+    en: 'I wash my face',
+    es: 'Me lavo la cara',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'lavarse + la cara. Same pattern: Me lavo las manos.',
+  },
+  {
+    en: 'I wash my hands',
+    es: 'Me lavo las manos',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'Before eating: Me lavo las manos antes de comer.',
+  },
+  {
+    en: 'I take a shower',
+    es: 'Me ducho',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'ducharse. Progressive: Me estoy duchando.',
+  },
+  {
+    en: 'I get dressed',
+    es: 'Me visto',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'vestirse (e→i irregular stem). Me visto rápido por la mañana.',
+  },
+  {
+    en: 'I get undressed',
+    es: 'Me desvisto',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'desvestirse — opposite of vestirse.',
+  },
+  {
+    en: 'I wake up early',
+    es: 'Me despierto temprano',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'despertarse (e→ie). temprano = early; tarde = late.',
+  },
+  {
+    en: 'I get up at 7',
+    es: 'Me levanto a las 7',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'levantarse. Clock: a las + hour. a la una for 1:00.',
+  },
+  {
+    en: 'I make the bed',
+    es: 'Hago la cama',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'hacer la cama — not reflexive.',
+  },
+  {
+    en: 'I have breakfast quickly',
+    es: 'Desayuno rápido',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'desayunar. You can add food: Desayuno pan y café.',
+  },
+  {
+    en: 'I leave for work',
+    es: 'Salgo hacia el trabajo / Me voy al trabajo',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'salir or irse. Both common for “heading out.” Prefer practicing: Me voy al trabajo.',
+  },
+  {
+    en: 'I come home tired',
+    es: 'Llego a casa cansado / cansada',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'llegar a casa + adjective. Match gender: cansado/cansada.',
+  },
+  {
+    en: 'I have dinner at 8',
+    es: 'Ceno a las 8',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'cenar. In Spain dinner is often later than in the US.',
+  },
+  {
+    en: 'I brush my teeth before bed',
+    es: 'Me cepillo los dientes antes de acostarme',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'antes de + infinitive. acostarme keeps the reflexive attached.',
+  },
+  {
+    en: 'I put on pajamas',
+    es: 'Me pongo el pijama',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'ponerse. Also: Me cambio de ropa.',
+  },
+  {
+    en: 'I go to bed',
+    es: 'Me acuesto',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'acostarse (o→ue). “I go to bed at 11”: Me acuesto a las once.',
+  },
+  {
+    en: 'I fall asleep right away',
+    es: 'Me duermo enseguida',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'dormirse. enseguida / inmediatamente = right away.',
+  },
+  {
+    en: 'Good night — sleep well',
+    es: 'Buenas noches — que duermas bien',
+    category: 'routine',
+    situation: 'routine',
+    tip: 'que + subjunctive for wishes: que duermas bien / que descanses.',
   },
 
   // Food

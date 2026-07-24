@@ -25,11 +25,13 @@ export type GrammarCard = {
   speak?: string
 }
 
-export type GrammarLesson = {
-  title: string
-  summary: string
-  bullets: string[]
-}
+export {
+  getGrammarLesson,
+  GRAMMAR_LESSONS,
+  type GrammarLesson,
+  type GrammarExample,
+  type GrammarContrast,
+} from './grammarLessons'
 
 export const GRAMMAR_SECTIONS: {
   id: GrammarSection | 'all'
@@ -51,163 +53,6 @@ export const GRAMMAR_SECTIONS: {
   { id: 'pret-imp', label: 'Preterite vs imperfect' },
   { id: 'commands', label: 'Commands' },
 ]
-
-export const GRAMMAR_LESSONS: Record<GrammarSection, GrammarLesson> = {
-  gender: {
-    title: 'Gender & agreement',
-    summary:
-      'Nouns are masculine or feminine. Articles and adjectives must match that gender and number.',
-    bullets: [
-      'Most nouns ending in -o are masculine; -a are feminine (with exceptions).',
-      'Adjectives usually take -o / -a / -os / -as to agree.',
-      'Words ending in -ción / -sión / -dad / -tad / -tud are typically feminine.',
-      'Some nouns look masculine but are feminine (la mano) or vice versa (el día).',
-    ],
-  },
-  articles: {
-    title: 'Articles',
-    summary:
-      'Definite articles mean “the”; indefinite mean “a / some.” Spanish uses them more than English.',
-    bullets: [
-      'el / la / los / las = the · un / una / unos / unas = a / some.',
-      'a + el → al · de + el → del (only with masculine singular el).',
-      'Use el before feminine nouns that start with stressed a-/ha- (el agua, but las aguas).',
-      'Days of the week often take the article: el lunes = on Monday.',
-    ],
-  },
-  'ser-estar': {
-    title: 'Ser vs estar',
-    summary:
-      'Both mean “to be,” but they answer different questions. Mixing them up changes meaning.',
-    bullets: [
-      'Ser: identity, profession, origin, time, permanent characteristics, where an event is.',
-      'Estar: location of people/things, temporary states, progressive (estar + -ando/-iendo).',
-      'With adjectives: ser = inherent quality · estar = current condition (Es aburrido vs Está aburrido).',
-      'Event location uses ser: La fiesta es en mi casa. Person location uses estar: Estoy en casa.',
-    ],
-  },
-  'por-para': {
-    title: 'Por vs para',
-    summary:
-      'Both can translate as “for,” but por looks backward (cause, means, duration) and para looks forward (purpose, destination, deadline).',
-    bullets: [
-      'Para: purpose (in order to), recipient, destination, deadline, opinion (para mí).',
-      'Por: reason/motive, exchange, through/along, duration (por dos horas), per (por día), agent in passives.',
-      'Gracias por… (thanks for) · Este regalo es para ti (this gift is for you).',
-      'Voy por el parque (through) · Voy para el parque (headed to).',
-    ],
-  },
-  prepositions: {
-    title: 'Key prepositions',
-    summary:
-      'Small words that link ideas. Learn them with set phrases — they rarely map 1:1 to English.',
-    bullets: [
-      'a: to / at · also the personal a before people as direct objects (Veo a María).',
-      'de: of / from · possession (el libro de Ana) and origin.',
-      'en: in / on / at (location); not usually “on” for days (use el lunes).',
-      'con / sin: with / without · desde / hasta: from / until · sobre: on / about.',
-    ],
-  },
-  'object-pronouns': {
-    title: 'Object pronouns',
-    summary:
-      'Replace nouns so you don’t repeat them. Placement: before a conjugated verb, or attached to infinitives and gerunds.',
-    bullets: [
-      'Direct (what/whom): me, te, lo/la, nos, os, los/las.',
-      'Indirect (to/for whom): me, te, le, nos, os, les — le/les → se before lo/la/los/las.',
-      'Before conjugated verbs: Lo veo. · With two verbs: Quiero verlo / Lo quiero ver.',
-      'Order with both: se + te/me/nos + lo/la… (Se lo di = I gave it to him/her).',
-    ],
-  },
-  gustar: {
-    title: 'Gustar-type verbs',
-    summary:
-      'The thing liked is the grammatical subject. The person is an indirect object. Think “X is pleasing to me.”',
-    bullets: [
-      'Me gusta el café · Me gustan los libros (gusta/gustan agree with what is liked).',
-      'Pronouns: me, te, le, nos, os, les — often clarify with a mí, a ti, a ella…',
-      'Same pattern: encantar, interesar, faltar, doler, parecer, quedar.',
-      'No me gusta = I don’t like · Me gustaría = I would like (polite).',
-    ],
-  },
-  reflexives: {
-    title: 'Reflexive verbs',
-    summary:
-      'The subject does the action to itself. Pronouns: me, te, se, nos, os, se. Many daily routines are reflexive in Spanish.',
-    bullets: [
-      'Me lavo = I wash myself · Se llama Ana = Her name is Ana (she calls herself).',
-      'Place pronouns before conjugated verbs or attach to infinitives: Voy a ducharme.',
-      'Some verbs change meaning with se: ir (to go) vs irse (to leave); dormir vs dormirse.',
-      'Reciprocal: Nos vemos = We see each other.',
-    ],
-  },
-  negation: {
-    title: 'Negation',
-    summary:
-      'Put no before the verb. Spanish allows (and often requires) double negatives.',
-    bullets: [
-      'No + verb: No hablo francés.',
-      'After no, use nada, nadie, nunca, tampoco, ningún(o)… — they reinforce, not cancel.',
-      'No veo a nadie = I don’t see anyone · Nunca voy = I never go.',
-      'Ningún before masculine nouns (ningún libro); ninguna before feminine.',
-    ],
-  },
-  comparisons: {
-    title: 'Comparisons',
-    summary:
-      'Compare quantity or quality with más/menos… que, or equality with tan… como / tanto… como.',
-    bullets: [
-      'más / menos + adjective/adverb/noun + que.',
-      'tan + adjective/adverb + como · tanto/a/os/as + noun + como.',
-      'Irregulars: mejor, peor, mayor, menor (often without más).',
-      'Superlative: el/la más… · -ísimo intensifies (facilísimo).',
-    ],
-  },
-  demonstratives: {
-    title: 'Demonstratives',
-    summary:
-      'Point to things by distance: this (near me), that (near you), that over there (far from both).',
-    bullets: [
-      'este/esta/estos/estas = this/these · ese/esa/esos/esas = that/those · aquel/aquella… = that far away.',
-      'Neuter esto / eso / aquello point to ideas or unnamed things (no noun gender).',
-      'Modern spelling drops accents on pronouns (este es mío) — context tells noun vs pronoun.',
-      'Aquí / ahí / allí pair with este / ese / aquel for place.',
-    ],
-  },
-  possessives: {
-    title: 'Possessives',
-    summary:
-      'Short forms go before the noun and agree with what is owned, not the owner (except nuestro/vuestro).',
-    bullets: [
-      'mi/mis, tu/tus, su/sus, nuestro/a/os/as, vuestro/a/os/as, su/sus.',
-      'su/sus is ambiguous (his/her/your/their) — clarify with de él, de usted…',
-      'Long forms after the noun or alone: mío, tuyo, suyo, nuestro… (Es mío).',
-      'def. article + long form: el mío = mine (the one that is mine).',
-    ],
-  },
-  'pret-imp': {
-    title: 'Preterite vs imperfect',
-    summary:
-      'Both are past. Preterite = completed events. Imperfect = background, habits, ongoing or repeated past.',
-    bullets: [
-      'Preterite: what happened — Ayer comí, Llegó a las 3, Empezó a llover.',
-      'Imperfect: was/were -ing, used to, descriptions — Hacía frío, Yo leía cuando…',
-      'Time/age/clock in the past often imperfect: Eran las dos · Tenía diez años.',
-      'Storytelling: imperfect sets the scene; preterite moves the plot.',
-    ],
-  },
-  commands: {
-    title: 'Commands (imperative)',
-    summary:
-      'Tell someone to do or not do something. Affirmative and negative forms differ, especially for tú.',
-    bullets: [
-      'Tú affirmative: most take 3rd-person present (habla, come, vive) with irregulars (haz, ve, ten, ven, sal, sé, di, pon).',
-      'Tú negative: no + present subjunctive (no hables, no comas).',
-      'Usted(es): present subjunctive for both affirmative and negative.',
-      'Object pronouns attach to affirmative commands (Dime) and go before negatives (No me digas).',
-    ],
-  },
-}
 
 const RAW: {
   front: string
@@ -1041,22 +886,4 @@ export function filterGrammar(
 ): GrammarCard[] {
   if (section === 'all') return cards
   return cards.filter((c) => c.section === section)
-}
-
-export function getGrammarLesson(
-  section: GrammarSection | 'all',
-): GrammarLesson | null {
-  if (section === 'all') {
-    return {
-      title: 'Grammar track',
-      summary:
-        'Pick a chapter for a short lesson, then drill flashcards with explanations on every reveal.',
-      bullets: [
-        'Start with gender, articles, and ser vs estar if you are newer.',
-        'Por/para, gustar, and object pronouns unlock real conversation.',
-        'Preterite vs imperfect and commands round out past storytelling and requests.',
-      ],
-    }
-  }
-  return GRAMMAR_LESSONS[section]
 }

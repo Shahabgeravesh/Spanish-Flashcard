@@ -51,6 +51,8 @@ import { AnswerBurst, useAnswerFeedback } from './components/AnswerBurst'
 import { SpeakButton } from './components/SpeakButton'
 import { CardExplain } from './components/CardExplain'
 import { CardVisual } from './components/CardVisual'
+import { ChapterMark } from './components/ChapterMark'
+import { TrackVisual } from './components/TrackVisual'
 import { ChapterProgress } from './components/ChapterProgress'
 import './App.css'
 
@@ -518,12 +520,15 @@ function App() {
               className="hub-card hub-foundations"
               onClick={() => enterTrack('foundations')}
             >
-              <div className="hub-card-top">
-                <h2>Foundations</h2>
-                <span className="hub-pct">{foundationsMasteryPct}%</span>
+              <TrackVisual id="foundations" />
+              <div className="hub-card-body">
+                <div className="hub-card-top">
+                  <h2>Foundations</h2>
+                  <span className="hub-pct">{foundationsMasteryPct}%</span>
+                </div>
+                <p>Days, routines, family, ser vs estar</p>
+                <ChapterProgress size="sm" percent={foundationsMasteryPct} />
               </div>
-              <p>Days, articles, ser vs estar, family</p>
-              <ChapterProgress size="sm" percent={foundationsMasteryPct} />
             </button>
 
             <button
@@ -531,38 +536,15 @@ function App() {
               className="hub-card hub-grammar"
               onClick={() => enterTrack('grammar')}
             >
-              <div className="hub-card-top">
-                <h2>Grammar</h2>
-                <span className="hub-pct">{grammarMasteryPct}%</span>
+              <TrackVisual id="grammar" />
+              <div className="hub-card-body">
+                <div className="hub-card-top">
+                  <h2>Grammar</h2>
+                  <span className="hub-pct">{grammarMasteryPct}%</span>
+                </div>
+                <p>Lessons + drills: por/para, gustar, tenses</p>
+                <ChapterProgress size="sm" percent={grammarMasteryPct} />
               </div>
-              <p>Lessons + drills: por/para, gustar, tenses</p>
-              <ChapterProgress size="sm" percent={grammarMasteryPct} />
-            </button>
-
-            <button
-              type="button"
-              className="hub-card hub-stories"
-              onClick={() => enterTrack('stories')}
-            >
-              <div className="hub-card-top">
-                <h2>Stories</h2>
-                <span className="hub-pct">{storiesMasteryPct}%</span>
-              </div>
-              <p>30 nightly pages — present, past, future</p>
-              <ChapterProgress size="sm" percent={storiesMasteryPct} />
-            </button>
-
-            <button
-              type="button"
-              className="hub-card hub-exam"
-              onClick={() => enterTrack('exam')}
-            >
-              <div className="hub-card-top">
-                <h2>Exam</h2>
-                <span className="hub-pct">{examMasteryPct}%</span>
-              </div>
-              <p>Fill blanks, type answers, track scores</p>
-              <ChapterProgress size="sm" percent={examMasteryPct} />
             </button>
 
             <button
@@ -570,12 +552,15 @@ function App() {
               className="hub-card hub-phrases"
               onClick={() => enterTrack('phrases')}
             >
-              <div className="hub-card-top">
-                <h2>Requests</h2>
-                <span className="hub-pct">{phraseMasteryPct}%</span>
+              <TrackVisual id="phrases" />
+              <div className="hub-card-body">
+                <div className="hub-card-top">
+                  <h2>Requests</h2>
+                  <span className="hub-pct">{phraseMasteryPct}%</span>
+                </div>
+                <p>Intentions, polite asks, connectors</p>
+                <ChapterProgress size="sm" percent={phraseMasteryPct} />
               </div>
-              <p>Intentions, polite asks, connectors</p>
-              <ChapterProgress size="sm" percent={phraseMasteryPct} />
             </button>
 
             <button
@@ -583,12 +568,15 @@ function App() {
               className="hub-card hub-daily"
               onClick={() => enterTrack('daily')}
             >
-              <div className="hub-card-top">
-                <h2>Daily life</h2>
-                <span className="hub-pct">{dailyMasteryPct}%</span>
+              <TrackVisual id="daily" />
+              <div className="hub-card-body">
+                <div className="hub-card-top">
+                  <h2>Daily life</h2>
+                  <span className="hub-pct">{dailyMasteryPct}%</span>
+                </div>
+                <p>Situations: café, routine, travel, doctor</p>
+                <ChapterProgress size="sm" percent={dailyMasteryPct} />
               </div>
-              <p>Situations: café, travel, hotel, doctor</p>
-              <ChapterProgress size="sm" percent={dailyMasteryPct} />
             </button>
 
             <button
@@ -596,12 +584,15 @@ function App() {
               className="hub-card hub-verbs"
               onClick={() => enterTrack('verbs')}
             >
-              <div className="hub-card-top">
-                <h2>Verbs</h2>
-                <span className="hub-pct">{verbMasteryPct}%</span>
+              <TrackVisual id="verbs" />
+              <div className="hub-card-body">
+                <div className="hub-card-top">
+                  <h2>Verbs</h2>
+                  <span className="hub-pct">{verbMasteryPct}%</span>
+                </div>
+                <p>Present, past, future conjugations</p>
+                <ChapterProgress size="sm" percent={verbMasteryPct} />
               </div>
-              <p>Present, past, future conjugations</p>
-              <ChapterProgress size="sm" percent={verbMasteryPct} />
             </button>
 
             <button
@@ -609,12 +600,15 @@ function App() {
               className="hub-card hub-numbers"
               onClick={() => enterTrack('numbers')}
             >
-              <div className="hub-card-top">
-                <h2>Numbers</h2>
-                <span className="hub-pct">{numberMasteryPct}%</span>
+              <TrackVisual id="numbers" />
+              <div className="hub-card-body">
+                <div className="hub-card-top">
+                  <h2>Numbers</h2>
+                  <span className="hub-pct">{numberMasteryPct}%</span>
+                </div>
+                <p>1 to 1,000,000</p>
+                <ChapterProgress size="sm" percent={numberMasteryPct} />
               </div>
-              <p>1 to 1,000,000</p>
-              <ChapterProgress size="sm" percent={numberMasteryPct} />
             </button>
 
             <button
@@ -622,12 +616,47 @@ function App() {
               className="hub-card hub-colors"
               onClick={() => enterTrack('colors')}
             >
-              <div className="hub-card-top">
-                <h2>Colors</h2>
-                <span className="hub-pct">{colorsMasteryPct}%</span>
+              <TrackVisual id="colors" />
+              <div className="hub-card-body">
+                <div className="hub-card-top">
+                  <h2>Colors</h2>
+                  <span className="hub-pct">{colorsMasteryPct}%</span>
+                </div>
+                <p>Names, shades, useful phrases</p>
+                <ChapterProgress size="sm" percent={colorsMasteryPct} />
               </div>
-              <p>Names, shades, useful phrases</p>
-              <ChapterProgress size="sm" percent={colorsMasteryPct} />
+            </button>
+
+            <button
+              type="button"
+              className="hub-card hub-stories"
+              onClick={() => enterTrack('stories')}
+            >
+              <TrackVisual id="stories" />
+              <div className="hub-card-body">
+                <div className="hub-card-top">
+                  <h2>Stories</h2>
+                  <span className="hub-pct">{storiesMasteryPct}%</span>
+                </div>
+                <p>31 illustrated nights — enjoy reading</p>
+                <ChapterProgress size="sm" percent={storiesMasteryPct} />
+              </div>
+            </button>
+
+            <button
+              type="button"
+              className="hub-card hub-exam"
+              onClick={() => enterTrack('exam')}
+            >
+              <TrackVisual id="exam" />
+              <div className="hub-card-body">
+                <div className="hub-card-top">
+                  <h2>Exam</h2>
+                  <span className="hub-pct">{examMasteryPct}%</span>
+                </div>
+                <p>Latest chapter — test everything you’ve learned</p>
+                <ChapterProgress size="sm" percent={examMasteryPct} />
+              </div>
             </button>
           </div>
 
@@ -833,9 +862,10 @@ function App() {
                         <button
                           key={value}
                           type="button"
-                          className={`chapter-list-item ${tenseFilter === value ? 'is-active' : ''}`}
+                          className={`chapter-list-item chapter-row ${tenseFilter === value ? 'is-active' : ''}`}
                           onClick={() => setTenseFilter(value)}
                         >
+                          <ChapterMark seed={value} label={label} />
                           <ChapterProgress
                             size="sm"
                             label={label}

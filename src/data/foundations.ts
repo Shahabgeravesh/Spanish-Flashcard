@@ -9,6 +9,7 @@ export type FoundationSection =
   | 'body'
   | 'clothing'
   | 'places'
+  | 'routines'
 
 export type FoundationCard = {
   id: number
@@ -34,6 +35,7 @@ export const FOUNDATION_SECTIONS: {
   { id: 'body', label: 'Body' },
   { id: 'clothing', label: 'Clothing' },
   { id: 'places', label: 'Places' },
+  { id: 'routines', label: 'Daily routines' },
 ]
 
 const RAW: {
@@ -714,6 +716,157 @@ const RAW: {
     back: 'la iglesia',
     section: 'places',
     tip: 'Feminine. Soft g before e (like h in some accents / soft in others): i-GLE-sia.',
+  },
+
+  // ——— Daily routines (often reflexive) ———
+  {
+    front: 'I wake up',
+    back: 'Me despierto',
+    section: 'routines',
+    tip: 'despertarse (e→ie). Reflexive: me/te/se… Spanish uses the article with body parts: Me lavo la cara.',
+  },
+  {
+    front: 'I get up',
+    back: 'Me levanto',
+    section: 'routines',
+    tip: 'levantarse. Different from despertarse (wake up) — you can wake up and still stay in bed.',
+  },
+  {
+    front: 'I brush my teeth',
+    back: 'Me cepillo los dientes',
+    section: 'routines',
+    tip: 'cepillarse. Use el/los with body parts, not mi/mis: los dientes (not mis dientes) when the owner is clear.',
+  },
+  {
+    front: 'I brush my hair',
+    back: 'Me cepillo el pelo / el cabello',
+    section: 'routines',
+    tip: 'Same cepillarse. pelo and cabello both work; pelo is very common in speech.',
+    speak: 'Me cepillo el pelo',
+  },
+  {
+    front: 'I comb my hair',
+    back: 'Me peino',
+    section: 'routines',
+    tip: 'peinarse = to comb one’s hair. Me peino el pelo is also fine if you name the hair.',
+  },
+  {
+    front: 'I wash my face',
+    back: 'Me lavo la cara',
+    section: 'routines',
+    tip: 'lavarse + body part with the article: la cara, las manos, el pelo.',
+  },
+  {
+    front: 'I wash my hands',
+    back: 'Me lavo las manos',
+    section: 'routines',
+    tip: 'Plural body part → las manos. Before meals: Me lavo las manos antes de comer.',
+  },
+  {
+    front: 'I take a shower',
+    back: 'Me ducho',
+    section: 'routines',
+    tip: 'ducharse. Longer form: Me estoy duchando / Voy a ducharme.',
+  },
+  {
+    front: 'I take a bath',
+    back: 'Me baño',
+    section: 'routines',
+    tip: 'bañarse. In some regions bañarse also covers showering — context decides.',
+  },
+  {
+    front: 'I get dressed',
+    back: 'Me visto',
+    section: 'routines',
+    tip: 'vestirse (e→i). Opposite: me desvisto (I get undressed).',
+  },
+  {
+    front: 'I put on makeup',
+    back: 'Me maquillo',
+    section: 'routines',
+    tip: 'maquillarse. Also: Me pongo maquillaje.',
+  },
+  {
+    front: 'I shave',
+    back: 'Me afeito',
+    section: 'routines',
+    tip: 'afeitarse. For legs etc. you can say Me afeito las piernas.',
+  },
+  {
+    front: 'I put on perfume / cologne',
+    back: 'Me pongo perfume / colonia',
+    section: 'routines',
+    tip: 'ponerse + item. Perfume and colonia are both common.',
+    speak: 'Me pongo perfume',
+  },
+  {
+    front: 'I make the bed',
+    back: 'Hago la cama',
+    section: 'routines',
+    tip: 'hacer la cama — not reflexive. Morning chore after levantarse.',
+  },
+  {
+    front: 'I have breakfast',
+    back: 'Desayuno',
+    section: 'routines',
+    tip: 'desayunar is a regular -ar verb. Also: Tomo el desayuno.',
+  },
+  {
+    front: 'I go to work / school',
+    back: 'Voy al trabajo / a la escuela',
+    section: 'routines',
+    tip: 'ir a + place. University: Voy a la universidad.',
+    speak: 'Voy al trabajo',
+  },
+  {
+    front: 'I come home',
+    back: 'Vuelvo a casa / Llego a casa',
+    section: 'routines',
+    tip: 'volver (o→ue) and llegar both work. Ya llegué = I’m home (announcing arrival).',
+    speak: 'Vuelvo a casa',
+  },
+  {
+    front: 'I have dinner',
+    back: 'Ceno',
+    section: 'routines',
+    tip: 'cenar. Lunch: como / almuerzo (almorzar is common in Latin America).',
+  },
+  {
+    front: 'I watch TV',
+    back: 'Veo la tele',
+    section: 'routines',
+    tip: 'ver la tele / la televisión. Evening wind-down phrase.',
+  },
+  {
+    front: 'I brush my teeth (at night)',
+    back: 'Me cepillo los dientes (por la noche)',
+    section: 'routines',
+    tip: 'Same morning phrase — add por la mañana / por la noche for time.',
+    speak: 'Me cepillo los dientes',
+  },
+  {
+    front: 'I put on pajamas',
+    back: 'Me pongo el pijama',
+    section: 'routines',
+    tip: 'ponerse. Spelling: pijama (Spain) / piyama (some regions).',
+  },
+  {
+    front: 'I go to bed',
+    back: 'Me acuesto',
+    section: 'routines',
+    tip: 'acostarse (o→ue). Different from dormirse (to fall asleep): Me acuesto a las 11; me duermo rápido.',
+  },
+  {
+    front: 'I fall asleep',
+    back: 'Me duermo',
+    section: 'routines',
+    tip: 'dormirse. dormir = to sleep; dormirse = to fall asleep.',
+  },
+  {
+    front: 'I turn off the light',
+    back: 'Apago la luz',
+    section: 'routines',
+    tip: 'apagar. Opposite: enciendo la luz (encender, e→ie).',
   },
 ]
 

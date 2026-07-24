@@ -18,6 +18,7 @@ import {
 } from '../lib/examProgress'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { SpeakButton } from '../components/SpeakButton'
+import { TrackVisual } from '../components/TrackVisual'
 
 type Phase = 'start' | 'exam' | 'result'
 
@@ -164,12 +165,13 @@ export function ExamTrack({ onBack }: Props) {
                     <button
                       key={s.id}
                       type="button"
-                      className={`chapter-list-item ${section === s.id ? 'is-active' : ''}`}
+                      className={`chapter-list-item exam-section-row ${section === s.id ? 'is-active' : ''}`}
                       onClick={() => {
                         setSection(s.id)
                         if (s.id === 'grammar') setLength(defaultLengthFor('grammar'))
                       }}
                     >
+                      <TrackVisual id={s.id} size="sm" />
                       <ChapterProgress
                         size="sm"
                         label={s.label}
@@ -254,8 +256,13 @@ export function ExamTrack({ onBack }: Props) {
                 />
               </header>
 
-              <p className="exam-instruction">{current.instruction}</p>
-              <h2 className="exam-prompt">{current.prompt}</h2>
+              <div className={`exam-banner exam-banner-${section}`}>
+                <TrackVisual id={section} size="sm" />
+                <div>
+                  <p className="exam-instruction">{current.instruction}</p>
+                  <h2 className="exam-prompt">{current.prompt}</h2>
+                </div>
+              </div>
               {current.cloze && (
                 <p className="exam-cloze" aria-label="Fill in the blank">
                   {current.cloze.split('___').map((part, i, arr) => (

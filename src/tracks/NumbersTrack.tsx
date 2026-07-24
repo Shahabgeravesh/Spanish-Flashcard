@@ -36,6 +36,7 @@ import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { SpeakButton } from '../components/SpeakButton'
 import { CardExplain } from '../components/CardExplain'
 import { CardVisual } from '../components/CardVisual'
+import { ChapterMark } from '../components/ChapterMark'
 import { ChapterProgress } from '../components/ChapterProgress'
 
 export const NUMBER_KEY = 'habla:numbers:v1'
@@ -501,9 +502,10 @@ export function NumbersTrack({ onBack }: Props) {
                     <button
                       key={r.id}
                       type="button"
-                      className={`chapter-list-item ${rangeFilter === r.id ? 'is-active' : ''}`}
+                      className={`chapter-list-item chapter-row ${rangeFilter === r.id ? 'is-active' : ''}`}
                       onClick={() => setRangeFilter(r.id)}
                     >
+                      <ChapterMark seed={String(r.id)} label={r.label} />
                       <ChapterProgress
                         size="sm"
                         label={r.label}

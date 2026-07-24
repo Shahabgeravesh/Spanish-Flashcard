@@ -29,6 +29,7 @@ import { SpeakButton } from '../components/SpeakButton'
 import { CardExplain } from '../components/CardExplain'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { CardVisual } from '../components/CardVisual'
+import { ChapterMark } from '../components/ChapterMark'
 
 export const FOUNDATIONS_KEY = 'habla:foundations:v1'
 
@@ -294,7 +295,7 @@ export function FoundationsTrack({ onBack }: Props) {
               <p className="brand">Habla</p>
               <h1>Foundations</h1>
               <p className="subtitle">
-                Days, months, questions, articles, ser vs estar, family & more
+                Days, months, daily routines, family & more
               </p>
               <p className="lede">
                 Core building blocks every Spanish learner needs — with tips on
@@ -310,9 +311,10 @@ export function FoundationsTrack({ onBack }: Props) {
                     <button
                       key={s.id}
                       type="button"
-                      className={`chapter-list-item ${section === s.id ? 'is-active' : ''}`}
+                      className={`chapter-list-item chapter-row ${section === s.id ? 'is-active' : ''}`}
                       onClick={() => setSection(s.id)}
                     >
+                      <ChapterMark seed={String(s.id)} label={s.label} />
                       <ChapterProgress
                         size="sm"
                         label={s.label}

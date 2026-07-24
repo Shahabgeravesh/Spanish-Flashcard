@@ -30,6 +30,8 @@ import { SpeakButton } from '../components/SpeakButton'
 import { CardExplain } from '../components/CardExplain'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { CardVisual } from '../components/CardVisual'
+import { GrammarLessonPanel } from '../components/GrammarLessonPanel'
+import { GrammarVisual } from '../components/GrammarVisual'
 
 export const GRAMMAR_KEY = 'habla:grammar:v1'
 
@@ -299,11 +301,12 @@ export function GrammarTrack({ onBack }: Props) {
               <p className="brand">Habla</p>
               <h1>Grammar</h1>
               <p className="subtitle">
-                Clear rules, then flashcards that stick
+                Lessons with lots of examples — then flashcards
               </p>
               <p className="lede">
-                Each chapter opens with a short lesson. Every card reveal adds a
-                concrete explanation you can use right away.
+                Each chapter is a colorful mini-class: rules, bilingual examples,
+                and side-by-side contrasts. Then drill cards with tips on every
+                reveal.
               </p>
 
               <div className="chapter-list" aria-label="Grammar chapters">
@@ -315,9 +318,10 @@ export function GrammarTrack({ onBack }: Props) {
                     <button
                       key={s.id}
                       type="button"
-                      className={`chapter-list-item ${section === s.id ? 'is-active' : ''}`}
+                      className={`chapter-list-item chapter-row ${section === s.id ? 'is-active' : ''}`}
                       onClick={() => setSection(s.id)}
                     >
+                      <GrammarVisual id={s.id} size="thumb" />
                       <ChapterProgress
                         size="sm"
                         label={s.label}
@@ -329,18 +333,11 @@ export function GrammarTrack({ onBack }: Props) {
                 })}
               </div>
 
-              {lesson && (
-                <aside className="grammar-lesson" aria-label="Chapter lesson">
-                  <p className="grammar-lesson-kicker">Lesson</p>
-                  <h2 className="grammar-lesson-title">{lesson.title}</h2>
-                  <p className="grammar-lesson-summary">{lesson.summary}</p>
-                  <ul className="grammar-lesson-bullets">
-                    {lesson.bullets.map((b) => (
-                      <li key={b}>{b}</li>
-                    ))}
-                  </ul>
-                </aside>
-              )}
+              <GrammarLessonPanel
+                lesson={lesson}
+                section={section}
+                overview={section === 'all'}
+              />
 
               <ChapterProgress
                 label="Selected chapter"
