@@ -35,6 +35,7 @@ import { getTrackReverse, saveSession } from '../lib/session'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { SpeakButton } from '../components/SpeakButton'
 import { CardExplain } from '../components/CardExplain'
+import { CardVisual } from '../components/CardVisual'
 import { ChapterProgress } from '../components/ChapterProgress'
 
 export const NUMBER_KEY = 'habla:numbers:v1'
@@ -420,8 +421,8 @@ export function NumbersTrack({ onBack }: Props) {
         <main className="stage">
           {phase === 'start' && (
             <section className="panel start-panel">
-              <button type="button" className="text-btn back-hub" onClick={onBack}>
-                ← All tracks
+              <button type="button" className="back-btn back-hub" onClick={onBack}>
+                <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
               </button>
               <p className="brand">Habla</p>
               <h1>Numbers</h1>
@@ -598,6 +599,7 @@ export function NumbersTrack({ onBack }: Props) {
               back={backOf(currentFoundation)}
               speakText={currentFoundation.back}
               tip={tipOf(currentFoundation)}
+              value={currentFoundation.value}
               hint={false}
               onMissed={onIncorrect}
               onGotIt={onCorrect}
@@ -631,6 +633,7 @@ export function NumbersTrack({ onBack }: Props) {
               back={backOf(currentDrill)}
               speakText={currentDrill.back}
               tip={tipOf(currentDrill)}
+              value={currentDrill.value}
               hint={false}
               onMissed={() => advanceDrill(false)}
               onGotIt={() => advanceDrill(true)}
@@ -691,6 +694,7 @@ export function NumbersTrack({ onBack }: Props) {
               back={reviewCard.back}
               speakText={reviewCard.back}
               tip={tipOf(reviewCard)}
+              value={reviewCard.value}
               hint={false}
               onMissed={() => {
                 setReviewIndex((i) => Math.max(0, i - 1))
@@ -769,6 +773,7 @@ function StudyPanel(props: {
   back: string
   speakText?: string
   tip?: string
+  value?: number
   hint: boolean
   onMissed: () => void
   onGotIt: () => void
@@ -795,6 +800,7 @@ function StudyPanel(props: {
     back,
     speakText,
     tip,
+    value,
     hint,
     onMissed,
     onGotIt,
@@ -810,8 +816,11 @@ function StudyPanel(props: {
     <section className="panel study-panel">
       <header className="study-header">
         <div className="study-top">
-          <button type="button" className="text-btn" onClick={onHome}>
-            {titleLeft}
+          <button type="button" className="back-btn back-btn-sm" onClick={onHome}>
+            <span className="back-btn-icon" aria-hidden="true">
+              ←
+            </span>{' '}
+            {titleLeft.replace(/^←\s*/, '')}
           </button>
           {!hideReset && (
             <button
@@ -847,11 +856,26 @@ function StudyPanel(props: {
         <div className="card-inner">
           <div className="card-face card-front">
             <span className="lang-tag">{frontLabel}</span>
+            <CardVisual
+              front={front}
+              back={back}
+              tip={tip}
+              value={value}
+              kind="number"
+            />
             <p className="card-text number-text">{front}</p>
             {hint && <span className="flip-hint">Tap to flip</span>}
           </div>
           <div className="card-face card-back">
             <span className="lang-tag">{backLabel}</span>
+            <CardVisual
+              front={front}
+              back={back}
+              tip={tip}
+              value={value}
+              kind="number"
+              size="sm"
+            />
             <p className="card-text number-text">{back}</p>
           </div>
         </div>

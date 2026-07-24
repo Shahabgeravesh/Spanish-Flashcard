@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { cards as phraseCards } from './data/cards'
-import { dailyPhraseCards } from './data/dailyPhrases'
-import { colorCards } from './data/colors'
 import {
   TENSE_META,
   filterVerbCards,
@@ -30,18 +28,29 @@ import {
 import { usePersistentProgress } from './lib/usePersistentProgress'
 import { useSpanishVoice } from './lib/useSpanishVoice'
 import { getTrackReverse, loadSession, saveSession } from './lib/session'
-import { NumbersTrack, loadNumberLearnedCount, loadNumberMasteryPercent } from './tracks/NumbersTrack'
-import { DailyLifeTrack, loadDailyLearnedCount, loadDailyMasteryPercent } from './tracks/DailyLifeTrack'
-import { ColorsTrack, loadColorsLearnedCount, loadColorsMasteryPercent } from './tracks/ColorsTrack'
+import { NumbersTrack, loadNumberMasteryPercent } from './tracks/NumbersTrack'
+import { DailyLifeTrack, loadDailyMasteryPercent } from './tracks/DailyLifeTrack'
+import { ColorsTrack, loadColorsMasteryPercent } from './tracks/ColorsTrack'
 import {
   FoundationsTrack,
-  loadFoundationsLearnedCount,
   loadFoundationsMasteryPercent,
 } from './tracks/FoundationsTrack'
-import { foundationCards } from './data/foundations'
+import {
+  GrammarTrack,
+  loadGrammarMasteryPercent,
+} from './tracks/GrammarTrack'
+import {
+  StoriesTrack,
+  loadStoriesMasteryPercent,
+} from './tracks/StoriesTrack'
+import {
+  ExamTrack,
+  loadExamMasteryPercent,
+} from './tracks/ExamTrack'
 import { AnswerBurst, useAnswerFeedback } from './components/AnswerBurst'
 import { SpeakButton } from './components/SpeakButton'
 import { CardExplain } from './components/CardExplain'
+import { CardVisual } from './components/CardVisual'
 import { ChapterProgress } from './components/ChapterProgress'
 import './App.css'
 
@@ -53,15 +62,15 @@ type Track =
   | 'numbers'
   | 'colors'
   | 'foundations'
+  | 'grammar'
+  | 'stories'
+  | 'exam'
 type Phase = 'start' | 'study' | 'done' | 'review-learned'
 
 const PHRASE_KEY = 'habla:phrases:v1'
 const PHRASE_LEGACY = ['making-requests-flashcards:v1']
 const VERB_KEY = 'habla:verbs:v1'
 const VERB_LEGACY = ['lexora:verbs:v1']
-const dailyPhraseCount = dailyPhraseCards.length
-const colorCardCount = colorCards.length
-const foundationCardCount = foundationCards.length
 
 type TenseFilter = 'all' | Tense
 type VerbGroupFilter = 'regular' | 'irregular'
@@ -77,6 +86,9 @@ function App() {
       'numbers',
       'colors',
       'foundations',
+      'grammar',
+      'stories',
+      'exam',
     ]
     return saved && allowed.includes(saved as Track) ? (saved as Track) : 'hub'
   })
@@ -204,19 +216,6 @@ function App() {
   })
 
   const phraseLearnedTotal = learnedCount(phraseCards, phraseProgress.byId)
-  const verbLearnedTotal = learnedCount(verbCards, verbProgress.byId)
-  const [numberLearnedTotal, setNumberLearnedTotal] = useState(() =>
-    loadNumberLearnedCount(),
-  )
-  const [dailyLearnedTotal, setDailyLearnedTotal] = useState(() =>
-    loadDailyLearnedCount(),
-  )
-  const [colorsLearnedTotal, setColorsLearnedTotal] = useState(() =>
-    loadColorsLearnedCount(),
-  )
-  const [foundationsLearnedTotal, setFoundationsLearnedTotal] = useState(() =>
-    loadFoundationsLearnedCount(),
-  )
   const [numberMasteryPct, setNumberMasteryPct] = useState(() =>
     loadNumberMasteryPercent(),
   )
@@ -229,23 +228,37 @@ function App() {
   const [foundationsMasteryPct, setFoundationsMasteryPct] = useState(() =>
     loadFoundationsMasteryPercent(),
   )
+  const [grammarMasteryPct, setGrammarMasteryPct] = useState(() =>
+    loadGrammarMasteryPercent(),
+  )
+  const [storiesMasteryPct, setStoriesMasteryPct] = useState(() =>
+    loadStoriesMasteryPercent(),
+  )
+  const [examMasteryPct, setExamMasteryPct] = useState(() =>
+    loadExamMasteryPercent(),
+  )
 
   useEffect(() => {
     if (track === 'hub' || track === 'numbers') {
-      setNumberLearnedTotal(loadNumberLearnedCount())
       setNumberMasteryPct(loadNumberMasteryPercent())
     }
     if (track === 'hub' || track === 'daily') {
-      setDailyLearnedTotal(loadDailyLearnedCount())
       setDailyMasteryPct(loadDailyMasteryPercent())
     }
     if (track === 'hub' || track === 'colors') {
-      setColorsLearnedTotal(loadColorsLearnedCount())
       setColorsMasteryPct(loadColorsMasteryPercent())
     }
     if (track === 'hub' || track === 'foundations') {
-      setFoundationsLearnedTotal(loadFoundationsLearnedCount())
       setFoundationsMasteryPct(loadFoundationsMasteryPercent())
+    }
+    if (track === 'hub' || track === 'grammar') {
+      setGrammarMasteryPct(loadGrammarMasteryPercent())
+    }
+    if (track === 'hub' || track === 'stories') {
+      setStoriesMasteryPct(loadStoriesMasteryPercent())
+    }
+    if (track === 'hub' || track === 'exam') {
+      setExamMasteryPct(loadExamMasteryPercent())
     }
   }, [track])
 
@@ -395,7 +408,7 @@ function App() {
     return (
       <DailyLifeTrack
         onBack={() => {
-          setDailyLearnedTotal(loadDailyLearnedCount())
+          setDailyMasteryPct(loadDailyMasteryPercent())
           enterTrack('hub')
         }}
       />
@@ -406,7 +419,7 @@ function App() {
     return (
       <ColorsTrack
         onBack={() => {
-          setColorsLearnedTotal(loadColorsLearnedCount())
+          setColorsMasteryPct(loadColorsMasteryPercent())
           enterTrack('hub')
         }}
       />
@@ -417,7 +430,7 @@ function App() {
     return (
       <NumbersTrack
         onBack={() => {
-          setNumberLearnedTotal(loadNumberLearnedCount())
+          setNumberMasteryPct(loadNumberMasteryPercent())
           enterTrack('hub')
         }}
       />
@@ -428,7 +441,40 @@ function App() {
     return (
       <FoundationsTrack
         onBack={() => {
-          setFoundationsLearnedTotal(loadFoundationsLearnedCount())
+          setFoundationsMasteryPct(loadFoundationsMasteryPercent())
+          enterTrack('hub')
+        }}
+      />
+    )
+  }
+
+  if (track === 'grammar') {
+    return (
+      <GrammarTrack
+        onBack={() => {
+          setGrammarMasteryPct(loadGrammarMasteryPercent())
+          enterTrack('hub')
+        }}
+      />
+    )
+  }
+
+  if (track === 'stories') {
+    return (
+      <StoriesTrack
+        onBack={() => {
+          setStoriesMasteryPct(loadStoriesMasteryPercent())
+          enterTrack('hub')
+        }}
+      />
+    )
+  }
+
+  if (track === 'exam') {
+    return (
+      <ExamTrack
+        onBack={() => {
+          setExamMasteryPct(loadExamMasteryPercent())
           enterTrack('hub')
         }}
       />
@@ -436,67 +482,87 @@ function App() {
   }
 
   if (track === 'hub') {
+    const overallPct = Math.round(
+      (phraseMasteryPct +
+        verbMasteryPct +
+        dailyMasteryPct +
+        numberMasteryPct +
+        colorsMasteryPct +
+        foundationsMasteryPct +
+        grammarMasteryPct +
+        storiesMasteryPct +
+        examMasteryPct) /
+        9,
+    )
+
     return (
       <div className="app hub-theme">
-        <div className="atmosphere" aria-hidden="true">
-          <div className="orb orb-a" />
-          <div className="orb orb-b" />
-          <div className="orb orb-c" />
-          <div className="grain" />
-        </div>
+        <div className="atmosphere" aria-hidden="true" />
 
         <main className="hub">
           <header className="hub-header">
             <p className="brand">Habla</p>
-            <h1>Choose a practice track</h1>
-            <p className="lede hub-lede">
-              Six tracks for Spanish learners — foundations, requests, daily
-              situations, verbs, numbers, and colors. Flip, listen, learn with
-              tips on every reveal.
-            </p>
-            <p className="save-note">
-              {canUseStorage()
-                ? 'Progress is saved on this device — close the tab anytime and pick up where you left off.'
-                : 'Storage is blocked in this browser, so progress won’t survive a refresh. Try a normal (non-private) window.'}
-            </p>
+            <h1>Practice Spanish</h1>
+            <p className="lede hub-lede">Pick a track and keep going.</p>
             <ChapterProgress
               className="hub-overall"
-              label="Overall"
-              size="lg"
-              percent={Math.round(
-                (phraseMasteryPct +
-                  verbMasteryPct +
-                  dailyMasteryPct +
-                  numberMasteryPct +
-                  colorsMasteryPct +
-                  foundationsMasteryPct) /
-                  6,
-              )}
-              detail="Average across all tracks — climbs as you learn"
+              label="Your progress"
+              size="md"
+              percent={overallPct}
             />
           </header>
 
-          <div className="hub-grid hub-grid-4">
+          <div className="hub-grid">
             <button
               type="button"
               className="hub-card hub-foundations"
               onClick={() => enterTrack('foundations')}
             >
-              <span className="hub-kicker">Track 00</span>
-              <h2>Foundations</h2>
-              <p>
-                Days, months, question words, articles, ser vs estar, family,
-                body, clothing, and places.
-              </p>
-              <div className="hub-meta">
-                <span>{foundationCardCount} cards</span>
-                <span>{foundationsLearnedTotal} learned</span>
+              <div className="hub-card-top">
+                <h2>Foundations</h2>
+                <span className="hub-pct">{foundationsMasteryPct}%</span>
               </div>
-              <ChapterProgress
-                size="sm"
-                percent={foundationsMasteryPct}
-                detail={`${foundationsLearnedTotal} of ${foundationCardCount} mastered`}
-              />
+              <p>Days, articles, ser vs estar, family</p>
+              <ChapterProgress size="sm" percent={foundationsMasteryPct} />
+            </button>
+
+            <button
+              type="button"
+              className="hub-card hub-grammar"
+              onClick={() => enterTrack('grammar')}
+            >
+              <div className="hub-card-top">
+                <h2>Grammar</h2>
+                <span className="hub-pct">{grammarMasteryPct}%</span>
+              </div>
+              <p>Lessons + drills: por/para, gustar, tenses</p>
+              <ChapterProgress size="sm" percent={grammarMasteryPct} />
+            </button>
+
+            <button
+              type="button"
+              className="hub-card hub-stories"
+              onClick={() => enterTrack('stories')}
+            >
+              <div className="hub-card-top">
+                <h2>Stories</h2>
+                <span className="hub-pct">{storiesMasteryPct}%</span>
+              </div>
+              <p>30 nightly pages — present, past, future</p>
+              <ChapterProgress size="sm" percent={storiesMasteryPct} />
+            </button>
+
+            <button
+              type="button"
+              className="hub-card hub-exam"
+              onClick={() => enterTrack('exam')}
+            >
+              <div className="hub-card-top">
+                <h2>Exam</h2>
+                <span className="hub-pct">{examMasteryPct}%</span>
+              </div>
+              <p>Fill blanks, type answers, track scores</p>
+              <ChapterProgress size="sm" percent={examMasteryPct} />
             </button>
 
             <button
@@ -504,21 +570,12 @@ function App() {
               className="hub-card hub-phrases"
               onClick={() => enterTrack('phrases')}
             >
-              <span className="hub-kicker">Track 01</span>
-              <h2>Requests & intentions</h2>
-              <p>
-                Making requests, intentions, and useful connectors — English to
-                Spanish.
-              </p>
-              <div className="hub-meta">
-                <span>{phraseCards.length} cards</span>
-                <span>{phraseLearnedTotal} learned</span>
+              <div className="hub-card-top">
+                <h2>Requests</h2>
+                <span className="hub-pct">{phraseMasteryPct}%</span>
               </div>
-              <ChapterProgress
-                size="sm"
-                percent={phraseMasteryPct}
-                detail={`${phraseLearnedTotal} of ${phraseCards.length} mastered`}
-              />
+              <p>Intentions, polite asks, connectors</p>
+              <ChapterProgress size="sm" percent={phraseMasteryPct} />
             </button>
 
             <button
@@ -526,21 +583,12 @@ function App() {
               className="hub-card hub-daily"
               onClick={() => enterTrack('daily')}
             >
-              <span className="hub-kicker">Track 02</span>
-              <h2>Daily life & situations</h2>
-              <p>
-                Greetings, food, travel — plus café, airport, hotel, doctor, and
-                more real situations with tips on every card.
-              </p>
-              <div className="hub-meta">
-                <span>{dailyPhraseCount} cards</span>
-                <span>{dailyLearnedTotal} learned</span>
+              <div className="hub-card-top">
+                <h2>Daily life</h2>
+                <span className="hub-pct">{dailyMasteryPct}%</span>
               </div>
-              <ChapterProgress
-                size="sm"
-                percent={dailyMasteryPct}
-                detail={`${dailyLearnedTotal} of ${dailyPhraseCount} mastered`}
-              />
+              <p>Situations: café, travel, hotel, doctor</p>
+              <ChapterProgress size="sm" percent={dailyMasteryPct} />
             </button>
 
             <button
@@ -548,21 +596,12 @@ function App() {
               className="hub-card hub-verbs"
               onClick={() => enterTrack('verbs')}
             >
-              <span className="hub-kicker">Track 03</span>
-              <h2>Verb conjugations</h2>
-              <p>
-                Present, past, and future for all pronouns — regular and
-                irregular, studied separately.
-              </p>
-              <div className="hub-meta">
-                <span>{verbCards.length} forms</span>
-                <span>{verbLearnedTotal} learned</span>
+              <div className="hub-card-top">
+                <h2>Verbs</h2>
+                <span className="hub-pct">{verbMasteryPct}%</span>
               </div>
-              <ChapterProgress
-                size="sm"
-                percent={verbMasteryPct}
-                detail={`${verbLearnedTotal} of ${verbCards.length} mastered`}
-              />
+              <p>Present, past, future conjugations</p>
+              <ChapterProgress size="sm" percent={verbMasteryPct} />
             </button>
 
             <button
@@ -570,21 +609,12 @@ function App() {
               className="hub-card hub-numbers"
               onClick={() => enterTrack('numbers')}
             >
-              <span className="hub-kicker">Track 04</span>
-              <h2>Numbers</h2>
-              <p>
-                From 1 to 1,000,000 — regular and irregular forms, foundations
-                and drills.
-              </p>
-              <div className="hub-meta">
-                <span>1 – 1M</span>
-                <span>{numberLearnedTotal} learned</span>
+              <div className="hub-card-top">
+                <h2>Numbers</h2>
+                <span className="hub-pct">{numberMasteryPct}%</span>
               </div>
-              <ChapterProgress
-                size="sm"
-                percent={numberMasteryPct}
-                detail={`${numberLearnedTotal} foundation cards mastered`}
-              />
+              <p>1 to 1,000,000</p>
+              <ChapterProgress size="sm" percent={numberMasteryPct} />
             </button>
 
             <button
@@ -592,23 +622,20 @@ function App() {
               className="hub-card hub-colors"
               onClick={() => enterTrack('colors')}
             >
-              <span className="hub-kicker">Track 05</span>
-              <h2>Colors</h2>
-              <p>
-                Color names, light/dark shades, and useful lines — with live
-                swatches on every card.
-              </p>
-              <div className="hub-meta">
-                <span>{colorCardCount} cards</span>
-                <span>{colorsLearnedTotal} learned</span>
+              <div className="hub-card-top">
+                <h2>Colors</h2>
+                <span className="hub-pct">{colorsMasteryPct}%</span>
               </div>
-              <ChapterProgress
-                size="sm"
-                percent={colorsMasteryPct}
-                detail={`${colorsLearnedTotal} of ${colorCardCount} mastered`}
-              />
+              <p>Names, shades, useful phrases</p>
+              <ChapterProgress size="sm" percent={colorsMasteryPct} />
             </button>
           </div>
+
+          <p className="hub-footnote">
+            {canUseStorage()
+              ? 'Progress saves on this device.'
+              : 'Private browsing may not save progress.'}
+          </p>
         </main>
       </div>
     )
@@ -727,10 +754,10 @@ function App() {
             <section className="panel start-panel">
               <button
                 type="button"
-                className="text-btn back-hub"
+                className="back-btn back-hub"
                 onClick={() => enterTrack('hub')}
               >
-                ← All tracks
+                <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
               </button>
               <p className="brand">Habla</p>
               <h1>{isVerbs ? 'Verb conjugations' : 'Making requests'}</h1>
@@ -893,10 +920,13 @@ function App() {
                 <div className="study-top">
                   <button
                     type="button"
-                    className="text-btn"
+                    className="back-btn back-btn-sm"
                     onClick={() => setPhase('start')}
                   >
-                    ← Home
+                    <span className="back-btn-icon" aria-hidden="true">
+                      ←
+                    </span>{' '}
+                    Home
                   </button>
                   <button
                     type="button"
@@ -951,6 +981,13 @@ function App() {
                             {currentVerb.group}
                           </span>
                         </div>
+                        <CardVisual
+                          infinitive={currentVerb.infinitive}
+                          tense={currentVerb.tense}
+                          front={currentVerb.front}
+                          back={currentVerb.back}
+                          tip={currentVerb.tip}
+                        />
                         <p className="card-text verb-infinitive">
                           {currentVerb.infinitive}
                         </p>
@@ -966,6 +1003,11 @@ function App() {
                         <span className="lang-tag">
                           {reverse ? 'Español' : 'English'}
                         </span>
+                        <CardVisual
+                          front={current.front}
+                          back={current.back}
+                          tip={currentPhrase?.tip}
+                        />
                         <p className="card-text">
                           {reverse ? current.back : current.front}
                         </p>
@@ -976,6 +1018,14 @@ function App() {
                     {isVerbs && currentVerb ? (
                       <>
                         <span className="lang-tag">Conjugated form</span>
+                        <CardVisual
+                          infinitive={currentVerb.infinitive}
+                          tense={currentVerb.tense}
+                          front={currentVerb.front}
+                          back={currentVerb.back}
+                          tip={currentVerb.tip}
+                          size="sm"
+                        />
                         <p className="card-text">{currentVerb.back}</p>
                         <p className="verb-answer-meta">
                           {currentVerb.infinitive} ·{' '}
@@ -988,6 +1038,12 @@ function App() {
                         <span className="lang-tag">
                           {reverse ? 'English' : 'Español'}
                         </span>
+                        <CardVisual
+                          front={current.front}
+                          back={current.back}
+                          tip={currentPhrase?.tip}
+                          size="sm"
+                        />
                         <p className="card-text">
                           {reverse ? current.front : current.back}
                         </p>
@@ -1085,9 +1141,12 @@ function App() {
               </div>
               <button
                 type="button"
-                className="text-btn home-link"
+                className="back-btn home-link"
                 onClick={() => setPhase('start')}
               >
+                <span className="back-btn-icon" aria-hidden="true">
+                  ←
+                </span>{' '}
                 Back to start
               </button>
             </section>
@@ -1099,12 +1158,15 @@ function App() {
                 <div className="study-top">
                   <button
                     type="button"
-                    className="text-btn"
+                    className="back-btn back-btn-sm"
                     onClick={() =>
                       setPhase(learningLeft === 0 ? 'done' : 'study')
                     }
                   >
-                    ← Back
+                    <span className="back-btn-icon" aria-hidden="true">
+                      ←
+                    </span>{' '}
+                    Back
                   </button>
                   <span className="counters">
                     Learned {reviewIndex + 1} / {scopedLearned.length}
@@ -1122,6 +1184,13 @@ function App() {
                     {isVerbs ? (
                       <>
                         <span className="lang-tag">Prompt</span>
+                        <CardVisual
+                          infinitive={(reviewCard as VerbCard).infinitive}
+                          tense={(reviewCard as VerbCard).tense}
+                          front={reviewCard.front}
+                          back={reviewCard.back}
+                          tip={(reviewCard as VerbCard).tip}
+                        />
                         <p className="card-text">{reviewCard.front}</p>
                       </>
                     ) : (
@@ -1129,6 +1198,13 @@ function App() {
                         <span className="lang-tag">
                           {reverse ? 'Español' : 'English'}
                         </span>
+                        <CardVisual
+                          front={reviewCard.front}
+                          back={reviewCard.back}
+                          tip={
+                            (reviewCard as (typeof phraseCards)[number]).tip
+                          }
+                        />
                         <p className="card-text">
                           {reverse ? reviewCard.back : reviewCard.front}
                         </p>
@@ -1139,6 +1215,21 @@ function App() {
                     <span className="lang-tag">
                       {isVerbs ? 'Form' : reverse ? 'English' : 'Español'}
                     </span>
+                    <CardVisual
+                      infinitive={
+                        isVerbs
+                          ? (reviewCard as VerbCard).infinitive
+                          : undefined
+                      }
+                      front={reviewCard.front}
+                      back={reviewCard.back}
+                      tip={
+                        isVerbs
+                          ? (reviewCard as VerbCard).tip
+                          : (reviewCard as (typeof phraseCards)[number]).tip
+                      }
+                      size="sm"
+                    />
                     <p className="card-text">
                       {isVerbs || !reverse
                         ? reviewCard.back

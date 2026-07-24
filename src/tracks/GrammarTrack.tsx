@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useState } from 'react'
 import {
-  FOUNDATION_SECTIONS,
-  filterFoundations,
-  foundationCards,
-  type FoundationCard,
-  type FoundationSection,
-} from '../data/foundations'
+  GRAMMAR_SECTIONS,
+  filterGrammar,
+  getGrammarLesson,
+  grammarCards,
+  type GrammarCard,
+  type GrammarSection,
+} from '../data/grammar'
 import {
   STREAK_TO_LEARNED,
   clearProgress,
@@ -30,19 +31,19 @@ import { CardExplain } from '../components/CardExplain'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { CardVisual } from '../components/CardVisual'
 
-export const FOUNDATIONS_KEY = 'habla:foundations:v1'
+export const GRAMMAR_KEY = 'habla:grammar:v1'
 
 type Phase = 'start' | 'study' | 'done' | 'review-learned'
-type SectionFilter = FoundationSection | 'all'
+type SectionFilter = GrammarSection | 'all'
 
 type Props = {
   onBack: () => void
 }
 
-export function FoundationsTrack({ onBack }: Props) {
+export function GrammarTrack({ onBack }: Props) {
   const [phase, setPhase] = useState<Phase>('start')
   const [section, setSection] = useState<SectionFilter>('all')
-  const [reverse, setReverse] = useState(() => getTrackReverse('foundations'))
+  const [reverse, setReverse] = useState(() => getTrackReverse('grammar'))
   const [flipped, setFlipped] = useState(false)
   const [binOpen, setBinOpen] = useState(false)
   const [reviewIndex, setReviewIndex] = useState(0)
@@ -52,12 +53,12 @@ export function FoundationsTrack({ onBack }: Props) {
 
   const [progress, setProgress] = useState<PersistedProgress>(
     () =>
-      loadProgress(foundationCards, FOUNDATIONS_KEY) ??
-      createFreshState(foundationCards, true),
+      loadProgress(grammarCards, GRAMMAR_KEY) ??
+      createFreshState(grammarCards, true),
   )
 
   const activeDeck = useMemo(
-    () => filterFoundations(foundationCards, section),
+    () => filterGrammar(grammarCards, section),
     [section],
   )
 
@@ -67,7 +68,7 @@ export function FoundationsTrack({ onBack }: Props) {
   )
 
   const learned = useMemo(
-    () => learnedCards(foundationCards, progress.byId),
+    () => learnedCards(grammarCards, progress.byId),
     [progress.byId],
   )
 
@@ -78,20 +79,21 @@ export function FoundationsTrack({ onBack }: Props) {
 
   const learningLeft = learningCount(activeDeck, progress.byId)
   const learnedInSection = learnedCount(activeDeck, progress.byId)
-  const learnedTotal = learnedCount(foundationCards, progress.byId)
+  const learnedTotal = learnedCount(grammarCards, progress.byId)
   const masteryPct = deckMasteryPercent(activeDeck, progress.byId)
-  const trackMasteryPct = deckMasteryPercent(foundationCards, progress.byId)
+  const trackMasteryPct = deckMasteryPercent(grammarCards, progress.byId)
 
   const currentId = progress.queue[progress.index]
   const current =
     currentId != null
-      ? foundationCards.find((c) => c.id === currentId)
+      ? grammarCards.find((c) => c.id === currentId)
       : undefined
   const currentStreak =
     currentId != null
       ? (progress.byId[String(currentId)]?.streak ?? 0)
       : 0
   const reviewCard = scopedLearned[reviewIndex]
+  const lesson = getGrammarLesson(section)
 
   const voice = useSpanishVoice({
     spanishText: phase === 'study' ? current?.back : undefined,
@@ -106,7 +108,7 @@ export function FoundationsTrack({ onBack }: Props) {
     cardKey: phase === 'review-learned' ? reviewCard?.id : undefined,
   })
 
-  usePersistentProgress(progress, FOUNDATIONS_KEY, foundationCards)
+  usePersistentProgress(progress, GRAMMAR_KEY, grammarCards)
 
   const applyProgress = useCallback((next: PersistedProgress) => {
     setProgress(next)
@@ -149,7 +151,7 @@ export function FoundationsTrack({ onBack }: Props) {
     trigger('correct', { learned: willLearn })
     window.setTimeout(() => {
       applyProgress(
-        markCorrect(foundationCards, progress, current.id, allowedIds),
+        markCorrect(grammarCards, progress, current.id, allowedIds),
       )
       setCardFx(null)
     }, 420)
@@ -161,15 +163,15 @@ export function FoundationsTrack({ onBack }: Props) {
     trigger('incorrect')
     window.setTimeout(() => {
       applyProgress(
-        markIncorrect(foundationCards, progress, current.id, allowedIds),
+        markIncorrect(grammarCards, progress, current.id, allowedIds),
       )
       setCardFx(null)
     }, 420)
   }
 
   const resetAll = () => {
-    clearProgress(FOUNDATIONS_KEY)
-    setProgress(createFreshState(foundationCards, true))
+    clearProgress(GRAMMAR_KEY)
+    setProgress(createFreshState(grammarCards, true))
     setConfirmReset(false)
     setPhase('start')
     setFlipped(false)
@@ -194,14 +196,14 @@ export function FoundationsTrack({ onBack }: Props) {
     Object.values(progress.byId).some((p) => p.streak > 0)
 
   const sectionLabel =
-    FOUNDATION_SECTIONS.find((s) => s.id === section)?.label ?? 'All'
+    GRAMMAR_SECTIONS.find((s) => s.id === section)?.label ?? 'All'
 
-  const promptOf = (card: FoundationCard) => (reverse ? card.back : card.front)
-  const answerOf = (card: FoundationCard) => (reverse ? card.front : card.back)
-  const speakOf = (card: FoundationCard) => card.speak ?? card.back
+  const promptOf = (card: GrammarCard) => (reverse ? card.back : card.front)
+  const answerOf = (card: GrammarCard) => (reverse ? card.front : card.back)
+  const speakOf = (card: GrammarCard) => card.speak ?? card.back
 
   return (
-    <div className="app foundations-theme">
+    <div className="app grammar-theme">
       <div className="atmosphere" aria-hidden="true">
         <div className="orb orb-a" />
         <div className="orb orb-b" />
@@ -219,7 +221,7 @@ export function FoundationsTrack({ onBack }: Props) {
             onClick={() => setBinOpen((o) => !o)}
             aria-expanded={binOpen}
           >
-            <span className="bin-label">Foundations learned</span>
+            <span className="bin-label">Grammar learned</span>
             <span className="bin-count">{learnedTotal}</span>
           </button>
           <div className="bin-body">
@@ -289,23 +291,26 @@ export function FoundationsTrack({ onBack }: Props) {
           {phase === 'start' && (
             <section className="panel start-panel">
               <button type="button" className="back-btn back-hub" onClick={onBack}>
-                <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
+                <span className="back-btn-icon" aria-hidden="true">
+                  ←
+                </span>{' '}
+                All tracks
               </button>
               <p className="brand">Habla</p>
-              <h1>Foundations</h1>
+              <h1>Grammar</h1>
               <p className="subtitle">
-                Days, months, questions, articles, ser vs estar, family & more
+                Clear rules, then flashcards that stick
               </p>
               <p className="lede">
-                Core building blocks every Spanish learner needs — with tips on
-                every reveal and Listen for pronunciation.
+                Each chapter opens with a short lesson. Every card reveal adds a
+                concrete explanation you can use right away.
               </p>
 
-              <div className="chapter-list" aria-label="Foundation chapters">
-                {FOUNDATION_SECTIONS.map((s) => {
-                  const deck = filterFoundations(foundationCards, s.id)
+              <div className="chapter-list" aria-label="Grammar chapters">
+                {GRAMMAR_SECTIONS.map((s) => {
+                  const deck = filterGrammar(grammarCards, s.id)
                   const pct = deckMasteryPercent(deck, progress.byId)
-                  const learned = learnedCount(deck, progress.byId)
+                  const learnedN = learnedCount(deck, progress.byId)
                   return (
                     <button
                       key={s.id}
@@ -317,12 +322,25 @@ export function FoundationsTrack({ onBack }: Props) {
                         size="sm"
                         label={s.label}
                         percent={pct}
-                        detail={`${learned} / ${deck.length}`}
+                        detail={`${learnedN} / ${deck.length}`}
                       />
                     </button>
                   )
                 })}
               </div>
+
+              {lesson && (
+                <aside className="grammar-lesson" aria-label="Chapter lesson">
+                  <p className="grammar-lesson-kicker">Lesson</p>
+                  <h2 className="grammar-lesson-title">{lesson.title}</h2>
+                  <p className="grammar-lesson-summary">{lesson.summary}</p>
+                  <ul className="grammar-lesson-bullets">
+                    {lesson.bullets.map((b) => (
+                      <li key={b}>{b}</li>
+                    ))}
+                  </ul>
+                </aside>
+              )}
 
               <ChapterProgress
                 label="Selected chapter"
@@ -338,7 +356,7 @@ export function FoundationsTrack({ onBack }: Props) {
                     onChange={(e) => {
                       const on = e.target.checked
                       setReverse(on)
-                      saveSession({ reverseByTrack: { foundations: on } })
+                      saveSession({ reverseByTrack: { grammar: on } })
                     }}
                   />
                   Spanish → English (reverse practice)
@@ -357,7 +375,7 @@ export function FoundationsTrack({ onBack }: Props) {
 
               <div className="cta-row">
                 <button type="button" className="primary-btn" onClick={start}>
-                  {hasSavedProgress ? 'Continue studying' : 'Start studying'}
+                  {hasSavedProgress ? 'Continue studying' : 'Start flashcards'}
                 </button>
                 {hasSavedProgress && (
                   <button
@@ -393,6 +411,7 @@ export function FoundationsTrack({ onBack }: Props) {
               back={answerOf(current)}
               speakText={speakOf(current)}
               tip={current.tip}
+              rule={current.rule}
               section={current.section}
               cardFx={cardFx}
               onMissed={onIncorrect}
@@ -400,7 +419,7 @@ export function FoundationsTrack({ onBack }: Props) {
               help={
                 flipped
                   ? currentStreak + 1 >= STREAK_TO_LEARNED
-                    ? 'One more correct sends this into Foundations learned.'
+                    ? 'One more correct sends this into Grammar learned.'
                     : 'Got it builds streak; Missed resets and requeues later.'
                   : 'Flip first, then mark yourself.'
               }
@@ -413,7 +432,7 @@ export function FoundationsTrack({ onBack }: Props) {
               <h1>{sectionLabel} cleared</h1>
               <p className="lede">
                 {learnedInSection} of {activeDeck.length} cards in this section
-                are learned. Pick another section anytime.
+                are learned. Skim another lesson anytime.
               </p>
               <div className="cta-row">
                 <button type="button" className="primary-btn" onClick={start}>
@@ -449,6 +468,7 @@ export function FoundationsTrack({ onBack }: Props) {
               back={answerOf(reviewCard)}
               speakText={speakOf(reviewCard)}
               tip={reviewCard.tip}
+              rule={reviewCard.rule}
               section={reviewCard.section}
               onMissed={() => {
                 setReviewIndex((i) => Math.max(0, i - 1))
@@ -467,7 +487,7 @@ export function FoundationsTrack({ onBack }: Props) {
               gotItLabel={
                 reviewIndex >= scopedLearned.length - 1 ? 'Done' : 'Next'
               }
-              help="Browsing learned foundations."
+              help="Browsing learned grammar."
             />
           )}
         </main>
@@ -485,7 +505,7 @@ export function FoundationsTrack({ onBack }: Props) {
             aria-modal="true"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2>Reset foundations?</h2>
+            <h2>Reset grammar?</h2>
             <p>
               Clears only this track’s learned bin and streaks. Other tracks stay
               untouched.
@@ -526,6 +546,7 @@ function StudyPanel(props: {
   back: string
   speakText: string
   tip: string
+  rule?: string
   section?: string
   cardFx?: 'correct' | 'incorrect' | null
   onMissed: () => void
@@ -551,6 +572,7 @@ function StudyPanel(props: {
     back,
     speakText,
     tip,
+    rule,
     section,
     cardFx = null,
     onMissed,
@@ -606,7 +628,12 @@ function StudyPanel(props: {
           <div className="card-face card-front">
             {section && <span className="lang-tag">{section}</span>}
             {!section && <span className="lang-tag">{frontLabel}</span>}
-            <CardVisual front={front} back={back} tip={tip} section={section} />
+            <CardVisual
+              front={front}
+              back={back}
+              tip={tip}
+              section={section}
+            />
             <p className="card-text">{front}</p>
           </div>
           <div className="card-face card-back">
@@ -623,7 +650,7 @@ function StudyPanel(props: {
         </div>
       </button>
 
-      <CardExplain visible={flipped} tip={tip} />
+      <CardExplain visible={flipped} tip={tip} rule={rule} />
 
       <div className="actions">
         <button
@@ -657,14 +684,8 @@ function StudyPanel(props: {
   )
 }
 
-export function loadFoundationsLearnedCount(): number {
-  const state = loadProgress(foundationCards, FOUNDATIONS_KEY)
+export function loadGrammarMasteryPercent(): number {
+  const state = loadProgress(grammarCards, GRAMMAR_KEY)
   if (!state) return 0
-  return learnedCount(foundationCards, state.byId)
-}
-
-export function loadFoundationsMasteryPercent(): number {
-  const state = loadProgress(foundationCards, FOUNDATIONS_KEY)
-  if (!state) return 0
-  return deckMasteryPercent(foundationCards, state.byId)
+  return deckMasteryPercent(grammarCards, state.byId)
 }

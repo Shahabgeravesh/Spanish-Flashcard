@@ -30,6 +30,7 @@ import { getTrackReverse, saveSession } from '../lib/session'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { SpeakButton } from '../components/SpeakButton'
 import { CardExplain } from '../components/CardExplain'
+import { CardVisual } from '../components/CardVisual'
 import { ChapterProgress } from '../components/ChapterProgress'
 
 export const DAILY_KEY = 'habla:daily-phrases:v1'
@@ -310,8 +311,8 @@ export function DailyLifeTrack({ onBack }: Props) {
         <main className="stage">
           {phase === 'start' && (
             <section className="panel start-panel">
-              <button type="button" className="text-btn back-hub" onClick={onBack}>
-                ← All tracks
+              <button type="button" className="back-btn back-hub" onClick={onBack}>
+                <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
               </button>
               <p className="brand">Habla</p>
               <h1>Daily life phrases</h1>
@@ -634,8 +635,11 @@ function StudyPanel(props: {
     <section className="panel study-panel">
       <header className="study-header">
         <div className="study-top">
-          <button type="button" className="text-btn" onClick={onHome}>
-            ← Home
+          <button type="button" className="back-btn back-btn-sm" onClick={onHome}>
+            <span className="back-btn-icon" aria-hidden="true">
+              ←
+            </span>{' '}
+            Home
           </button>
           {!hideReset && (
             <button
@@ -674,10 +678,25 @@ function StudyPanel(props: {
         <div className="card-inner">
           <div className="card-face card-front">
             <span className="lang-tag">{category ?? frontLabel}</span>
+            <CardVisual
+              front={front}
+              back={back}
+              tip={tip}
+              category={category}
+              situation={situationLabel}
+            />
             <p className="card-text">{front}</p>
           </div>
           <div className="card-face card-back">
             <span className="lang-tag">{backLabel}</span>
+            <CardVisual
+              front={front}
+              back={back}
+              tip={tip}
+              category={category}
+              situation={situationLabel}
+              size="sm"
+            />
             <p className="card-text">{back}</p>
           </div>
         </div>

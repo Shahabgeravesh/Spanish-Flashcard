@@ -27,6 +27,7 @@ import { useSpanishVoice } from '../lib/useSpanishVoice'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { SpeakButton } from '../components/SpeakButton'
 import { CardExplain } from '../components/CardExplain'
+import { CardVisual } from '../components/CardVisual'
 import { ChapterProgress } from '../components/ChapterProgress'
 
 export const COLORS_KEY = 'habla:colors:v1'
@@ -292,10 +293,10 @@ export function ColorsTrack({ onBack }: Props) {
             <section className="panel start-panel">
               <button
                 type="button"
-                className="text-btn back-hub"
+                className="back-btn back-hub"
                 onClick={onBack}
               >
-                ← All tracks
+                <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
               </button>
               <p className="brand">Habla</p>
               <h1>Colors</h1>
@@ -531,17 +532,16 @@ function ColorStudyPanel(props: {
   } = props
 
   const busy = cardFx != null
-  const border =
-    card.swatch === '#f8fafc' || card.swatch === '#fce7f3'
-      ? '1px solid rgba(26,24,64,0.15)'
-      : undefined
 
   return (
     <section className="panel study-panel">
       <header className="study-header">
         <div className="study-top">
-          <button type="button" className="text-btn" onClick={onHome}>
-            ← Home
+          <button type="button" className="back-btn back-btn-sm" onClick={onHome}>
+            <span className="back-btn-icon" aria-hidden="true">
+              ←
+            </span>{' '}
+            Home
           </button>
           {!hideReset && (
             <button
@@ -576,24 +576,25 @@ function ColorStudyPanel(props: {
         <div className="card-inner">
           <div className="card-face card-front">
             <span className="lang-tag">{card.kind}</span>
-            {card.swatch && (
-              <span
-                className="color-swatch"
-                style={{ background: card.swatch, border }}
-                aria-hidden="true"
-              />
-            )}
+            <CardVisual
+              front={card.front}
+              back={card.back}
+              tip={card.tip}
+              swatch={card.swatch}
+              kind={card.kind}
+            />
             <p className="card-text">{card.front}</p>
           </div>
           <div className="card-face card-back">
             <span className="lang-tag">Español</span>
-            {card.swatch && (
-              <span
-                className="color-swatch"
-                style={{ background: card.swatch, border }}
-                aria-hidden="true"
-              />
-            )}
+            <CardVisual
+              front={card.front}
+              back={card.back}
+              tip={card.tip}
+              swatch={card.swatch}
+              kind={card.kind}
+              size="sm"
+            />
             <p className="card-text">{card.back}</p>
           </div>
         </div>
