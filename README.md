@@ -1,20 +1,29 @@
-# Making Requests Flashcards
+# Habla — Spanish Flashcards
 
-English → Spanish flashcards for requests, intentions, and useful phrases — same content as the [Wordwall resource](https://wordwall.net/resource/112742442/making-requests-intentions-phrases).
+Colorful English → Spanish flashcard practice with mastery bins, answer feedback, and multiple study tracks.
 
-## Features
+**Live site:** https://shahabgeravesh.github.io/Spanish-Flashcard/
 
-- Flip cards (English front / Spanish back)
-- Shuffle on start
-- Self-mark with ✓ / ✕
-- Repeat missed cards until all are known
-- Progress tracking
+## Tracks
 
-## Run
+1. **Requests & intentions** — request / intention phrases
+2. **Daily life phrases** — everyday lines with category filters
+3. **Verb conjugations** — regular / irregular × present / past / future × pronouns
+4. **Numbers** — 1 to 1,000,000, regular / irregular foundations + drills
+
+Study queues are always shuffled. Mark **Got it** / **Missed**; two correct in a row moves a card into that track’s Learned bin.
+
+## Run locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open the local URL shown in the terminal.
+## Build
+
+```bash
+npm run build
+```
+
+Deployed automatically to GitHub Pages on push to `main` via GitHub Actions.
