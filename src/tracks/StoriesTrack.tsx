@@ -250,6 +250,7 @@ export function StoriesTrack({ onBack }: Props) {
                       <div className="story-list-main">
                         <StoryVisual
                           scene={story.scene}
+                          night={story.night}
                           size="thumb"
                           title={story.titleEn}
                         />
@@ -308,6 +309,7 @@ export function StoriesTrack({ onBack }: Props) {
 
               <StoryVisual
                 scene={active.scene}
+                night={active.night}
                 size="hero"
                 title={active.titleEn}
               />
