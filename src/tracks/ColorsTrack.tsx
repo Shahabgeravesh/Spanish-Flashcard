@@ -1,13 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
 import {
-  DAILY_CATEGORIES,
-  DAILY_SITUATIONS,
-  dailyPhraseCards,
-  filterDailyPhrases,
-  type DailyCategory,
-  type DailyPhraseCard,
-  type DailySituation,
-} from '../data/dailyPhrases'
+  COLOR_FILTERS,
+  colorCards,
+  filterColorCards,
+  type ColorCard,
+  type ColorFilter,
+} from '../data/colors'
 import {
   STREAK_TO_LEARNED,
   buildStudyQueue,
@@ -26,28 +24,22 @@ import {
 } from '../lib/progress'
 import { usePersistentProgress } from '../lib/usePersistentProgress'
 import { useSpanishVoice } from '../lib/useSpanishVoice'
-import { getTrackReverse, saveSession } from '../lib/session'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { SpeakButton } from '../components/SpeakButton'
 import { CardExplain } from '../components/CardExplain'
 import { ChapterProgress } from '../components/ChapterProgress'
 
-export const DAILY_KEY = 'habla:daily-phrases:v1'
-const DAILY_LEGACY = ['lexora:daily-phrases:v1']
+export const COLORS_KEY = 'habla:colors:v1'
 
 type Phase = 'start' | 'study' | 'done' | 'review-learned'
-type CategoryFilter = DailyCategory | 'all'
-type SituationFilter = DailySituation | 'all'
 
 type Props = {
   onBack: () => void
 }
 
-export function DailyLifeTrack({ onBack }: Props) {
+export function ColorsTrack({ onBack }: Props) {
   const [phase, setPhase] = useState<Phase>('start')
-  const [category, setCategory] = useState<CategoryFilter>('all')
-  const [situation, setSituation] = useState<SituationFilter>('all')
-  const [reverse, setReverse] = useState(() => getTrackReverse('daily'))
+  const [filter, setFilter] = useState<ColorFilter>('all')
   const [flipped, setFlipped] = useState(false)
   const [binOpen, setBinOpen] = useState(false)
   const [reviewIndex, setReviewIndex] = useState(0)
@@ -57,13 +49,13 @@ export function DailyLifeTrack({ onBack }: Props) {
 
   const [progress, setProgress] = useState<PersistedProgress>(
     () =>
-      loadProgress(dailyPhraseCards, DAILY_KEY, DAILY_LEGACY) ??
-      createFreshState(dailyPhraseCards, true),
+      loadProgress(colorCards, COLORS_KEY) ??
+      createFreshState(colorCards, true),
   )
 
   const activeDeck = useMemo(
-    () => filterDailyPhrases(dailyPhraseCards, category, situation),
-    [category, situation],
+    () => filterColorCards(colorCards, filter),
+    [filter],
   )
 
   const allowedIds = useMemo(
@@ -72,50 +64,42 @@ export function DailyLifeTrack({ onBack }: Props) {
   )
 
   const learned = useMemo(
-    () => learnedCards(dailyPhraseCards, progress.byId),
+    () => learnedCards(colorCards, progress.byId),
     [progress.byId],
   )
 
   const scopedLearned = useMemo(() => {
-    return learned.filter((c) => {
-      const catOk = category === 'all' || c.category === category
-      const sitOk = situation === 'all' || c.situation === situation
-      return catOk && sitOk
-    })
-  }, [category, learned, situation])
+    if (filter === 'all') return learned
+    return learned.filter((c) => c.kind === filter)
+  }, [filter, learned])
 
   const learningLeft = learningCount(activeDeck, progress.byId)
   const learnedInSection = learnedCount(activeDeck, progress.byId)
-  const learnedTotal = learnedCount(dailyPhraseCards, progress.byId)
+  const learnedTotal = learnedCount(colorCards, progress.byId)
   const masteryPct = deckMasteryPercent(activeDeck, progress.byId)
-  const trackMasteryPct = deckMasteryPercent(dailyPhraseCards, progress.byId)
+  const trackMasteryPct = deckMasteryPercent(colorCards, progress.byId)
 
   const currentId = progress.queue[progress.index]
   const current =
-    currentId != null
-      ? dailyPhraseCards.find((c) => c.id === currentId)
-      : undefined
+    currentId != null ? colorCards.find((c) => c.id === currentId) : undefined
   const currentStreak =
     currentId != null
       ? (progress.byId[String(currentId)]?.streak ?? 0)
       : 0
   const reviewCard = scopedLearned[reviewIndex]
 
-  const studySpanish = current?.back
   const voice = useSpanishVoice({
-    spanishText: phase === 'study' ? studySpanish : undefined,
-    showingSpanish:
-      phase === 'study' && (reverse ? !flipped : flipped),
+    spanishText: phase === 'study' ? current?.back : undefined,
+    showingSpanish: phase === 'study' && flipped,
     cardKey: phase === 'study' ? current?.id : undefined,
   })
   useSpanishVoice({
     spanishText: phase === 'review-learned' ? reviewCard?.back : undefined,
-    showingSpanish:
-      phase === 'review-learned' && (reverse ? !flipped : flipped),
+    showingSpanish: phase === 'review-learned' && flipped,
     cardKey: phase === 'review-learned' ? reviewCard?.id : undefined,
   })
 
-  usePersistentProgress(progress, DAILY_KEY, dailyPhraseCards, DAILY_LEGACY)
+  usePersistentProgress(progress, COLORS_KEY, colorCards)
 
   const applyProgress = useCallback((next: PersistedProgress) => {
     setProgress(next)
@@ -146,9 +130,8 @@ export function DailyLifeTrack({ onBack }: Props) {
   const flip = () => {
     const next = !flipped
     setFlipped(next)
-    const showSpanish = reverse ? !next : next
-    if (showSpanish && voice.autoSpeak && current?.back) voice.replay()
-    else if (!showSpanish) voice.stop()
+    if (next && voice.autoSpeak && current?.back) voice.replay()
+    else if (!next) voice.stop()
   }
 
   const onCorrect = () => {
@@ -158,7 +141,7 @@ export function DailyLifeTrack({ onBack }: Props) {
     trigger('correct', { learned: willLearn })
     window.setTimeout(() => {
       applyProgress(
-        markCorrect(dailyPhraseCards, progress, current.id, allowedIds),
+        markCorrect(colorCards, progress, current.id, allowedIds),
       )
       setCardFx(null)
     }, 420)
@@ -170,15 +153,15 @@ export function DailyLifeTrack({ onBack }: Props) {
     trigger('incorrect')
     window.setTimeout(() => {
       applyProgress(
-        markIncorrect(dailyPhraseCards, progress, current.id, allowedIds),
+        markIncorrect(colorCards, progress, current.id, allowedIds),
       )
       setCardFx(null)
     }, 420)
   }
 
   const resetAll = () => {
-    clearProgress(DAILY_KEY, DAILY_LEGACY)
-    setProgress(createFreshState(dailyPhraseCards, true))
+    clearProgress(COLORS_KEY)
+    setProgress(createFreshState(colorCards, true))
     setFlipped(false)
     setConfirmReset(false)
     setBinOpen(false)
@@ -199,22 +182,11 @@ export function DailyLifeTrack({ onBack }: Props) {
     learnedTotal > 0 ||
     Object.values(progress.byId).some((p) => p.streak > 0)
 
-  const categoryLabel =
-    DAILY_CATEGORIES.find((c) => c.id === category)?.label ?? 'All'
-  const situationLabel =
-    DAILY_SITUATIONS.find((s) => s.id === situation)?.label ?? 'All situations'
   const filterLabel =
-    category === 'all' && situation === 'all'
-      ? 'All phrases'
-      : [category !== 'all' ? categoryLabel : null, situation !== 'all' ? situationLabel : null]
-          .filter(Boolean)
-          .join(' · ')
-
-  const promptOf = (card: DailyPhraseCard) => (reverse ? card.back : card.front)
-  const answerOf = (card: DailyPhraseCard) => (reverse ? card.front : card.back)
+    COLOR_FILTERS.find((f) => f.id === filter)?.label ?? 'All'
 
   return (
-    <div className="app daily-theme">
+    <div className="app colors-theme">
       <div className="atmosphere" aria-hidden="true">
         <div className="orb orb-a" />
         <div className="orb orb-b" />
@@ -225,14 +197,14 @@ export function DailyLifeTrack({ onBack }: Props) {
       <AnswerBurst burst={burst} />
 
       <div className="shell">
-        <aside className={`bin bin-daily ${binOpen ? 'is-open' : ''}`}>
+        <aside className={`bin bin-colors ${binOpen ? 'is-open' : ''}`}>
           <button
             type="button"
             className="bin-toggle"
             onClick={() => setBinOpen((o) => !o)}
             aria-expanded={binOpen}
           >
-            <span className="bin-label">Daily learned</span>
+            <span className="bin-label">Colors learned</span>
             <span className="bin-count">{learnedTotal}</span>
           </button>
 
@@ -254,15 +226,23 @@ export function DailyLifeTrack({ onBack }: Props) {
 
             {learned.length === 0 ? (
               <p className="bin-empty">
-                Daily phrases you master ({STREAK_TO_LEARNED} in a row) land
-                here.
+                Colors you master ({STREAK_TO_LEARNED} in a row) land here.
               </p>
             ) : (
               <ul className="bin-list">
-                {learned.slice(0, 80).map((card) => (
+                {learned.map((card) => (
                   <li key={card.id}>
                     <div className="bin-phrase">
-                      <span className="bin-en">{card.front}</span>
+                      <span className="bin-en bin-en-with-swatch">
+                        {card.swatch && (
+                          <span
+                            className="mini-swatch"
+                            style={{ background: card.swatch }}
+                            aria-hidden="true"
+                          />
+                        )}
+                        {card.front}
+                      </span>
                       <span className="bin-es">{card.back}</span>
                     </div>
                     <button
@@ -310,67 +290,38 @@ export function DailyLifeTrack({ onBack }: Props) {
         <main className="stage">
           {phase === 'start' && (
             <section className="panel start-panel">
-              <button type="button" className="text-btn back-hub" onClick={onBack}>
+              <button
+                type="button"
+                className="text-btn back-hub"
+                onClick={onBack}
+              >
                 ← All tracks
               </button>
               <p className="brand">Habla</p>
-              <h1>Daily life phrases</h1>
+              <h1>Colors</h1>
               <p className="subtitle">
-                {dailyPhraseCards.length} real-world lines · tips · situations
+                {colorCards.length} cards · names, shades & phrases
               </p>
               <p className="lede">
-                Study by topic or by real situations — café, airport, hotel,
-                doctor, and more. Every reveal includes a learning tip and Listen.
+                Learn Spanish color words with live swatches, light/dark shades,
+                and everyday lines like “¿De qué color es?”
               </p>
 
-              <p className="filter-heading">By topic</p>
-              <div className="chapter-list" aria-label="Topic chapter progress">
-                {DAILY_CATEGORIES.map((c) => {
-                  const deck = filterDailyPhrases(
-                    dailyPhraseCards,
-                    c.id,
-                    situation,
-                  )
+              <div className="chapter-list" aria-label="Color chapters">
+                {COLOR_FILTERS.map((f) => {
+                  const deck = filterColorCards(colorCards, f.id)
                   const pct = deckMasteryPercent(deck, progress.byId)
                   const learned = learnedCount(deck, progress.byId)
                   return (
                     <button
-                      key={c.id}
+                      key={f.id}
                       type="button"
-                      className={`chapter-list-item ${category === c.id ? 'is-active' : ''}`}
-                      onClick={() => setCategory(c.id)}
+                      className={`chapter-list-item ${filter === f.id ? 'is-active' : ''}`}
+                      onClick={() => setFilter(f.id)}
                     >
                       <ChapterProgress
                         size="sm"
-                        label={c.label}
-                        percent={pct}
-                        detail={`${learned} / ${deck.length}`}
-                      />
-                    </button>
-                  )
-                })}
-              </div>
-
-              <p className="filter-heading">By situation</p>
-              <div className="chapter-list" aria-label="Situation chapter progress">
-                {DAILY_SITUATIONS.map((s) => {
-                  const deck = filterDailyPhrases(
-                    dailyPhraseCards,
-                    category,
-                    s.id,
-                  )
-                  const pct = deckMasteryPercent(deck, progress.byId)
-                  const learned = learnedCount(deck, progress.byId)
-                  return (
-                    <button
-                      key={s.id}
-                      type="button"
-                      className={`chapter-list-item ${situation === s.id ? 'is-active' : ''}`}
-                      onClick={() => setSituation(s.id)}
-                    >
-                      <ChapterProgress
-                        size="sm"
-                        label={s.label}
+                        label={f.label}
                         percent={pct}
                         detail={`${learned} / ${deck.length}`}
                       />
@@ -382,23 +333,11 @@ export function DailyLifeTrack({ onBack }: Props) {
               <ChapterProgress
                 label="Selected chapter"
                 percent={masteryPct}
-                detail={`${learnedInSection} of ${activeDeck.length} in this filter · track ${trackMasteryPct}%`}
+                detail={`${learnedInSection} of ${activeDeck.length} · track ${trackMasteryPct}%`}
               />
 
-              <div className="options">
-                <label className="option">
-                  <input
-                    type="checkbox"
-                    checked={reverse}
-                    onChange={(e) => {
-                      const on = e.target.checked
-                      setReverse(on)
-                      saveSession({ reverseByTrack: { daily: on } })
-                    }}
-                  />
-                  Spanish → English (reverse practice)
-                </label>
-                {voice.supported && (
+              {voice.supported && (
+                <div className="options">
                   <label className="option">
                     <input
                       type="checkbox"
@@ -407,16 +346,11 @@ export function DailyLifeTrack({ onBack }: Props) {
                     />
                     Auto-read Spanish aloud
                   </label>
-                )}
-              </div>
+                </div>
+              )}
 
-              <div className="cta-row">
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={start}
-                  disabled={activeDeck.length === 0}
-                >
+              <div className="cta-row" style={{ marginTop: '1.35rem' }}>
+                <button type="button" className="primary-btn" onClick={start}>
                   {hasSavedProgress ? 'Continue studying' : 'Start studying'}
                 </button>
                 {hasSavedProgress && (
@@ -431,37 +365,30 @@ export function DailyLifeTrack({ onBack }: Props) {
               </div>
 
               <p className="meta">
-                {filterLabel} · {activeDeck.length} phrases · {learningLeft}{' '}
-                still learning · {learnedInSection} learned in section
+                {filterLabel} · {activeDeck.length} cards · {learningLeft} still
+                learning · always shuffled
               </p>
             </section>
           )}
 
           {phase === 'study' && current && (
-            <StudyPanel
-              onHome={() => setPhase('start')}
-              onReset={() => setConfirmReset(true)}
+            <ColorStudyPanel
+              card={current}
               learningLeft={learningLeft}
               learnedInSection={learnedInSection}
               streak={currentStreak}
               masteryPct={masteryPct}
               flipped={flipped}
-              onFlip={flip}
-              frontLabel={reverse ? 'Español' : 'English'}
-              backLabel={reverse ? 'English' : 'Español'}
-              front={promptOf(current)}
-              back={answerOf(current)}
-              speakText={current.back}
-              tip={current.tip}
-              situation={current.situation}
-              category={current.category}
               cardFx={cardFx}
+              onHome={() => setPhase('start')}
+              onReset={() => setConfirmReset(true)}
+              onFlip={flip}
               onMissed={onIncorrect}
               onGotIt={onCorrect}
               help={
                 flipped
                   ? currentStreak + 1 >= STREAK_TO_LEARNED
-                    ? 'One more correct sends this into Daily learned.'
+                    ? 'One more correct sends this into Colors learned.'
                     : 'Got it builds streak; Missed resets and requeues later.'
                   : 'Flip first, then mark yourself.'
               }
@@ -473,8 +400,8 @@ export function DailyLifeTrack({ onBack }: Props) {
               <p className="brand">Session complete</p>
               <h1>{filterLabel} cleared</h1>
               <p className="lede">
-                {learnedInSection} of {activeDeck.length} phrases in this
-                category are learned. Pick another category anytime.
+                {learnedInSection} of {activeDeck.length} cards in this section
+                are learned. Switch section anytime from Home.
               </p>
               <div className="cta-row">
                 <button type="button" className="primary-btn" onClick={start}>
@@ -492,10 +419,8 @@ export function DailyLifeTrack({ onBack }: Props) {
           )}
 
           {phase === 'review-learned' && reviewCard && (
-            <StudyPanel
-              onHome={() => setPhase('start')}
-              onReset={() => undefined}
-              hideReset
+            <ColorStudyPanel
+              card={reviewCard}
               learningLeft={scopedLearned.length - reviewIndex}
               learnedInSection={learnedInSection}
               streakLabel={`${reviewIndex + 1} / ${scopedLearned.length}`}
@@ -503,15 +428,10 @@ export function DailyLifeTrack({ onBack }: Props) {
                 ((reviewIndex + 1) / Math.max(1, scopedLearned.length)) * 100,
               )}
               flipped={flipped}
+              onHome={() => setPhase('start')}
+              hideReset
+              onReset={() => undefined}
               onFlip={flip}
-              frontLabel={reverse ? 'Español' : 'English'}
-              backLabel={reverse ? 'English' : 'Español'}
-              front={promptOf(reviewCard)}
-              back={answerOf(reviewCard)}
-              speakText={reviewCard.back}
-              tip={reviewCard.tip}
-              situation={reviewCard.situation}
-              category={reviewCard.category}
               onMissed={() => {
                 setReviewIndex((i) => Math.max(0, i - 1))
                 setFlipped(false)
@@ -529,7 +449,7 @@ export function DailyLifeTrack({ onBack }: Props) {
               gotItLabel={
                 reviewIndex >= scopedLearned.length - 1 ? 'Done' : 'Next'
               }
-              help="Browsing learned daily phrases."
+              help="Browsing learned colors."
             />
           )}
         </main>
@@ -547,7 +467,7 @@ export function DailyLifeTrack({ onBack }: Props) {
             aria-modal="true"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2>Reset daily phrases?</h2>
+            <h2>Reset colors progress?</h2>
             <p>
               Clears only this track’s learned bin and streaks. Other tracks stay
               untouched.
@@ -571,26 +491,19 @@ export function DailyLifeTrack({ onBack }: Props) {
   )
 }
 
-function StudyPanel(props: {
-  onHome: () => void
-  onReset: () => void
-  hideReset?: boolean
+function ColorStudyPanel(props: {
+  card: ColorCard
   learningLeft: number
   learnedInSection: number
   streak?: number
   streakLabel?: string
   masteryPct: number
   flipped: boolean
-  onFlip: () => void
-  frontLabel: string
-  backLabel: string
-  front: string
-  back: string
-  speakText: string
-  tip: string
-  situation?: string
-  category?: string
   cardFx?: 'correct' | 'incorrect' | null
+  onHome: () => void
+  onReset: () => void
+  hideReset?: boolean
+  onFlip: () => void
   onMissed: () => void
   onGotIt: () => void
   missedLabel?: string
@@ -598,25 +511,18 @@ function StudyPanel(props: {
   help: string
 }) {
   const {
-    onHome,
-    onReset,
-    hideReset,
+    card,
     learningLeft,
     learnedInSection,
     streak,
     streakLabel,
     masteryPct,
     flipped,
-    onFlip,
-    frontLabel,
-    backLabel,
-    front,
-    back,
-    speakText,
-    tip,
-    situation,
-    category,
     cardFx = null,
+    onHome,
+    onReset,
+    hideReset,
+    onFlip,
     onMissed,
     onGotIt,
     missedLabel = 'Missed',
@@ -625,9 +531,9 @@ function StudyPanel(props: {
   } = props
 
   const busy = cardFx != null
-  const situationLabel =
-    situation != null
-      ? DAILY_SITUATIONS.find((s) => s.id === situation)?.label ?? situation
+  const border =
+    card.swatch === '#f8fafc' || card.swatch === '#fce7f3'
+      ? '1px solid rgba(26,24,64,0.15)'
       : undefined
 
   return (
@@ -657,11 +563,7 @@ function StudyPanel(props: {
           </span>
         </div>
         <div className="study-progress-wrap">
-          <ChapterProgress
-            size="sm"
-            label="Chapter"
-            percent={masteryPct}
-          />
+          <ChapterProgress size="sm" label="Chapter" percent={masteryPct} />
         </div>
       </header>
 
@@ -673,21 +575,31 @@ function StudyPanel(props: {
       >
         <div className="card-inner">
           <div className="card-face card-front">
-            <span className="lang-tag">{category ?? frontLabel}</span>
-            <p className="card-text">{front}</p>
+            <span className="lang-tag">{card.kind}</span>
+            {card.swatch && (
+              <span
+                className="color-swatch"
+                style={{ background: card.swatch, border }}
+                aria-hidden="true"
+              />
+            )}
+            <p className="card-text">{card.front}</p>
           </div>
           <div className="card-face card-back">
-            <span className="lang-tag">{backLabel}</span>
-            <p className="card-text">{back}</p>
+            <span className="lang-tag">Español</span>
+            {card.swatch && (
+              <span
+                className="color-swatch"
+                style={{ background: card.swatch, border }}
+                aria-hidden="true"
+              />
+            )}
+            <p className="card-text">{card.back}</p>
           </div>
         </div>
       </button>
 
-      <CardExplain
-        visible={flipped}
-        tip={tip}
-        situation={situationLabel}
-      />
+      <CardExplain visible={flipped} tip={card.tip} />
 
       <div className="actions">
         <button
@@ -706,7 +618,7 @@ function StudyPanel(props: {
         >
           {flipped ? 'Hide' : 'Reveal'}
         </button>
-        <SpeakButton text={speakText} variant="mark" disabled={busy} />
+        <SpeakButton text={card.back} variant="mark" disabled={busy} />
         <button
           type="button"
           className="mark mark-right"
@@ -721,14 +633,14 @@ function StudyPanel(props: {
   )
 }
 
-export function loadDailyLearnedCount(): number {
-  const state = loadProgress(dailyPhraseCards, DAILY_KEY, DAILY_LEGACY)
+export function loadColorsLearnedCount(): number {
+  const state = loadProgress(colorCards, COLORS_KEY)
   if (!state) return 0
-  return learnedCount(dailyPhraseCards, state.byId)
+  return learnedCount(colorCards, state.byId)
 }
 
-export function loadDailyMasteryPercent(): number {
-  const state = loadProgress(dailyPhraseCards, DAILY_KEY, DAILY_LEGACY)
+export function loadColorsMasteryPercent(): number {
+  const state = loadProgress(colorCards, COLORS_KEY)
   if (!state) return 0
-  return deckMasteryPercent(dailyPhraseCards, state.byId)
+  return deckMasteryPercent(colorCards, state.byId)
 }

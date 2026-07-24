@@ -423,12 +423,261 @@ export const verbs: VerbTable[] = [
       },
     },
   },
+  {
+    infinitive: 'dar',
+    meaning: 'to give',
+    group: 'irregular',
+    conjugations: {
+      present: {
+        yo: 'doy',
+        tu: 'das',
+        el: 'da',
+        nosotros: 'damos',
+        vosotros: 'dais',
+        ellos: 'dan',
+      },
+      preterite: {
+        yo: 'di',
+        tu: 'diste',
+        el: 'dio',
+        nosotros: 'dimos',
+        vosotros: 'disteis',
+        ellos: 'dieron',
+      },
+      future: {
+        yo: 'daré',
+        tu: 'darás',
+        el: 'dará',
+        nosotros: 'daremos',
+        vosotros: 'daréis',
+        ellos: 'darán',
+      },
+    },
+  },
+  {
+    infinitive: 'ver',
+    meaning: 'to see / to watch',
+    group: 'irregular',
+    conjugations: {
+      present: {
+        yo: 'veo',
+        tu: 'ves',
+        el: 've',
+        nosotros: 'vemos',
+        vosotros: 'veis',
+        ellos: 'ven',
+      },
+      preterite: {
+        yo: 'vi',
+        tu: 'viste',
+        el: 'vio',
+        nosotros: 'vimos',
+        vosotros: 'visteis',
+        ellos: 'vieron',
+      },
+      future: {
+        yo: 'veré',
+        tu: 'verás',
+        el: 'verá',
+        nosotros: 'veremos',
+        vosotros: 'veréis',
+        ellos: 'verán',
+      },
+    },
+  },
+  {
+    infinitive: 'saber',
+    meaning: 'to know (facts) / to know how',
+    group: 'irregular',
+    conjugations: {
+      present: {
+        yo: 'sé',
+        tu: 'sabes',
+        el: 'sabe',
+        nosotros: 'sabemos',
+        vosotros: 'sabéis',
+        ellos: 'saben',
+      },
+      preterite: {
+        yo: 'supe',
+        tu: 'supiste',
+        el: 'supo',
+        nosotros: 'supimos',
+        vosotros: 'supisteis',
+        ellos: 'supieron',
+      },
+      future: {
+        yo: 'sabré',
+        tu: 'sabrás',
+        el: 'sabrá',
+        nosotros: 'sabremos',
+        vosotros: 'sabréis',
+        ellos: 'sabrán',
+      },
+    },
+  },
+  {
+    infinitive: 'poner',
+    meaning: 'to put / to place',
+    group: 'irregular',
+    conjugations: {
+      present: {
+        yo: 'pongo',
+        tu: 'pones',
+        el: 'pone',
+        nosotros: 'ponemos',
+        vosotros: 'ponéis',
+        ellos: 'ponen',
+      },
+      preterite: {
+        yo: 'puse',
+        tu: 'pusiste',
+        el: 'puso',
+        nosotros: 'pusimos',
+        vosotros: 'pusisteis',
+        ellos: 'pusieron',
+      },
+      future: {
+        yo: 'pondré',
+        tu: 'pondrás',
+        el: 'pondrá',
+        nosotros: 'pondremos',
+        vosotros: 'pondréis',
+        ellos: 'pondrán',
+      },
+    },
+  },
+  {
+    infinitive: 'salir',
+    meaning: 'to leave / to go out',
+    group: 'irregular',
+    conjugations: {
+      present: {
+        yo: 'salgo',
+        tu: 'sales',
+        el: 'sale',
+        nosotros: 'salimos',
+        vosotros: 'salís',
+        ellos: 'salen',
+      },
+      preterite: {
+        yo: 'salí',
+        tu: 'saliste',
+        el: 'salió',
+        nosotros: 'salimos',
+        vosotros: 'salisteis',
+        ellos: 'salieron',
+      },
+      future: {
+        yo: 'saldré',
+        tu: 'saldrás',
+        el: 'saldrá',
+        nosotros: 'saldremos',
+        vosotros: 'saldréis',
+        ellos: 'saldrán',
+      },
+    },
+  },
+  {
+    infinitive: 'traer',
+    meaning: 'to bring',
+    group: 'irregular',
+    conjugations: {
+      present: {
+        yo: 'traigo',
+        tu: 'traes',
+        el: 'trae',
+        nosotros: 'traemos',
+        vosotros: 'traéis',
+        ellos: 'traen',
+      },
+      preterite: {
+        yo: 'traje',
+        tu: 'trajiste',
+        el: 'trajo',
+        nosotros: 'trajimos',
+        vosotros: 'trajisteis',
+        ellos: 'trajeron',
+      },
+      future: {
+        yo: 'traeré',
+        tu: 'traerás',
+        el: 'traerá',
+        nosotros: 'traeremos',
+        vosotros: 'traeréis',
+        ellos: 'traerán',
+      },
+    },
+  },
+  {
+    infinitive: 'oír',
+    meaning: 'to hear',
+    group: 'irregular',
+    conjugations: {
+      present: {
+        yo: 'oigo',
+        tu: 'oyes',
+        el: 'oye',
+        nosotros: 'oímos',
+        vosotros: 'oís',
+        ellos: 'oyen',
+      },
+      preterite: {
+        yo: 'oí',
+        tu: 'oíste',
+        el: 'oyó',
+        nosotros: 'oímos',
+        vosotros: 'oísteis',
+        ellos: 'oyeron',
+      },
+      future: {
+        yo: 'oiré',
+        tu: 'oirás',
+        el: 'oirá',
+        nosotros: 'oiremos',
+        vosotros: 'oiréis',
+        ellos: 'oirán',
+      },
+    },
+  },
+  {
+    infinitive: 'conocer',
+    meaning: 'to know (people / places)',
+    group: 'irregular',
+    conjugations: {
+      present: {
+        yo: 'conozco',
+        tu: 'conoces',
+        el: 'conoce',
+        nosotros: 'conocemos',
+        vosotros: 'conocéis',
+        ellos: 'conocen',
+      },
+      preterite: {
+        yo: 'conocí',
+        tu: 'conociste',
+        el: 'conoció',
+        nosotros: 'conocimos',
+        vosotros: 'conocisteis',
+        ellos: 'conocieron',
+      },
+      future: {
+        yo: 'conoceré',
+        tu: 'conocerás',
+        el: 'conocerá',
+        nosotros: 'conoceremos',
+        vosotros: 'conoceréis',
+        ellos: 'conocerán',
+      },
+    },
+  },
 ]
 
 export type VerbCard = {
   id: number
   front: string
   back: string
+  tip: string
   infinitive: string
   meaning: string
   tense: Tense
@@ -436,6 +685,13 @@ export type VerbCard = {
   pronounEs: string
   pronounEn: string
   group: 'regular' | 'irregular'
+}
+
+function endingFamily(infinitive: string): string {
+  if (infinitive.endsWith('ar')) return '-ar'
+  if (infinitive.endsWith('er')) return '-er'
+  if (infinitive.endsWith('ir')) return '-ir'
+  return 'verb'
 }
 
 function buildVerbCards(): VerbCard[] {
@@ -447,6 +703,11 @@ function buildVerbCards(): VerbCard[] {
       for (const pronoun of PRONOUNS) {
         const form = verb.conjugations[tense][pronoun.key]
         const tenseMeta = TENSE_META[tense]
+        const family = endingFamily(verb.infinitive)
+        const pattern =
+          verb.group === 'regular'
+            ? `Regular ${family} pattern.`
+            : `Irregular — memorize this form of ${verb.infinitive}.`
         cards.push({
           id: id++,
           infinitive: verb.infinitive,
@@ -458,6 +719,7 @@ function buildVerbCards(): VerbCard[] {
           group: verb.group,
           front: `${verb.infinitive} · ${tenseMeta.label} · ${pronoun.es}`,
           back: form,
+          tip: `${tenseMeta.tip}. ${pattern} Pronoun: ${pronoun.en}.`,
         })
       }
     }

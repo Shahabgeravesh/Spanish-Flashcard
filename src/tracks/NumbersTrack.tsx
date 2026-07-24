@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
-  countNumberGroups,
   filterNumberCards,
   getNumberCard,
   numberCards,
@@ -19,19 +18,27 @@ import {
   buildStudyQueue,
   clearProgress,
   createFreshState,
+  deckMasteryPercent,
   learnedCards,
   learnedCount,
   learningCount,
   loadProgress,
   markCorrect,
   markIncorrect,
-  saveProgress,
+  resumeStudyQueue,
   unlearnCards,
   type PersistedProgress,
 } from '../lib/progress'
+import { usePersistentProgress } from '../lib/usePersistentProgress'
+import { useSpanishVoice } from '../lib/useSpanishVoice'
+import { getTrackReverse, saveSession } from '../lib/session'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
+import { SpeakButton } from '../components/SpeakButton'
+import { CardExplain } from '../components/CardExplain'
+import { ChapterProgress } from '../components/ChapterProgress'
 
-export const NUMBER_KEY = 'lexora:numbers:v1'
+export const NUMBER_KEY = 'habla:numbers:v1'
+const NUMBER_LEGACY = ['lexora:numbers:v1']
 
 type Phase = 'start' | 'study' | 'done' | 'review-learned' | 'drill'
 type RangeFilter = 'all' | NumberRangeId
@@ -83,13 +90,13 @@ export function NumbersTrack({ onBack }: Props) {
   const [binOpen, setBinOpen] = useState(false)
   const [reviewIndex, setReviewIndex] = useState(0)
   const [confirmReset, setConfirmReset] = useState(false)
-  const [reverse, setReverse] = useState(false)
+  const [reverse, setReverse] = useState(() => getTrackReverse('numbers'))
   const [cardFx, setCardFx] = useState<'correct' | 'incorrect' | null>(null)
   const { burst, trigger } = useAnswerFeedback()
 
   const [progress, setProgress] = useState<PersistedProgress>(
     () =>
-      loadProgress(numberCards, NUMBER_KEY) ??
+      loadProgress(numberCards, NUMBER_KEY, NUMBER_LEGACY) ??
       createFreshState(numberCards, true),
   )
 
@@ -97,8 +104,6 @@ export function NumbersTrack({ onBack }: Props) {
   const [drillIndex, setDrillIndex] = useState(0)
   const [drillCorrect, setDrillCorrect] = useState(0)
   const [drillMissed, setDrillMissed] = useState(0)
-
-  const groupCounts = useMemo(() => countNumberGroups(numberCards), [])
 
   const activeFoundations = useMemo(() => {
     return filterNumberCards(numberCards, {
@@ -124,9 +129,8 @@ export function NumbersTrack({ onBack }: Props) {
   const learningLeft = learningCount(activeFoundations, progress.byId)
   const learnedInSection = learnedCount(activeFoundations, progress.byId)
   const learnedTotal = learnedCount(numberCards, progress.byId)
-  const masteryPct = Math.round(
-    (learnedInSection / Math.max(1, activeFoundations.length)) * 100,
-  )
+  const masteryPct = deckMasteryPercent(activeFoundations, progress.byId)
+  const trackMasteryPct = deckMasteryPercent(numberCards, progress.byId)
 
   const currentId = progress.queue[progress.index]
   const currentFoundation =
@@ -139,9 +143,33 @@ export function NumbersTrack({ onBack }: Props) {
 
   const reviewCard = scopedLearned[reviewIndex]
 
-  useEffect(() => {
-    saveProgress(progress, NUMBER_KEY)
-  }, [progress])
+  const foundationSpanish = currentFoundation?.back
+  const drillSpanish = currentDrill?.back
+  const voice = useSpanishVoice({
+    spanishText:
+      phase === 'study'
+        ? foundationSpanish
+        : phase === 'drill'
+          ? drillSpanish
+          : undefined,
+    showingSpanish:
+      (phase === 'study' || phase === 'drill') &&
+      (reverse ? !flipped : flipped),
+    cardKey:
+      phase === 'study'
+        ? currentFoundation?.id
+        : phase === 'drill'
+          ? currentDrill?.id
+          : undefined,
+  })
+  useSpanishVoice({
+    spanishText: phase === 'review-learned' ? reviewCard?.back : undefined,
+    showingSpanish:
+      phase === 'review-learned' && (reverse ? !flipped : flipped),
+    cardKey: phase === 'review-learned' ? reviewCard?.id : undefined,
+  })
+
+  usePersistentProgress(progress, NUMBER_KEY, numberCards, NUMBER_LEGACY)
 
   const applyProgress = useCallback((next: PersistedProgress) => {
     setProgress(next)
@@ -157,13 +185,13 @@ export function NumbersTrack({ onBack }: Props) {
       setFlipped(false)
       return
     }
-    const queue = buildStudyQueue(
+    const { queue, index } = resumeStudyQueue(
+      progress,
       activeFoundations,
-      progress.byId,
       true,
       allowedIds,
     )
-    setProgress({ ...progress, queue, index: 0 })
+    setProgress({ ...progress, queue, index })
     setFlipped(false)
     setConfirmReset(false)
     setPhase('study')
@@ -190,7 +218,15 @@ export function NumbersTrack({ onBack }: Props) {
     else startFoundations()
   }
 
-  const flip = () => setFlipped((f) => !f)
+  const flip = () => {
+    const next = !flipped
+    setFlipped(next)
+    const showSpanish = reverse ? !next : next
+    const text =
+      phase === 'drill' ? currentDrill?.back : currentFoundation?.back
+    if (showSpanish && voice.autoSpeak && text) voice.replay()
+    else if (!showSpanish) voice.stop()
+  }
 
   const onCorrect = () => {
     if (!currentFoundation || !flipped) return
@@ -238,7 +274,7 @@ export function NumbersTrack({ onBack }: Props) {
   }
 
   const resetAll = () => {
-    clearProgress(NUMBER_KEY)
+    clearProgress(NUMBER_KEY, NUMBER_LEGACY)
     setProgress(createFreshState(numberCards, true))
     setFlipped(false)
     setConfirmReset(false)
@@ -265,6 +301,18 @@ export function NumbersTrack({ onBack }: Props) {
     reverse ? card.back : card.front
   const backOf = (card: { front: string; back: string }) =>
     reverse ? card.front : card.back
+  const tipOf = (card: { value: number; group?: NumberPatternGroup }) => {
+    if (card.value === 100)
+      return 'cien alone; ciento before another number (ciento uno).'
+    if (card.value === 1000) return 'mil never takes un: mil, not un mil.'
+    if (card.value === 1_000_000)
+      return 'un millón de… — millón needs un and often de before a noun.'
+    if (card.group === 'irregular')
+      return 'Irregular form — memorize it; tens 11–29 and special hundreds break the regular pattern.'
+    if (card.value >= 31 && card.value < 100)
+      return 'From 31 up: tens + y + ones (treinta y uno).'
+    return 'Say the number in Spanish aloud — stress and linking matter with larger figures.'
+  }
 
   const hasSavedProgress =
     learnedTotal > 0 ||
@@ -394,7 +442,13 @@ export function NumbersTrack({ onBack }: Props) {
                   onClick={() => setNumberGroup('irregular')}
                 >
                   Irregular
-                  <span className="tense-count">{groupCounts.irregular}</span>
+                  <span className="tense-count">
+                    {deckMasteryPercent(
+                      filterNumberCards(numberCards, { group: 'irregular' }),
+                      progress.byId,
+                    )}
+                    %
+                  </span>
                 </button>
                 <button
                   type="button"
@@ -402,7 +456,13 @@ export function NumbersTrack({ onBack }: Props) {
                   onClick={() => setNumberGroup('regular')}
                 >
                   Regular
-                  <span className="tense-count">{groupCounts.regular}</span>
+                  <span className="tense-count">
+                    {deckMasteryPercent(
+                      filterNumberCards(numberCards, { group: 'regular' }),
+                      progress.byId,
+                    )}
+                    %
+                  </span>
                 </button>
               </div>
               <p className="section-hint">
@@ -428,37 +488,61 @@ export function NumbersTrack({ onBack }: Props) {
                 </button>
               </div>
 
-              <div className="tense-filters" role="group" aria-label="Number range">
+              <div className="chapter-list" aria-label="Number range chapters">
                 {NUMBER_RANGES.map((r) => {
-                  const count = filterNumberCards(numberCards, {
+                  const deck = filterNumberCards(numberCards, {
                     range: r.id,
                     group: numberGroup,
-                  }).length
+                  })
+                  const pct = deckMasteryPercent(deck, progress.byId)
+                  const learned = learnedCount(deck, progress.byId)
                   return (
                     <button
                       key={r.id}
                       type="button"
-                      className={`tense-chip ${rangeFilter === r.id ? 'is-active' : ''}`}
+                      className={`chapter-list-item ${rangeFilter === r.id ? 'is-active' : ''}`}
                       onClick={() => setRangeFilter(r.id)}
                     >
-                      {r.label}
-                      {mode === 'foundations' && (
-                        <span className="tense-count">{count}</span>
-                      )}
+                      <ChapterProgress
+                        size="sm"
+                        label={r.label}
+                        percent={pct}
+                        detail={`${learned} / ${deck.length}`}
+                      />
                     </button>
                   )
                 })}
               </div>
+
+              <ChapterProgress
+                label="Selected chapter"
+                percent={masteryPct}
+                detail={`${learnedInSection} of ${activeFoundations.length} · track ${trackMasteryPct}%`}
+              />
 
               <div className="options">
                 <label className="option">
                   <input
                     type="checkbox"
                     checked={reverse}
-                    onChange={(e) => setReverse(e.target.checked)}
+                    onChange={(e) => {
+                      const on = e.target.checked
+                      setReverse(on)
+                      saveSession({ reverseByTrack: { numbers: on } })
+                    }}
                   />
                   Spanish → digits (harder)
                 </label>
+                {voice.supported && (
+                  <label className="option">
+                    <input
+                      type="checkbox"
+                      checked={voice.autoSpeak}
+                      onChange={(e) => voice.setAutoSpeak(e.target.checked)}
+                    />
+                    Auto-read Spanish aloud
+                  </label>
+                )}
               </div>
 
               <div className="cta-row">
@@ -512,6 +596,8 @@ export function NumbersTrack({ onBack }: Props) {
               backLabel={reverse ? 'Number' : 'Spanish'}
               front={frontOf(currentFoundation)}
               back={backOf(currentFoundation)}
+              speakText={currentFoundation.back}
+              tip={tipOf(currentFoundation)}
               hint={false}
               onMissed={onIncorrect}
               onGotIt={onCorrect}
@@ -543,6 +629,8 @@ export function NumbersTrack({ onBack }: Props) {
               backLabel={reverse ? 'Number' : 'Spanish'}
               front={frontOf(currentDrill)}
               back={backOf(currentDrill)}
+              speakText={currentDrill.back}
+              tip={tipOf(currentDrill)}
               hint={false}
               onMissed={() => advanceDrill(false)}
               onGotIt={() => advanceDrill(true)}
@@ -601,6 +689,8 @@ export function NumbersTrack({ onBack }: Props) {
               backLabel="Spanish"
               front={reviewCard.front}
               back={reviewCard.back}
+              speakText={reviewCard.back}
+              tip={tipOf(reviewCard)}
               hint={false}
               onMissed={() => {
                 setReviewIndex((i) => Math.max(0, i - 1))
@@ -677,6 +767,8 @@ function StudyPanel(props: {
   backLabel: string
   front: string
   back: string
+  speakText?: string
+  tip?: string
   hint: boolean
   onMissed: () => void
   onGotIt: () => void
@@ -701,6 +793,8 @@ function StudyPanel(props: {
     backLabel,
     front,
     back,
+    speakText,
+    tip,
     hint,
     onMissed,
     onGotIt,
@@ -739,11 +833,8 @@ function StudyPanel(props: {
               `Streak ${streak ?? 0}/${STREAK_TO_LEARNED}`}
           </span>
         </div>
-        <div className="progress-track">
-          <div
-            className="progress-fill"
-            style={{ width: `${Math.min(100, masteryPct)}%` }}
-          />
+        <div className="study-progress-wrap">
+          <ChapterProgress size="sm" label="Progress" percent={masteryPct} />
         </div>
       </header>
 
@@ -766,6 +857,8 @@ function StudyPanel(props: {
         </div>
       </button>
 
+      <CardExplain visible={flipped} tip={tip} />
+
       <div className="actions">
         <button
           type="button"
@@ -783,6 +876,11 @@ function StudyPanel(props: {
         >
           {flipped ? 'Hide' : 'Reveal'}
         </button>
+        <SpeakButton
+          text={speakText ?? (backLabel === 'Spanish' ? back : front)}
+          variant="mark"
+          disabled={busy}
+        />
         <button
           type="button"
           className="mark mark-right"
@@ -798,9 +896,15 @@ function StudyPanel(props: {
 }
 
 export function loadNumberLearnedCount(): number {
-  const state = loadProgress(numberCards, NUMBER_KEY)
+  const state = loadProgress(numberCards, NUMBER_KEY, NUMBER_LEGACY)
   if (!state) return 0
   return learnedCount(numberCards, state.byId)
+}
+
+export function loadNumberMasteryPercent(): number {
+  const state = loadProgress(numberCards, NUMBER_KEY, NUMBER_LEGACY)
+  if (!state) return 0
+  return deckMasteryPercent(numberCards, state.byId)
 }
 
 // keep type export for App if needed

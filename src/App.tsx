@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { cards as phraseCards } from './data/cards'
 import { dailyPhraseCards } from './data/dailyPhrases'
+import { colorCards } from './data/colors'
 import {
   TENSE_META,
-  countByGroup,
   filterVerbCards,
   getVerbCard,
   verbCards,
@@ -13,35 +13,73 @@ import {
 import {
   STREAK_TO_LEARNED,
   buildStudyQueue,
+  canUseStorage,
   clearProgress,
   createFreshState,
+  deckMasteryPercent,
   learnedCards,
   learnedCount,
   learningCount,
   loadProgress,
   markCorrect,
   markIncorrect,
-  saveProgress,
+  resumeStudyQueue,
   unlearnCards,
   type PersistedProgress,
 } from './lib/progress'
-import { NumbersTrack, loadNumberLearnedCount } from './tracks/NumbersTrack'
-import { DailyLifeTrack, loadDailyLearnedCount } from './tracks/DailyLifeTrack'
+import { usePersistentProgress } from './lib/usePersistentProgress'
+import { useSpanishVoice } from './lib/useSpanishVoice'
+import { getTrackReverse, loadSession, saveSession } from './lib/session'
+import { NumbersTrack, loadNumberLearnedCount, loadNumberMasteryPercent } from './tracks/NumbersTrack'
+import { DailyLifeTrack, loadDailyLearnedCount, loadDailyMasteryPercent } from './tracks/DailyLifeTrack'
+import { ColorsTrack, loadColorsLearnedCount, loadColorsMasteryPercent } from './tracks/ColorsTrack'
+import {
+  FoundationsTrack,
+  loadFoundationsLearnedCount,
+  loadFoundationsMasteryPercent,
+} from './tracks/FoundationsTrack'
+import { foundationCards } from './data/foundations'
 import { AnswerBurst, useAnswerFeedback } from './components/AnswerBurst'
+import { SpeakButton } from './components/SpeakButton'
+import { CardExplain } from './components/CardExplain'
+import { ChapterProgress } from './components/ChapterProgress'
 import './App.css'
 
-type Track = 'hub' | 'phrases' | 'daily' | 'verbs' | 'numbers'
+type Track =
+  | 'hub'
+  | 'phrases'
+  | 'daily'
+  | 'verbs'
+  | 'numbers'
+  | 'colors'
+  | 'foundations'
 type Phase = 'start' | 'study' | 'done' | 'review-learned'
 
-const PHRASE_KEY = 'making-requests-flashcards:v1'
-const VERB_KEY = 'lexora:verbs:v1'
+const PHRASE_KEY = 'habla:phrases:v1'
+const PHRASE_LEGACY = ['making-requests-flashcards:v1']
+const VERB_KEY = 'habla:verbs:v1'
+const VERB_LEGACY = ['lexora:verbs:v1']
 const dailyPhraseCount = dailyPhraseCards.length
+const colorCardCount = colorCards.length
+const foundationCardCount = foundationCards.length
 
 type TenseFilter = 'all' | Tense
 type VerbGroupFilter = 'regular' | 'irregular'
 
 function App() {
-  const [track, setTrack] = useState<Track>('hub')
+  const [track, setTrack] = useState<Track>(() => {
+    const saved = loadSession().lastTrack
+    const allowed: Track[] = [
+      'hub',
+      'phrases',
+      'daily',
+      'verbs',
+      'numbers',
+      'colors',
+      'foundations',
+    ]
+    return saved && allowed.includes(saved as Track) ? (saved as Track) : 'hub'
+  })
   const [phase, setPhase] = useState<Phase>('start')
   const [flipped, setFlipped] = useState(false)
   const [binOpen, setBinOpen] = useState(false)
@@ -50,13 +88,18 @@ function App() {
   const [tenseFilter, setTenseFilter] = useState<TenseFilter>('all')
   const [verbGroup, setVerbGroup] = useState<VerbGroupFilter>('regular')
   const [cardFx, setCardFx] = useState<'correct' | 'incorrect' | null>(null)
+  const [reverse, setReverse] = useState(() => getTrackReverse('phrases'))
   const { burst, trigger } = useAnswerFeedback()
 
   const [phraseProgress, setPhraseProgress] = useState<PersistedProgress>(
-    () => loadProgress(phraseCards, PHRASE_KEY) ?? createFreshState(phraseCards, true),
+    () =>
+      loadProgress(phraseCards, PHRASE_KEY, PHRASE_LEGACY) ??
+      createFreshState(phraseCards, true),
   )
   const [verbProgress, setVerbProgress] = useState<PersistedProgress>(
-    () => loadProgress(verbCards, VERB_KEY) ?? createFreshState(verbCards, true),
+    () =>
+      loadProgress(verbCards, VERB_KEY, VERB_LEGACY) ??
+      createFreshState(verbCards, true),
   )
 
   const isVerbs = track === 'verbs'
@@ -64,8 +107,6 @@ function App() {
   const storageKey = isVerbs ? VERB_KEY : PHRASE_KEY
   const progress = isVerbs ? verbProgress : phraseProgress
   const setProgress = isVerbs ? setVerbProgress : setPhraseProgress
-
-  const verbGroupCounts = useMemo(() => countByGroup(verbCards), [])
 
   const activeVerbDeck = useMemo(() => {
     if (!isVerbs) return verbCards
@@ -111,10 +152,12 @@ function App() {
     return learnedCount(phraseCards, progress.byId)
   }, [isVerbs, progress.byId])
 
-  const masteryPct = Math.round(
-    (learnedInSection / Math.max(1, isVerbs ? activeVerbDeck.length : deck.length)) *
-      100,
+  const masteryPct = deckMasteryPercent(
+    isVerbs ? activeVerbDeck : phraseCards,
+    progress.byId,
   )
+  const phraseMasteryPct = deckMasteryPercent(phraseCards, phraseProgress.byId)
+  const verbMasteryPct = deckMasteryPercent(verbCards, verbProgress.byId)
 
   const currentId = progress.queue[progress.index]
   const currentPhrase =
@@ -132,6 +175,34 @@ function App() {
 
   const reviewCard = scopedLearned[reviewIndex]
 
+  const studySpanish =
+    isVerbs && currentVerb
+      ? currentVerb.back
+      : currentPhrase?.back
+  const studyShowingSpanish = isVerbs
+    ? flipped
+    : reverse
+      ? !flipped
+      : flipped
+  const voice = useSpanishVoice({
+    spanishText: phase === 'study' ? studySpanish : undefined,
+    showingSpanish: phase === 'study' && studyShowingSpanish,
+    cardKey: phase === 'study' ? currentId : undefined,
+  })
+
+  const reviewSpanish = reviewCard?.back
+  const reviewShowingSpanish = isVerbs
+    ? flipped
+    : reverse
+      ? !flipped
+      : flipped
+  useSpanishVoice({
+    spanishText: phase === 'review-learned' ? reviewSpanish : undefined,
+    showingSpanish: phase === 'review-learned' && reviewShowingSpanish,
+    cardKey:
+      phase === 'review-learned' ? reviewCard?.id : undefined,
+  })
+
   const phraseLearnedTotal = learnedCount(phraseCards, phraseProgress.byId)
   const verbLearnedTotal = learnedCount(verbCards, verbProgress.byId)
   const [numberLearnedTotal, setNumberLearnedTotal] = useState(() =>
@@ -140,32 +211,50 @@ function App() {
   const [dailyLearnedTotal, setDailyLearnedTotal] = useState(() =>
     loadDailyLearnedCount(),
   )
+  const [colorsLearnedTotal, setColorsLearnedTotal] = useState(() =>
+    loadColorsLearnedCount(),
+  )
+  const [foundationsLearnedTotal, setFoundationsLearnedTotal] = useState(() =>
+    loadFoundationsLearnedCount(),
+  )
+  const [numberMasteryPct, setNumberMasteryPct] = useState(() =>
+    loadNumberMasteryPercent(),
+  )
+  const [dailyMasteryPct, setDailyMasteryPct] = useState(() =>
+    loadDailyMasteryPercent(),
+  )
+  const [colorsMasteryPct, setColorsMasteryPct] = useState(() =>
+    loadColorsMasteryPercent(),
+  )
+  const [foundationsMasteryPct, setFoundationsMasteryPct] = useState(() =>
+    loadFoundationsMasteryPercent(),
+  )
 
   useEffect(() => {
     if (track === 'hub' || track === 'numbers') {
       setNumberLearnedTotal(loadNumberLearnedCount())
+      setNumberMasteryPct(loadNumberMasteryPercent())
     }
     if (track === 'hub' || track === 'daily') {
       setDailyLearnedTotal(loadDailyLearnedCount())
+      setDailyMasteryPct(loadDailyMasteryPercent())
+    }
+    if (track === 'hub' || track === 'colors') {
+      setColorsLearnedTotal(loadColorsLearnedCount())
+      setColorsMasteryPct(loadColorsMasteryPercent())
+    }
+    if (track === 'hub' || track === 'foundations') {
+      setFoundationsLearnedTotal(loadFoundationsLearnedCount())
+      setFoundationsMasteryPct(loadFoundationsMasteryPercent())
     }
   }, [track])
 
-  useEffect(() => {
-    if (track === 'phrases') saveProgress(phraseProgress, PHRASE_KEY)
-  }, [phraseProgress, track])
+  usePersistentProgress(phraseProgress, PHRASE_KEY, phraseCards, PHRASE_LEGACY)
+  usePersistentProgress(verbProgress, VERB_KEY, verbCards, VERB_LEGACY)
 
   useEffect(() => {
-    if (track === 'verbs') saveProgress(verbProgress, VERB_KEY)
-  }, [track, verbProgress])
-
-  // Persist both whenever they change (covers hub view too)
-  useEffect(() => {
-    saveProgress(phraseProgress, PHRASE_KEY)
-  }, [phraseProgress])
-
-  useEffect(() => {
-    saveProgress(verbProgress, VERB_KEY)
-  }, [verbProgress])
+    saveSession({ lastTrack: track })
+  }, [track])
 
   const applyProgress = useCallback(
     (next: PersistedProgress) => {
@@ -183,6 +272,8 @@ function App() {
     setConfirmReset(false)
     setBinOpen(false)
     setReviewIndex(0)
+    if (next === 'phrases') setReverse(getTrackReverse('phrases'))
+    saveSession({ lastTrack: next })
   }
 
   const start = useCallback(() => {
@@ -195,9 +286,9 @@ function App() {
       return
     }
 
-    const queue = buildStudyQueue(
+    const { queue, index } = resumeStudyQueue(
+      progress,
       studyDeck,
-      progress.byId,
       true,
       allowedIds,
     )
@@ -205,7 +296,7 @@ function App() {
     setProgress({
       ...progress,
       queue,
-      index: 0,
+      index,
     })
     setFlipped(false)
     setConfirmReset(false)
@@ -218,7 +309,14 @@ function App() {
     setProgress,
   ])
 
-  const flip = () => setFlipped((f) => !f)
+  const flip = () => {
+    const next = !flipped
+    setFlipped(next)
+    const showSpanish = isVerbs ? next : reverse ? !next : next
+    const text = isVerbs ? currentVerb?.back : currentPhrase?.back
+    if (showSpanish && voice.autoSpeak && text) voice.replay()
+    else if (!showSpanish) voice.stop()
+  }
 
   const onCorrect = useCallback(() => {
     if (!current || !flipped) return
@@ -251,7 +349,10 @@ function App() {
   }, [allowedIds, applyProgress, current, deck, flipped, progress, trigger])
 
   const resetAll = useCallback(() => {
-    clearProgress(storageKey)
+    clearProgress(
+      storageKey,
+      isVerbs ? VERB_LEGACY : PHRASE_LEGACY,
+    )
     const fresh = createFreshState(deck, true)
     setProgress(fresh)
     setFlipped(false)
@@ -259,7 +360,7 @@ function App() {
     setBinOpen(false)
     setReviewIndex(0)
     setPhase('start')
-  }, [deck, setProgress, true, storageKey])
+  }, [deck, isVerbs, setProgress, storageKey])
 
   const practiceLearnedAgain = useCallback(
     (ids: number[]) => {
@@ -301,11 +402,33 @@ function App() {
     )
   }
 
+  if (track === 'colors') {
+    return (
+      <ColorsTrack
+        onBack={() => {
+          setColorsLearnedTotal(loadColorsLearnedCount())
+          enterTrack('hub')
+        }}
+      />
+    )
+  }
+
   if (track === 'numbers') {
     return (
       <NumbersTrack
         onBack={() => {
           setNumberLearnedTotal(loadNumberLearnedCount())
+          enterTrack('hub')
+        }}
+      />
+    )
+  }
+
+  if (track === 'foundations') {
+    return (
+      <FoundationsTrack
+        onBack={() => {
+          setFoundationsLearnedTotal(loadFoundationsLearnedCount())
           enterTrack('hub')
         }}
       />
@@ -327,12 +450,55 @@ function App() {
             <p className="brand">Habla</p>
             <h1>Choose a practice track</h1>
             <p className="lede hub-lede">
-              Four colorful tracks — requests, daily life, verbs, and numbers.
-              Flip, mark yourself, celebrate wins.
+              Six tracks for Spanish learners — foundations, requests, daily
+              situations, verbs, numbers, and colors. Flip, listen, learn with
+              tips on every reveal.
             </p>
+            <p className="save-note">
+              {canUseStorage()
+                ? 'Progress is saved on this device — close the tab anytime and pick up where you left off.'
+                : 'Storage is blocked in this browser, so progress won’t survive a refresh. Try a normal (non-private) window.'}
+            </p>
+            <ChapterProgress
+              className="hub-overall"
+              label="Overall"
+              size="lg"
+              percent={Math.round(
+                (phraseMasteryPct +
+                  verbMasteryPct +
+                  dailyMasteryPct +
+                  numberMasteryPct +
+                  colorsMasteryPct +
+                  foundationsMasteryPct) /
+                  6,
+              )}
+              detail="Average across all tracks — climbs as you learn"
+            />
           </header>
 
           <div className="hub-grid hub-grid-4">
+            <button
+              type="button"
+              className="hub-card hub-foundations"
+              onClick={() => enterTrack('foundations')}
+            >
+              <span className="hub-kicker">Track 00</span>
+              <h2>Foundations</h2>
+              <p>
+                Days, months, question words, articles, ser vs estar, family,
+                body, clothing, and places.
+              </p>
+              <div className="hub-meta">
+                <span>{foundationCardCount} cards</span>
+                <span>{foundationsLearnedTotal} learned</span>
+              </div>
+              <ChapterProgress
+                size="sm"
+                percent={foundationsMasteryPct}
+                detail={`${foundationsLearnedTotal} of ${foundationCardCount} mastered`}
+              />
+            </button>
+
             <button
               type="button"
               className="hub-card hub-phrases"
@@ -348,6 +514,11 @@ function App() {
                 <span>{phraseCards.length} cards</span>
                 <span>{phraseLearnedTotal} learned</span>
               </div>
+              <ChapterProgress
+                size="sm"
+                percent={phraseMasteryPct}
+                detail={`${phraseLearnedTotal} of ${phraseCards.length} mastered`}
+              />
             </button>
 
             <button
@@ -356,15 +527,20 @@ function App() {
               onClick={() => enterTrack('daily')}
             >
               <span className="hub-kicker">Track 02</span>
-              <h2>Daily life phrases</h2>
+              <h2>Daily life & situations</h2>
               <p>
-                Greetings, food, shopping, travel, feelings, phone, weather —
-                lines people use every day.
+                Greetings, food, travel — plus café, airport, hotel, doctor, and
+                more real situations with tips on every card.
               </p>
               <div className="hub-meta">
                 <span>{dailyPhraseCount} cards</span>
                 <span>{dailyLearnedTotal} learned</span>
               </div>
+              <ChapterProgress
+                size="sm"
+                percent={dailyMasteryPct}
+                detail={`${dailyLearnedTotal} of ${dailyPhraseCount} mastered`}
+              />
             </button>
 
             <button
@@ -382,6 +558,11 @@ function App() {
                 <span>{verbCards.length} forms</span>
                 <span>{verbLearnedTotal} learned</span>
               </div>
+              <ChapterProgress
+                size="sm"
+                percent={verbMasteryPct}
+                detail={`${verbLearnedTotal} of ${verbCards.length} mastered`}
+              />
             </button>
 
             <button
@@ -399,6 +580,33 @@ function App() {
                 <span>1 – 1M</span>
                 <span>{numberLearnedTotal} learned</span>
               </div>
+              <ChapterProgress
+                size="sm"
+                percent={numberMasteryPct}
+                detail={`${numberLearnedTotal} foundation cards mastered`}
+              />
+            </button>
+
+            <button
+              type="button"
+              className="hub-card hub-colors"
+              onClick={() => enterTrack('colors')}
+            >
+              <span className="hub-kicker">Track 05</span>
+              <h2>Colors</h2>
+              <p>
+                Color names, light/dark shades, and useful lines — with live
+                swatches on every card.
+              </p>
+              <div className="hub-meta">
+                <span>{colorCardCount} cards</span>
+                <span>{colorsLearnedTotal} learned</span>
+              </div>
+              <ChapterProgress
+                size="sm"
+                percent={colorsMasteryPct}
+                detail={`${colorsLearnedTotal} of ${colorCardCount} mastered`}
+              />
             </button>
           </div>
         </main>
@@ -540,7 +748,7 @@ function App() {
               {isVerbs && (
                 <>
                   <div
-                    className="mode-toggle verb-sections"
+                    className="tense-filters"
                     role="group"
                     aria-label="Verb type"
                   >
@@ -551,7 +759,11 @@ function App() {
                     >
                       Regular
                       <span className="tense-count">
-                        {verbGroupCounts.regular}
+                        {deckMasteryPercent(
+                          filterVerbCards(verbCards, { group: 'regular' }),
+                          verbProgress.byId,
+                        )}
+                        %
                       </span>
                     </button>
                     <button
@@ -561,21 +773,21 @@ function App() {
                     >
                       Irregular
                       <span className="tense-count">
-                        {verbGroupCounts.irregular}
+                        {deckMasteryPercent(
+                          filterVerbCards(verbCards, { group: 'irregular' }),
+                          verbProgress.byId,
+                        )}
+                        %
                       </span>
                     </button>
                   </div>
                   <p className="section-hint">
                     {verbGroup === 'regular'
                       ? 'hablar · comer · vivir — predictable endings'
-                      : 'ser · estar · tener · ir · hacer · querer · poder · decir · venir'}
+                      : 'ser · estar · tener · ir · hacer · querer · poder · decir · venir · dar · ver · saber · poner · salir · traer · oír · conocer'}
                   </p>
 
-                  <div
-                    className="tense-filters"
-                    role="group"
-                    aria-label="Tense filter"
-                  >
+                  <div className="chapter-list" aria-label="Verb chapter progress">
                     {(
                       [
                         ['all', 'All tenses'],
@@ -584,25 +796,73 @@ function App() {
                         ['future', 'Future'],
                       ] as const
                     ).map(([value, label]) => {
-                      const count = filterVerbCards(verbCards, {
+                      const chapter = filterVerbCards(verbCards, {
                         group: verbGroup,
                         tenses: value === 'all' ? 'all' : [value],
-                      }).length
+                      })
+                      const pct = deckMasteryPercent(chapter, verbProgress.byId)
+                      const learned = learnedCount(chapter, verbProgress.byId)
                       return (
                         <button
                           key={value}
                           type="button"
-                          className={`tense-chip ${tenseFilter === value ? 'is-active' : ''}`}
+                          className={`chapter-list-item ${tenseFilter === value ? 'is-active' : ''}`}
                           onClick={() => setTenseFilter(value)}
                         >
-                          {label}
-                          <span className="tense-count">{count}</span>
+                          <ChapterProgress
+                            size="sm"
+                            label={label}
+                            percent={pct}
+                            detail={`${learned} / ${chapter.length} learned`}
+                          />
                         </button>
                       )
                     })}
                   </div>
                 </>
               )}
+
+              {!isVerbs && (
+                <ChapterProgress
+                  label="Chapter progress"
+                  percent={phraseMasteryPct}
+                  detail={`${phraseLearnedTotal} of ${phraseCards.length} phrases mastered`}
+                />
+              )}
+              {isVerbs && (
+                <ChapterProgress
+                  label="Selected chapter"
+                  percent={masteryPct}
+                  detail={`${learnedInSection} of ${activeVerbDeck.length} forms in this chapter`}
+                />
+              )}
+
+              <div className="options">
+                {!isVerbs && (
+                  <label className="option">
+                    <input
+                      type="checkbox"
+                      checked={reverse}
+                      onChange={(e) => {
+                        const on = e.target.checked
+                        setReverse(on)
+                        saveSession({ reverseByTrack: { phrases: on } })
+                      }}
+                    />
+                    Spanish → English (reverse practice)
+                  </label>
+                )}
+                {voice.supported && (
+                  <label className="option">
+                    <input
+                      type="checkbox"
+                      checked={voice.autoSpeak}
+                      onChange={(e) => voice.setAutoSpeak(e.target.checked)}
+                    />
+                    Auto-read Spanish aloud
+                  </label>
+                )}
+              </div>
 
               <div className="cta-row">
                 <button type="button" className="primary-btn" onClick={start}>
@@ -661,13 +921,11 @@ function App() {
                   </span>
                 </div>
 
-                <div
-                  className="progress-track"
-                  title={`${masteryPct}% mastered`}
-                >
-                  <div
-                    className="progress-fill"
-                    style={{ width: `${masteryPct}%` }}
+                <div className="study-progress-wrap">
+                  <ChapterProgress
+                    label={isVerbs ? 'This chapter' : 'Track progress'}
+                    percent={masteryPct}
+                    detail={`${learnedInSection} of ${isVerbs ? activeVerbDeck.length : phraseCards.length} toward 100%`}
                   />
                 </div>
               </header>
@@ -705,8 +963,12 @@ function App() {
                       </>
                     ) : (
                       <>
-                        <span className="lang-tag">English</span>
-                        <p className="card-text">{current.front}</p>
+                        <span className="lang-tag">
+                          {reverse ? 'Español' : 'English'}
+                        </span>
+                        <p className="card-text">
+                          {reverse ? current.back : current.front}
+                        </p>
                       </>
                     )}
                   </div>
@@ -723,13 +985,26 @@ function App() {
                       </>
                     ) : (
                       <>
-                        <span className="lang-tag">Español</span>
-                        <p className="card-text">{current.back}</p>
+                        <span className="lang-tag">
+                          {reverse ? 'English' : 'Español'}
+                        </span>
+                        <p className="card-text">
+                          {reverse ? current.front : current.back}
+                        </p>
                       </>
                     )}
                   </div>
                 </div>
               </button>
+
+              <CardExplain
+                visible={flipped}
+                tip={
+                  isVerbs
+                    ? currentVerb?.tip
+                    : currentPhrase?.tip
+                }
+              />
 
               <div className="actions">
                 <button
@@ -748,6 +1023,13 @@ function App() {
                 >
                   {flipped ? 'Hide' : 'Reveal'}
                 </button>
+                {studySpanish && (
+                  <SpeakButton
+                    text={studySpanish}
+                    variant="mark"
+                    disabled={cardFx != null}
+                  />
+                )}
                 <button
                   type="button"
                   className="mark mark-right"
@@ -760,9 +1042,9 @@ function App() {
               <p className="mark-help">
                 {flipped
                   ? currentStreak + 1 >= STREAK_TO_LEARNED
-                    ? 'One more correct sends this into the learned bin.'
-                    : 'Got it builds streak; Missed resets it and requeues later.'
-                  : 'Flip first, then mark yourself.'}
+                    ? 'Read the explanation, then one more correct sends this into the learned bin.'
+                    : 'Read the explanation below. Got it builds streak; Missed resets it and requeues later.'
+                  : 'Flip to reveal Spanish, hear it, and see the explanation.'}
               </p>
             </section>
           )}
@@ -844,19 +1126,36 @@ function App() {
                       </>
                     ) : (
                       <>
-                        <span className="lang-tag">English</span>
-                        <p className="card-text">{reviewCard.front}</p>
+                        <span className="lang-tag">
+                          {reverse ? 'Español' : 'English'}
+                        </span>
+                        <p className="card-text">
+                          {reverse ? reviewCard.back : reviewCard.front}
+                        </p>
                       </>
                     )}
                   </div>
                   <div className="card-face card-back">
                     <span className="lang-tag">
-                      {isVerbs ? 'Form' : 'Español'}
+                      {isVerbs ? 'Form' : reverse ? 'English' : 'Español'}
                     </span>
-                    <p className="card-text">{reviewCard.back}</p>
+                    <p className="card-text">
+                      {isVerbs || !reverse
+                        ? reviewCard.back
+                        : reviewCard.front}
+                    </p>
                   </div>
                 </div>
               </button>
+
+              <CardExplain
+                visible={flipped}
+                tip={
+                  isVerbs
+                    ? (reviewCard as VerbCard).tip
+                    : (reviewCard as (typeof phraseCards)[number]).tip
+                }
+              />
 
               <div className="actions review-actions">
                 <button
@@ -870,6 +1169,9 @@ function App() {
                 >
                   Previous
                 </button>
+                {reviewSpanish && (
+                  <SpeakButton text={reviewSpanish} variant="mark" />
+                )}
                 <button
                   type="button"
                   className="mark mark-right"
