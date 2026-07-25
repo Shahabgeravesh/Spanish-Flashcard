@@ -526,7 +526,7 @@ function App() {
                   <h2>Foundations</h2>
                   <span className="hub-pct">{foundationsMasteryPct}%</span>
                 </div>
-                <p>Days, routines, family, ser vs estar</p>
+                <p>Days, every day phrases, commands, routines & more</p>
                 <ChapterProgress size="sm" percent={foundationsMasteryPct} />
               </div>
             </button>
@@ -574,7 +574,7 @@ function App() {
                   <h2>Daily life</h2>
                   <span className="hub-pct">{dailyMasteryPct}%</span>
                 </div>
-                <p>Situations: café, routine, travel, doctor</p>
+                <p>Situations: café, commands, travel, doctor</p>
                 <ChapterProgress size="sm" percent={dailyMasteryPct} />
               </div>
             </button>
@@ -1095,9 +1095,22 @@ function App() {
               <div className="actions">
                 <button
                   type="button"
+                  className="mark mark-right"
+                  onClick={onCorrect}
+                  disabled={!flipped || cardFx != null}
+                  aria-label="Got it — mark this card correct"
+                >
+                  <span className="mark-icon" aria-hidden="true">
+                    ✓
+                  </span>
+                  Got it
+                </button>
+                <button
+                  type="button"
                   className="mark mark-wrong"
                   onClick={onIncorrect}
                   disabled={!flipped || cardFx != null}
+                  aria-label="Missed — mark this card incorrect"
                 >
                   Missed
                 </button>
@@ -1116,14 +1129,6 @@ function App() {
                     disabled={cardFx != null}
                   />
                 )}
-                <button
-                  type="button"
-                  className="mark mark-right"
-                  onClick={onCorrect}
-                  disabled={!flipped || cardFx != null}
-                >
-                  Got it
-                </button>
               </div>
               <p className="mark-help">
                 {flipped

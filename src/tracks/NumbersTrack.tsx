@@ -888,9 +888,30 @@ function StudyPanel(props: {
       <div className="actions">
         <button
           type="button"
+          className="mark mark-right"
+          onClick={onGotIt}
+          disabled={busy || (!flipped && gotItLabel === 'Got it')}
+          aria-label={
+            gotItLabel === 'Got it'
+              ? 'Got it — mark this card correct'
+              : gotItLabel
+          }
+        >
+          <span className="mark-icon" aria-hidden="true">
+            ✓
+          </span>
+          {gotItLabel}
+        </button>
+        <button
+          type="button"
           className="mark mark-wrong"
           onClick={onMissed}
           disabled={busy || (!flipped && missedLabel === 'Missed')}
+          aria-label={
+            missedLabel === 'Missed'
+              ? 'Missed — mark this card incorrect'
+              : missedLabel
+          }
         >
           {missedLabel}
         </button>
@@ -907,14 +928,6 @@ function StudyPanel(props: {
           variant="mark"
           disabled={busy}
         />
-        <button
-          type="button"
-          className="mark mark-right"
-          onClick={onGotIt}
-          disabled={busy || (!flipped && gotItLabel === 'Got it')}
-        >
-          {gotItLabel}
-        </button>
       </div>
       <p className="mark-help">{help}</p>
     </section>

@@ -1139,10 +1139,11 @@ button {
 }
 
 .mark-right {
-  background: var(--good-soft);
-  color: var(--good);
-  border-color: color-mix(in srgb, var(--good) 25%, transparent);
-  box-shadow: none;
+  background: linear-gradient(180deg, #34d399, #059669);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);
+  font-weight: 800;
 }
 
 .mark-reveal {
@@ -1860,9 +1861,10 @@ h1 {
 
 .actions {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1.45fr 1fr 1fr 1fr;
   gap: 0.7rem;
   margin-top: 1.25rem;
+  align-items: stretch;
 }
 
 .review-actions {
@@ -1870,6 +1872,10 @@ h1 {
 }
 
 .mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   min-height: 3.35rem;
   border-radius: 12px;
   border: 1px solid transparent;
@@ -1887,18 +1893,53 @@ h1 {
   transform: translateY(-1px);
 }
 
+.mark:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent-deep) 55%, #fff);
+  outline-offset: 2px;
+}
+
 .mark-wrong {
   background: linear-gradient(180deg, #fff1f3, #ffd6de);
-  color: #be123c;
-  border-color: rgba(225, 29, 72, 0.2);
+  color: #9f1239;
+  border-color: rgba(225, 29, 72, 0.28);
   box-shadow: 0 6px 16px rgba(225, 29, 72, 0.12);
 }
 
+.mark-wrong:focus-visible {
+  outline-color: #e11d48;
+}
+
 .mark-right {
-  background: linear-gradient(180deg, #ecfdf5, #bbf7d0);
-  color: #047857;
-  border-color: rgba(0, 168, 107, 0.25);
-  box-shadow: 0 6px 16px rgba(0, 168, 107, 0.14);
+  min-height: 3.65rem;
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  background: linear-gradient(180deg, #34d399, #059669);
+  color: #fff;
+  border-color: transparent;
+  box-shadow:
+    0 8px 20px rgba(5, 150, 105, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.mark-right:not(:disabled):hover {
+  filter: brightness(1.05);
+}
+
+.mark-right:focus-visible {
+  outline-color: #047857;
+}
+
+.mark-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  font-size: 0.95rem;
+  line-height: 1;
+  font-weight: 900;
 }
 
 .mark-reveal {
@@ -2017,12 +2058,16 @@ h1 {
   }
 
   .actions {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.35fr 1fr;
+  }
+
+  .mark-right {
+    min-height: 3.85rem;
+    font-size: 1.12rem;
   }
 
   .mark-reveal {
     grid-column: 1 / -1;
-    order: -1;
   }
 
   .mark-speak {

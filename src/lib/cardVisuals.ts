@@ -105,6 +105,8 @@ const SECTION_VISUAL: Record<string, VisualKey> = {
   clothing: 'clothes',
   places: 'place',
   routines: 'reflexive',
+  frequency: 'time',
+  commands: 'command',
   gender: 'gender',
   'por-para': 'por-para',
   prepositions: 'preposition',
@@ -116,7 +118,6 @@ const SECTION_VISUAL: Record<string, VisualKey> = {
   demonstratives: 'point',
   possessives: 'possess',
   'pret-imp': 'past-split',
-  commands: 'command',
 }
 
 const CATEGORY_VISUAL: Record<string, VisualKey> = {
@@ -143,6 +144,8 @@ const CATEGORY_VISUAL: Record<string, VisualKey> = {
   time: 'time',
   directions: 'go',
   family: 'family',
+  commands: 'command',
+  help: 'speak',
 }
 
 const KEYWORD_RULES: { re: RegExp; key: VisualKey }[] = [

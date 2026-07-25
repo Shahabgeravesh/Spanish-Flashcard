@@ -873,6 +873,48 @@ const RAW: {
     rule: 'Ustedes',
     tip: 'Latin America uses ustedes for plural you. Form = present subjunctive plural.',
   },
+  {
+    section: 'commands',
+    front: 'Come here (tú)',
+    back: '¡Ven aquí!',
+    rule: 'Useful',
+    tip: 'venir → ven. LatAm: Ven acá. Soften: Ven aquí, por favor.',
+  },
+  {
+    section: 'commands',
+    front: 'Go there (tú)',
+    back: '¡Ve allí!',
+    rule: 'Useful',
+    tip: 'ir → ve. Negative: No vayas allí. Don’t confuse with ver → ve (“look”).',
+  },
+  {
+    section: 'commands',
+    front: 'Eat! (tú)',
+    back: '¡Come!',
+    rule: 'Useful',
+    tip: 'comer → come. Don’t eat: No comas.',
+  },
+  {
+    section: 'commands',
+    front: 'Listen to me (tú)',
+    back: 'Escúchame',
+    rule: 'Useful',
+    tip: 'escuchar + me with accent. Negative: No me escuches (rare; usually No me ignores).',
+  },
+  {
+    section: 'commands',
+    front: 'Help me (tú)',
+    back: 'Ayúdame',
+    rule: 'Useful',
+    tip: 'Urgent: ¡Ayuda! Formal: Ayúdeme.',
+  },
+  {
+    section: 'commands',
+    front: 'Don’t go (tú)',
+    back: 'No te vayas',
+    rule: 'Useful',
+    tip: 'Negative of irse. Don’t go to a place: No vayas a…',
+  },
 ]
 
 export const grammarCards: GrammarCard[] = RAW.map((card, i) => ({
