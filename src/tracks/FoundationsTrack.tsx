@@ -282,7 +282,7 @@ export function FoundationsTrack({ onBack }: Props) {
               <button type="button" className="back-btn back-hub" onClick={onBack}>
                 <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
               </button>
-              <p className="brand">Habla</p>
+              <p className="brand">Spanish Deck</p>
               <h1>Foundations</h1>
               <p className="subtitle">
                 Days, months, how often, commands, routines & more

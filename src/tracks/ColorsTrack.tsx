@@ -293,7 +293,7 @@ export function ColorsTrack({ onBack }: Props) {
               >
                 <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
               </button>
-              <p className="brand">Habla</p>
+              <p className="brand">Spanish Deck</p>
               <h1>Colors</h1>
               <p className="subtitle">
                 {colorCards.length} cards · names, shades & phrases

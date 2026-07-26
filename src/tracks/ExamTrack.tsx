@@ -143,7 +143,7 @@ export function ExamTrack({ onBack }: Props) {
                 </span>{' '}
                 All tracks
               </button>
-              <p className="brand">Habla</p>
+              <p className="brand">Spanish Deck</p>
               <h1>Exam</h1>
               <p className="subtitle">Test yourself — fill blanks & type answers</p>
               <p className="lede">

@@ -399,7 +399,7 @@ export function NumbersTrack({ onBack }: Props) {
               <button type="button" className="back-btn back-hub" onClick={onBack}>
                 <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
               </button>
-              <p className="brand">Habla</p>
+              <p className="brand">Spanish Deck</p>
               <h1>Numbers</h1>
               <p className="subtitle">1 → 1,000,000 · Digits ↔ Spanish</p>
               <p className="lede">

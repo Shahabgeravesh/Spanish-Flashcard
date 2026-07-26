@@ -211,7 +211,7 @@ export function StoriesTrack({ onBack }: Props) {
                 </span>{' '}
                 All tracks
               </button>
-              <p className="brand">Habla</p>
+              <p className="brand">Spanish Deck</p>
               <h1>Stories</h1>
               <p className="subtitle">
                 31 storybook nights — soft, clear, and fun

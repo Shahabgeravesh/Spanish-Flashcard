@@ -535,7 +535,7 @@ function App() {
 
         <main className="hub">
           <header className="hub-header">
-            <p className="brand">Habla</p>
+            <p className="brand">Spanish Deck</p>
             <h1>Practice Spanish</h1>
             <p className="lede hub-lede">Pick a track and keep going.</p>
             <ChapterProgress
@@ -820,7 +820,7 @@ function App() {
               >
                 <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
               </button>
-              <p className="brand">Habla</p>
+              <p className="brand">Spanish Deck</p>
               <h1>{isVerbs ? 'Verb conjugations' : 'Making requests'}</h1>
               <p className="subtitle">
                 {isVerbs

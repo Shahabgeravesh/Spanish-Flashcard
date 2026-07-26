@@ -1,4 +1,6 @@
-# Habla — Spanish Flashcards
+# Spanish Deck — Spanish Flashcards
+
+Learn Spanish with flashcards, stories, and exams.
 
 Colorful English ↔ Spanish flashcard practice with mastery bins, pronunciation, learning tips, and multiple study tracks.
 

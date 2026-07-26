@@ -286,7 +286,7 @@ export function GrammarTrack({ onBack }: Props) {
                 </span>{' '}
                 All tracks
               </button>
-              <p className="brand">Habla</p>
+              <p className="brand">Spanish Deck</p>
               <h1>Grammar</h1>
               <p className="subtitle">
                 One short lesson, then a few cards.
