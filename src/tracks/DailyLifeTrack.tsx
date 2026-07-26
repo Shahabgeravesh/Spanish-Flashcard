@@ -25,7 +25,6 @@ import {
   type PersistedProgress,
 } from '../lib/progress'
 import { usePersistentProgress } from '../lib/usePersistentProgress'
-import { useSpanishVoice } from '../lib/useSpanishVoice'
 import { getTrackReverse, saveSession } from '../lib/session'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { SpeakButton } from '../components/SpeakButton'
@@ -33,6 +32,7 @@ import { CardExplain } from '../components/CardExplain'
 import { CardVisual } from '../components/CardVisual'
 import { ChapterMark } from '../components/ChapterMark'
 import { ChapterProgress } from '../components/ChapterProgress'
+import { DirectionToggle } from '../components/DirectionToggle'
 
 export const DAILY_KEY = 'habla:daily-phrases:v1'
 const DAILY_LEGACY = ['lexora:daily-phrases:v1']
@@ -103,20 +103,6 @@ export function DailyLifeTrack({ onBack }: Props) {
       : 0
   const reviewCard = scopedLearned[reviewIndex]
 
-  const studySpanish = current?.back
-  const voice = useSpanishVoice({
-    spanishText: phase === 'study' ? studySpanish : undefined,
-    showingSpanish:
-      phase === 'study' && (reverse ? !flipped : flipped),
-    cardKey: phase === 'study' ? current?.id : undefined,
-  })
-  useSpanishVoice({
-    spanishText: phase === 'review-learned' ? reviewCard?.back : undefined,
-    showingSpanish:
-      phase === 'review-learned' && (reverse ? !flipped : flipped),
-    cardKey: phase === 'review-learned' ? reviewCard?.id : undefined,
-  })
-
   usePersistentProgress(progress, DAILY_KEY, dailyPhraseCards, DAILY_LEGACY)
 
   const applyProgress = useCallback((next: PersistedProgress) => {
@@ -148,9 +134,6 @@ export function DailyLifeTrack({ onBack }: Props) {
   const flip = () => {
     const next = !flipped
     setFlipped(next)
-    const showSpanish = reverse ? !next : next
-    if (showSpanish && voice.autoSpeak && current?.back) voice.replay()
-    else if (!showSpanish) voice.stop()
   }
 
   const onCorrect = () => {
@@ -214,6 +197,12 @@ export function DailyLifeTrack({ onBack }: Props) {
 
   const promptOf = (card: DailyPhraseCard) => (reverse ? card.back : card.front)
   const answerOf = (card: DailyPhraseCard) => (reverse ? card.front : card.back)
+
+  const setDirection = (next: boolean) => {
+    setReverse(next)
+    setFlipped(false)
+    saveSession({ reverseByTrack: { daily: next } })
+  }
 
   return (
     <div className="app daily-theme">
@@ -322,7 +311,7 @@ export function DailyLifeTrack({ onBack }: Props) {
               </p>
               <p className="lede">
                 Study by topic or by real situations — café, commands, airport,
-                hotel, doctor, and more. Every reveal includes a learning tip and Listen.
+                hotel, doctor, and more. Tips on every reveal — tap Listen when you want sound.
               </p>
 
               <p className="filter-heading">By topic</p>
@@ -389,31 +378,6 @@ export function DailyLifeTrack({ onBack }: Props) {
                 detail={`${learnedInSection} of ${activeDeck.length} in this filter · track ${trackMasteryPct}%`}
               />
 
-              <div className="options">
-                <label className="option">
-                  <input
-                    type="checkbox"
-                    checked={reverse}
-                    onChange={(e) => {
-                      const on = e.target.checked
-                      setReverse(on)
-                      saveSession({ reverseByTrack: { daily: on } })
-                    }}
-                  />
-                  Spanish → English (reverse practice)
-                </label>
-                {voice.supported && (
-                  <label className="option">
-                    <input
-                      type="checkbox"
-                      checked={voice.autoSpeak}
-                      onChange={(e) => voice.setAutoSpeak(e.target.checked)}
-                    />
-                    Auto-read Spanish aloud
-                  </label>
-                )}
-              </div>
-
               <div className="cta-row">
                 <button
                   type="button"
@@ -451,12 +415,18 @@ export function DailyLifeTrack({ onBack }: Props) {
               masteryPct={masteryPct}
               flipped={flipped}
               onFlip={flip}
+              reverse={reverse}
+              onDirectionChange={setDirection}
               frontLabel={reverse ? 'Español' : 'English'}
               backLabel={reverse ? 'English' : 'Español'}
               front={promptOf(current)}
               back={answerOf(current)}
               speakText={current.back}
               tip={current.tip}
+              cardFront={current.front}
+              cardBack={current.back}
+              exampleEs={current.exampleEs}
+              exampleEn={current.exampleEn}
               situation={current.situation}
               category={current.category}
               cardFx={cardFx}
@@ -508,12 +478,18 @@ export function DailyLifeTrack({ onBack }: Props) {
               )}
               flipped={flipped}
               onFlip={flip}
+              reverse={reverse}
+              onDirectionChange={setDirection}
               frontLabel={reverse ? 'Español' : 'English'}
               backLabel={reverse ? 'English' : 'Español'}
               front={promptOf(reviewCard)}
               back={answerOf(reviewCard)}
               speakText={reviewCard.back}
               tip={reviewCard.tip}
+              cardFront={reviewCard.front}
+              cardBack={reviewCard.back}
+              exampleEs={reviewCard.exampleEs}
+              exampleEn={reviewCard.exampleEn}
               situation={reviewCard.situation}
               category={reviewCard.category}
               onMissed={() => {
@@ -586,12 +562,20 @@ function StudyPanel(props: {
   masteryPct: number
   flipped: boolean
   onFlip: () => void
+  reverse: boolean
+  onDirectionChange: (reverse: boolean) => void
+  learnLabel?: string
+  recallLabel?: string
   frontLabel: string
   backLabel: string
   front: string
   back: string
   speakText: string
   tip: string
+  cardFront: string
+  cardBack: string
+  exampleEs?: string
+  exampleEn?: string
   situation?: string
   category?: string
   cardFx?: 'correct' | 'incorrect' | null
@@ -612,12 +596,20 @@ function StudyPanel(props: {
     masteryPct,
     flipped,
     onFlip,
+    reverse,
+    onDirectionChange,
+    learnLabel,
+    recallLabel,
     frontLabel,
     backLabel,
     front,
     back,
     speakText,
     tip,
+    cardFront,
+    cardBack,
+    exampleEs,
+    exampleEn,
     situation,
     category,
     cardFx = null,
@@ -663,6 +655,12 @@ function StudyPanel(props: {
             {streakLabel ?? `Streak ${streak ?? 0}/${STREAK_TO_LEARNED}`}
           </span>
         </div>
+        <DirectionToggle
+          reverse={reverse}
+          onChange={onDirectionChange}
+          learnLabel={learnLabel}
+          recallLabel={recallLabel}
+        />
         <div className="study-progress-wrap">
           <ChapterProgress
             size="sm"
@@ -709,6 +707,10 @@ function StudyPanel(props: {
         visible={flipped}
         tip={tip}
         situation={situationLabel}
+        front={cardFront}
+        back={cardBack}
+        exampleEs={exampleEs}
+        exampleEn={exampleEn}
       />
 
       <div className="actions">

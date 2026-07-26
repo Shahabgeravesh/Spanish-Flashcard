@@ -92,13 +92,9 @@ export function ColorsTrack({ onBack }: Props) {
 
   const voice = useSpanishVoice({
     spanishText: phase === 'study' ? current?.back : undefined,
-    showingSpanish: phase === 'study' && flipped,
-    cardKey: phase === 'study' ? current?.id : undefined,
   })
   useSpanishVoice({
     spanishText: phase === 'review-learned' ? reviewCard?.back : undefined,
-    showingSpanish: phase === 'review-learned' && flipped,
-    cardKey: phase === 'review-learned' ? reviewCard?.id : undefined,
   })
 
   usePersistentProgress(progress, COLORS_KEY, colorCards)
@@ -132,8 +128,6 @@ export function ColorsTrack({ onBack }: Props) {
   const flip = () => {
     const next = !flipped
     setFlipped(next)
-    if (next && voice.autoSpeak && current?.back) voice.replay()
-    else if (!next) voice.stop()
   }
 
   const onCorrect = () => {
@@ -341,14 +335,6 @@ export function ColorsTrack({ onBack }: Props) {
 
               {voice.supported && (
                 <div className="options">
-                  <label className="option">
-                    <input
-                      type="checkbox"
-                      checked={voice.autoSpeak}
-                      onChange={(e) => voice.setAutoSpeak(e.target.checked)}
-                    />
-                    Auto-read Spanish aloud
-                  </label>
                 </div>
               )}
 
@@ -602,7 +588,7 @@ function ColorStudyPanel(props: {
         </div>
       </button>
 
-      <CardExplain visible={flipped} tip={card.tip} />
+      <CardExplain visible={flipped} tip={card.tip} front={card.front} back={card.back} exampleEs={card.exampleEs} exampleEn={card.exampleEn} />
 
       <div className="actions">
         <button

@@ -4,6 +4,8 @@ Colorful English ↔ Spanish flashcard practice with mastery bins, pronunciation
 
 **Live site:** https://shahabgeravesh.github.io/Spanish-Flashcard/
 
+**iOS / Android (Expo):** `/Users/shahabgeravesh/habla-app` — App Store–ready React Native companion with the same decks.
+
 ## Tracks
 
 0. **Foundations** — days, months, seasons, question words, articles, ser vs estar, family, body, clothing, places

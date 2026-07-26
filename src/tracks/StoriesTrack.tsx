@@ -13,6 +13,12 @@ import { canUseStorage } from '../lib/progress'
 import { SpeakButton } from '../components/SpeakButton'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { StoryVisual } from '../components/StoryVisual'
+import {
+  goBackOr,
+  pushHablaState,
+  replaceHablaState,
+  storyIdFromLocation,
+} from '../lib/navHistory'
 
 export const STORIES_KEY = 'habla:stories:v1'
 
@@ -98,6 +104,28 @@ export function StoriesTrack({ onBack }: Props) {
     saveStoryProgress(progress)
   }, [progress])
 
+  useEffect(() => {
+    const fromUrl = storyIdFromLocation()
+    if (fromUrl && storyById(fromUrl)) {
+      setActiveId(fromUrl)
+      setPhase('read')
+    }
+
+    const onPop = () => {
+      const story = storyIdFromLocation()
+      if (story && storyById(story)) {
+        setActiveId(story)
+        setRevealedLines(new Set())
+        setPhase('read')
+      } else {
+        setPhase('start')
+        setActiveId(null)
+      }
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
   const filtered = useMemo(() => filterStories(stories, tense), [tense])
   const active = activeId ? storyById(activeId) : undefined
   const trackMastery = masteryFromProgress(progress, stories)
@@ -111,6 +139,15 @@ export function StoriesTrack({ onBack }: Props) {
     setActiveId(id)
     setRevealedLines(new Set())
     setPhase('read')
+    pushHablaState('stories', id)
+  }
+
+  const closeStory = () => {
+    goBackOr(() => {
+      setPhase('start')
+      setActiveId(null)
+      replaceHablaState('stories')
+    })
   }
 
   const unmarkUnderstood = (id: string) => {
@@ -293,10 +330,7 @@ export function StoriesTrack({ onBack }: Props) {
                   <button
                     type="button"
                     className="back-btn back-btn-sm"
-                    onClick={() => {
-                      setPhase('start')
-                      setActiveId(null)
-                    }}
+                    onClick={closeStory}
                   >
                     <span className="back-btn-icon" aria-hidden="true">
                       ←
@@ -398,10 +432,7 @@ export function StoriesTrack({ onBack }: Props) {
                     <button
                       type="button"
                       className="primary-btn"
-                      onClick={() => {
-                        setPhase('start')
-                        setActiveId(null)
-                      }}
+                      onClick={closeStory}
                     >
                       Back to list
                     </button>

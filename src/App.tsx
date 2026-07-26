@@ -26,8 +26,16 @@ import {
   type PersistedProgress,
 } from './lib/progress'
 import { usePersistentProgress } from './lib/usePersistentProgress'
-import { useSpanishVoice } from './lib/useSpanishVoice'
 import { getTrackReverse, loadSession, saveSession } from './lib/session'
+import {
+  isHablaTrack,
+  pushHablaState,
+  replaceHablaState,
+  storyIdFromLocation,
+  trackFromLocation,
+  type HablaHistoryState,
+  type HablaTrack,
+} from './lib/navHistory'
 import { NumbersTrack, loadNumberMasteryPercent } from './tracks/NumbersTrack'
 import { DailyLifeTrack, loadDailyMasteryPercent } from './tracks/DailyLifeTrack'
 import { ColorsTrack, loadColorsMasteryPercent } from './tracks/ColorsTrack'
@@ -54,6 +62,7 @@ import { CardVisual } from './components/CardVisual'
 import { ChapterMark } from './components/ChapterMark'
 import { TrackVisual } from './components/TrackVisual'
 import { ChapterProgress } from './components/ChapterProgress'
+import { DirectionToggle } from './components/DirectionToggle'
 import './App.css'
 
 type Track =
@@ -79,6 +88,8 @@ type VerbGroupFilter = 'regular' | 'irregular'
 
 function App() {
   const [track, setTrack] = useState<Track>(() => {
+    const fromUrl = trackFromLocation()
+    if (fromUrl !== 'hub') return fromUrl
     const saved = loadSession().lastTrack
     const allowed: Track[] = [
       'hub',
@@ -193,29 +204,7 @@ function App() {
     isVerbs && currentVerb
       ? currentVerb.back
       : currentPhrase?.back
-  const studyShowingSpanish = isVerbs
-    ? flipped
-    : reverse
-      ? !flipped
-      : flipped
-  const voice = useSpanishVoice({
-    spanishText: phase === 'study' ? studySpanish : undefined,
-    showingSpanish: phase === 'study' && studyShowingSpanish,
-    cardKey: phase === 'study' ? currentId : undefined,
-  })
-
   const reviewSpanish = reviewCard?.back
-  const reviewShowingSpanish = isVerbs
-    ? flipped
-    : reverse
-      ? !flipped
-      : flipped
-  useSpanishVoice({
-    spanishText: phase === 'review-learned' ? reviewSpanish : undefined,
-    showingSpanish: phase === 'review-learned' && reviewShowingSpanish,
-    cardKey:
-      phase === 'review-learned' ? reviewCard?.id : undefined,
-  })
 
   const phraseLearnedTotal = learnedCount(phraseCards, phraseProgress.byId)
   const [numberMasteryPct, setNumberMasteryPct] = useState(() =>
@@ -280,7 +269,7 @@ function App() {
     [setProgress],
   )
 
-  const enterTrack = (next: Track) => {
+  const applyTrack = useCallback((next: Track) => {
     setTrack(next)
     setPhase('start')
     setFlipped(false)
@@ -289,7 +278,55 @@ function App() {
     setReviewIndex(0)
     if (next === 'phrases') setReverse(getTrackReverse('phrases'))
     saveSession({ lastTrack: next })
+  }, [])
+
+  const setDirection = (next: boolean) => {
+    setReverse(next)
+    setFlipped(false)
+    saveSession({ reverseByTrack: { phrases: next } })
   }
+
+  const enterTrack = (next: Track) => {
+    if (next === 'hub') {
+      const state = window.history.state as HablaHistoryState | null
+      if (state?.habla && state.track !== 'hub') {
+        window.history.back()
+        return
+      }
+      applyTrack('hub')
+      replaceHablaState('hub')
+      return
+    }
+    applyTrack(next)
+    pushHablaState(next as HablaTrack)
+  }
+
+  useEffect(() => {
+    // Keep hub under the current screen so swipe-back never leaves the site.
+    const deepStory =
+      track === 'stories' ? storyIdFromLocation() : null
+    if (track !== 'hub') {
+      replaceHablaState('hub')
+      pushHablaState(track as HablaTrack)
+      if (deepStory) pushHablaState('stories', deepStory)
+    } else {
+      replaceHablaState('hub')
+    }
+
+    const onPop = (event: PopStateEvent) => {
+      const state = event.state as HablaHistoryState | null
+      const next =
+        state?.habla && isHablaTrack(state.track)
+          ? state.track
+          : trackFromLocation()
+      applyTrack(next)
+    }
+
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+    // Mount once — track seed is intentional.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applyTrack])
 
   const start = useCallback(() => {
     const studyDeck = isVerbs ? activeVerbDeck : phraseCards
@@ -325,12 +362,7 @@ function App() {
   ])
 
   const flip = () => {
-    const next = !flipped
-    setFlipped(next)
-    const showSpanish = isVerbs ? next : reverse ? !next : next
-    const text = isVerbs ? currentVerb?.back : currentPhrase?.back
-    if (showSpanish && voice.autoSpeak && text) voice.replay()
-    else if (!showSpanish) voice.stop()
+    setFlipped((f) => !f)
   }
 
   const onCorrect = useCallback(() => {
@@ -894,33 +926,6 @@ function App() {
                 />
               )}
 
-              <div className="options">
-                {!isVerbs && (
-                  <label className="option">
-                    <input
-                      type="checkbox"
-                      checked={reverse}
-                      onChange={(e) => {
-                        const on = e.target.checked
-                        setReverse(on)
-                        saveSession({ reverseByTrack: { phrases: on } })
-                      }}
-                    />
-                    Spanish → English (reverse practice)
-                  </label>
-                )}
-                {voice.supported && (
-                  <label className="option">
-                    <input
-                      type="checkbox"
-                      checked={voice.autoSpeak}
-                      onChange={(e) => voice.setAutoSpeak(e.target.checked)}
-                    />
-                    Auto-read Spanish aloud
-                  </label>
-                )}
-              </div>
-
               <div className="cta-row">
                 <button type="button" className="primary-btn" onClick={start}>
                   {hasSavedProgress ? 'Continue studying' : 'Start studying'}
@@ -980,6 +985,13 @@ function App() {
                     Streak {currentStreak}/{STREAK_TO_LEARNED}
                   </span>
                 </div>
+
+                {!isVerbs && (
+                  <DirectionToggle
+                    reverse={reverse}
+                    onChange={setDirection}
+                  />
+                )}
 
                 <div className="study-progress-wrap">
                   <ChapterProgress
@@ -1089,6 +1101,22 @@ function App() {
                   isVerbs
                     ? currentVerb?.tip
                     : currentPhrase?.tip
+                }
+                front={
+                  isVerbs
+                    ? currentVerb?.front
+                    : currentPhrase?.front
+                }
+                back={
+                  isVerbs
+                    ? currentVerb?.back
+                    : currentPhrase?.back
+                }
+                exampleEs={
+                  isVerbs ? undefined : currentPhrase?.exampleEs
+                }
+                exampleEn={
+                  isVerbs ? undefined : currentPhrase?.exampleEn
                 }
               />
 
@@ -1207,6 +1235,12 @@ function App() {
                     Learned {reviewIndex + 1} / {scopedLearned.length}
                   </span>
                 </div>
+                {!isVerbs && (
+                  <DirectionToggle
+                    reverse={reverse}
+                    onChange={setDirection}
+                  />
+                )}
               </header>
 
               <button
@@ -1280,6 +1314,18 @@ function App() {
                   isVerbs
                     ? (reviewCard as VerbCard).tip
                     : (reviewCard as (typeof phraseCards)[number]).tip
+                }
+                front={reviewCard.front}
+                back={reviewCard.back}
+                exampleEs={
+                  isVerbs
+                    ? undefined
+                    : (reviewCard as (typeof phraseCards)[number]).exampleEs
+                }
+                exampleEn={
+                  isVerbs
+                    ? undefined
+                    : (reviewCard as (typeof phraseCards)[number]).exampleEn
                 }
               />
 

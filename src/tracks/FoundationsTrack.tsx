@@ -22,7 +22,6 @@ import {
   type PersistedProgress,
 } from '../lib/progress'
 import { usePersistentProgress } from '../lib/usePersistentProgress'
-import { useSpanishVoice } from '../lib/useSpanishVoice'
 import { getTrackReverse, saveSession } from '../lib/session'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { SpeakButton } from '../components/SpeakButton'
@@ -30,6 +29,7 @@ import { CardExplain } from '../components/CardExplain'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { CardVisual } from '../components/CardVisual'
 import { ChapterMark } from '../components/ChapterMark'
+import { DirectionToggle } from '../components/DirectionToggle'
 
 export const FOUNDATIONS_KEY = 'habla:foundations:v1'
 
@@ -94,19 +94,6 @@ export function FoundationsTrack({ onBack }: Props) {
       : 0
   const reviewCard = scopedLearned[reviewIndex]
 
-  const voice = useSpanishVoice({
-    spanishText: phase === 'study' ? current?.back : undefined,
-    showingSpanish:
-      phase === 'study' && (reverse ? !flipped : flipped),
-    cardKey: phase === 'study' ? current?.id : undefined,
-  })
-  useSpanishVoice({
-    spanishText: phase === 'review-learned' ? reviewCard?.back : undefined,
-    showingSpanish:
-      phase === 'review-learned' && (reverse ? !flipped : flipped),
-    cardKey: phase === 'review-learned' ? reviewCard?.id : undefined,
-  })
-
   usePersistentProgress(progress, FOUNDATIONS_KEY, foundationCards)
 
   const applyProgress = useCallback((next: PersistedProgress) => {
@@ -138,9 +125,6 @@ export function FoundationsTrack({ onBack }: Props) {
   const flip = () => {
     const next = !flipped
     setFlipped(next)
-    const showSpanish = reverse ? !next : next
-    if (showSpanish && voice.autoSpeak && current?.back) voice.replay()
-    else if (!showSpanish) voice.stop()
   }
 
   const onCorrect = () => {
@@ -200,6 +184,12 @@ export function FoundationsTrack({ onBack }: Props) {
   const promptOf = (card: FoundationCard) => (reverse ? card.back : card.front)
   const answerOf = (card: FoundationCard) => (reverse ? card.front : card.back)
   const speakOf = (card: FoundationCard) => card.speak ?? card.back
+
+  const setDirection = (next: boolean) => {
+    setReverse(next)
+    setFlipped(false)
+    saveSession({ reverseByTrack: { foundations: next } })
+  }
 
   return (
     <div className="app foundations-theme">
@@ -299,7 +289,7 @@ export function FoundationsTrack({ onBack }: Props) {
               </p>
               <p className="lede">
                 Core building blocks every Spanish learner needs — with tips on
-                every reveal and Listen for pronunciation.
+                every reveal and Listen when you want pronunciation.
               </p>
 
               <div className="chapter-list" aria-label="Foundation chapters">
@@ -331,31 +321,6 @@ export function FoundationsTrack({ onBack }: Props) {
                 percent={masteryPct}
                 detail={`${learnedInSection} of ${activeDeck.length} · track ${trackMasteryPct}%`}
               />
-
-              <div className="options">
-                <label className="option">
-                  <input
-                    type="checkbox"
-                    checked={reverse}
-                    onChange={(e) => {
-                      const on = e.target.checked
-                      setReverse(on)
-                      saveSession({ reverseByTrack: { foundations: on } })
-                    }}
-                  />
-                  Spanish → English (reverse practice)
-                </label>
-                {voice.supported && (
-                  <label className="option">
-                    <input
-                      type="checkbox"
-                      checked={voice.autoSpeak}
-                      onChange={(e) => voice.setAutoSpeak(e.target.checked)}
-                    />
-                    Auto-read Spanish aloud
-                  </label>
-                )}
-              </div>
 
               <div className="cta-row">
                 <button type="button" className="primary-btn" onClick={start}>
@@ -389,12 +354,18 @@ export function FoundationsTrack({ onBack }: Props) {
               masteryPct={masteryPct}
               flipped={flipped}
               onFlip={flip}
+              reverse={reverse}
+              onDirectionChange={setDirection}
               frontLabel={reverse ? 'Español' : 'English'}
               backLabel={reverse ? 'English' : 'Español'}
               front={promptOf(current)}
               back={answerOf(current)}
               speakText={speakOf(current)}
               tip={current.tip}
+              cardFront={current.front}
+              cardBack={current.back}
+              exampleEs={current.exampleEs}
+              exampleEn={current.exampleEn}
               section={current.section}
               cardFx={cardFx}
               onMissed={onIncorrect}
@@ -445,12 +416,18 @@ export function FoundationsTrack({ onBack }: Props) {
               )}
               flipped={flipped}
               onFlip={flip}
+              reverse={reverse}
+              onDirectionChange={setDirection}
               frontLabel={reverse ? 'Español' : 'English'}
               backLabel={reverse ? 'English' : 'Español'}
               front={promptOf(reviewCard)}
               back={answerOf(reviewCard)}
               speakText={speakOf(reviewCard)}
               tip={reviewCard.tip}
+              cardFront={reviewCard.front}
+              cardBack={reviewCard.back}
+              exampleEs={reviewCard.exampleEs}
+              exampleEn={reviewCard.exampleEn}
               section={reviewCard.section}
               onMissed={() => {
                 setReviewIndex((i) => Math.max(0, i - 1))
@@ -522,12 +499,20 @@ function StudyPanel(props: {
   masteryPct: number
   flipped: boolean
   onFlip: () => void
+  reverse: boolean
+  onDirectionChange: (reverse: boolean) => void
+  learnLabel?: string
+  recallLabel?: string
   frontLabel: string
   backLabel: string
   front: string
   back: string
   speakText: string
   tip: string
+  cardFront: string
+  cardBack: string
+  exampleEs?: string
+  exampleEn?: string
   section?: string
   cardFx?: 'correct' | 'incorrect' | null
   onMissed: () => void
@@ -547,12 +532,20 @@ function StudyPanel(props: {
     masteryPct,
     flipped,
     onFlip,
+    reverse,
+    onDirectionChange,
+    learnLabel,
+    recallLabel,
     frontLabel,
     backLabel,
     front,
     back,
     speakText,
     tip,
+    cardFront,
+    cardBack,
+    exampleEs,
+    exampleEn,
     section,
     cardFx = null,
     onMissed,
@@ -593,6 +586,12 @@ function StudyPanel(props: {
             {streakLabel ?? `Streak ${streak ?? 0}/${STREAK_TO_LEARNED}`}
           </span>
         </div>
+        <DirectionToggle
+          reverse={reverse}
+          onChange={onDirectionChange}
+          learnLabel={learnLabel}
+          recallLabel={recallLabel}
+        />
         <div className="study-progress-wrap">
           <ChapterProgress size="sm" label="Chapter" percent={masteryPct} />
         </div>
@@ -625,7 +624,7 @@ function StudyPanel(props: {
         </div>
       </button>
 
-      <CardExplain visible={flipped} tip={tip} />
+      <CardExplain visible={flipped} tip={tip} front={cardFront} back={cardBack} exampleEs={exampleEs} exampleEn={exampleEn} />
 
       <div className="actions">
         <button

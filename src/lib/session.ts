@@ -5,8 +5,6 @@ const SESSION_KEY = 'habla:session:v1'
 export type HablaSession = {
   lastTrack?: string
   reverseByTrack?: Record<string, boolean>
-  /** Auto-read Spanish when the answer is shown (default true) */
-  autoSpeak?: boolean
 }
 
 export function loadSession(): HablaSession {

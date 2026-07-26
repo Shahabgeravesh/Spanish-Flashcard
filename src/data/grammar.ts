@@ -21,6 +21,9 @@ export type GrammarCard = {
   tip: string
   /** Short rule label shown above the tip */
   rule?: string
+  /** Lived bilingual example shown on reveal */
+  exampleEs?: string
+  exampleEn?: string
   section: GrammarSection
   speak?: string
 }
@@ -59,6 +62,8 @@ const RAW: {
   back: string
   tip: string
   rule?: string
+  exampleEs?: string
+  exampleEn?: string
   section: GrammarSection
   speak?: string
 }[] = [
@@ -68,6 +73,8 @@ const RAW: {
     front: 'Most nouns ending in -o are…',
     back: 'masculine (el libro)',
     rule: 'Gender endings',
+    exampleEs: 'El libro es interesante.',
+    exampleEn: 'The book is interesting.',
     tip: 'Default pattern only — exceptions exist (la mano, la foto from fotografía). Learn gender with the article.',
   },
   {
@@ -75,6 +82,8 @@ const RAW: {
     front: 'Most nouns ending in -a are…',
     back: 'feminine (la casa)',
     rule: 'Gender endings',
+    exampleEs: 'La casa es grande.',
+    exampleEn: 'The house is big.',
     tip: 'Exceptions include el día, el mapa, el problema (many -ma from Greek are masculine).',
   },
   {
@@ -82,6 +91,8 @@ const RAW: {
     front: 'Nouns ending in -ción / -sión are usually…',
     back: 'feminine (la nación, la televisión)',
     rule: 'Reliable endings',
+    exampleEs: 'La televisión está encendida.',
+    exampleEn: 'The TV is on.',
     tip: 'Also feminine: -dad, -tad, -tud, -umbre (la ciudad, la libertad, la virtud).',
   },
   {
@@ -89,6 +100,8 @@ const RAW: {
     front: 'Agree the adjective: “the red house”',
     back: 'la casa roja',
     rule: 'Agreement',
+    exampleEs: 'la casa roja',
+    exampleEn: 'the red house',
     tip: 'Adjective matches casa (feminine singular): roja, not rojo. Plural: las casas rojas.',
   },
   {
@@ -96,6 +109,8 @@ const RAW: {
     front: 'Agree: “the white books”',
     back: 'los libros blancos',
     rule: 'Agreement',
+    exampleEs: 'los libros blancos',
+    exampleEn: 'the white books',
     tip: 'libros is masculine plural → blancos. Color adjectives usually follow the noun.',
   },
   {
@@ -103,6 +118,8 @@ const RAW: {
     front: '“the hand” (exception)',
     back: 'la mano',
     rule: 'Exceptions',
+    exampleEs: 'la mano',
+    exampleEn: 'the hand',
     tip: 'Ends in -o but is feminine. Plural: las manos. Adjective: la mano pequeña.',
   },
   {
@@ -110,6 +127,8 @@ const RAW: {
     front: '“the day” (exception)',
     back: 'el día',
     rule: 'Exceptions',
+    exampleEs: 'el día',
+    exampleEn: 'the day',
     tip: 'Ends in -a but is masculine. Buenos días. “All day” = todo el día.',
   },
   {
@@ -117,6 +136,8 @@ const RAW: {
     front: 'Adjectives ending in -e or consonant…',
     back: 'often don’t change for gender (verde, fácil)',
     rule: 'Invariant adjectives',
+    exampleEs: 'Una camisa verde · Un examen fácil',
+    exampleEn: 'A green shirt · An easy exam',
     tip: 'They still change for number: verdes, fáciles. Some add -a historically, but verde stays verde.',
   },
 
@@ -126,6 +147,8 @@ const RAW: {
     front: 'the (masc. singular)',
     back: 'el',
     rule: 'Definite',
+    exampleEs: 'El libro está aquí.',
+    exampleEn: 'The book is here.',
     tip: 'a + el → al · de + el → del. Don’t contract with la: a la, de la.',
   },
   {
@@ -133,6 +156,8 @@ const RAW: {
     front: 'the (fem. singular)',
     back: 'la',
     rule: 'Definite',
+    exampleEs: 'El agua fría',
+    exampleEn: 'The cold water',
     tip: 'Before stressed á/ha feminine nouns, Spanish uses el: el agua fría (adjective still feminine).',
   },
   {
@@ -140,6 +165,8 @@ const RAW: {
     front: 'a / an (masc.)',
     back: 'un',
     rule: 'Indefinite',
+    exampleEs: 'Un libro interesante',
+    exampleEn: 'An interesting book',
     tip: 'Un libro = a book. Plural unos = some / a few (unos amigos).',
   },
   {
@@ -147,6 +174,8 @@ const RAW: {
     front: 'a / an (fem.)',
     back: 'una',
     rule: 'Indefinite',
+    exampleEs: 'Una casa grande',
+    exampleEn: 'A big house',
     tip: 'Una casa. Plural: unas. Before stressed á: un águila (like el agua).',
   },
   {
@@ -154,6 +183,8 @@ const RAW: {
     front: '“to the park” (contraction)',
     back: 'al parque',
     rule: 'al / del',
+    exampleEs: 'Voy al parque.',
+    exampleEn: 'I’m going to the park.',
     tip: 'a + el = al. Only with el, never with la/los/las.',
   },
   {
@@ -161,6 +192,8 @@ const RAW: {
     front: '“of the teacher” (masc.)',
     back: 'del profesor',
     rule: 'al / del',
+    exampleEs: 'El libro del profesor',
+    exampleEn: 'The teacher’s book',
     tip: 'de + el = del. Feminine stays de la profesora.',
   },
   {
@@ -168,6 +201,8 @@ const RAW: {
     front: 'On Monday (with article)',
     back: 'el lunes',
     rule: 'Habits with articles',
+    exampleEs: 'El lunes trabajo.',
+    exampleEn: 'I work on Monday.',
     tip: 'Spanish often uses the article with days: El lunes trabajo. Los lunes = on Mondays.',
   },
   {
@@ -175,6 +210,8 @@ const RAW: {
     front: 'I like coffee (generic noun)',
     back: 'Me gusta el café',
     rule: 'Generic “the”',
+    exampleEs: 'Me gusta el café',
+    exampleEn: 'I like coffee',
     tip: 'Talking about coffee in general uses el. English often drops “the”; Spanish usually keeps it.',
   },
 
@@ -184,6 +221,8 @@ const RAW: {
     front: 'I am a teacher (identity)',
     back: 'Soy profesor / profesora',
     rule: 'Ser → identity',
+    exampleEs: 'Soy profesor',
+    exampleEn: 'I am a teacher',
     tip: 'Profession and who you are use ser. Temporary role can still be ser: Soy estudiante.',
   },
   {
@@ -191,6 +230,8 @@ const RAW: {
     front: 'I am in Madrid (location)',
     back: 'Estoy en Madrid',
     rule: 'Estar → location',
+    exampleEs: 'La reunión es en Madrid',
+    exampleEn: 'I am in Madrid',
     tip: 'People and things: estar for location. Events: La reunión es en Madrid (ser).',
   },
   {
@@ -198,6 +239,8 @@ const RAW: {
     front: 'She is tired (condition)',
     back: 'Está cansada',
     rule: 'Estar → state',
+    exampleEs: 'Es cansada would sound like “she is a tiring person.”',
+    exampleEn: 'She is tired',
     tip: 'Temporary condition → estar. Es cansada would sound like “she is a tiring person.”',
   },
   {
@@ -205,6 +248,8 @@ const RAW: {
     front: 'The party is at my house',
     back: 'La fiesta es en mi casa',
     rule: 'Ser → event place',
+    exampleEs: 'La fiesta es en mi casa',
+    exampleEn: 'The party is at my house',
     tip: 'Where an event takes place = ser. Where a person is = estar (Estoy en mi casa).',
   },
   {
@@ -212,6 +257,8 @@ const RAW: {
     front: 'It is 3:00',
     back: 'Son las tres',
     rule: 'Ser → time',
+    exampleEs: 'Son las tres',
+    exampleEn: 'It is 3:00',
     tip: 'Clock time uses ser. Era/eran for past clock time (imperfect).',
   },
   {
@@ -219,6 +266,8 @@ const RAW: {
     front: 'I am from Mexico',
     back: 'Soy de México',
     rule: 'Ser → origin',
+    exampleEs: 'Soy de México',
+    exampleEn: 'I am from Mexico',
     tip: 'Origin and nationality: ser de… / Soy mexicano. Location right now still uses estar.',
   },
   {
@@ -226,6 +275,8 @@ const RAW: {
     front: 'He is boring (personality) vs bored',
     back: 'Es aburrido vs Está aburrido',
     rule: 'Adjective shift',
+    exampleEs: 'Es aburrido vs Está aburrido',
+    exampleEn: 'In a real sentence',
     tip: 'ser + adjective = characteristic · estar + adjective = how they feel/seem right now.',
   },
   {
@@ -233,6 +284,8 @@ const RAW: {
     front: 'I am eating (progressive)',
     back: 'Estoy comiendo',
     rule: 'Estar + gerund',
+    exampleEs: 'Ella es médica. / Ella está cansada.',
+    exampleEn: 'She is a doctor. / She is tired.',
     tip: 'estar + -ando/-iendo = right now. Habitual “I eat” is simply Como.',
   },
 
@@ -242,6 +295,8 @@ const RAW: {
     front: 'This gift is for you (recipient)',
     back: 'Este regalo es para ti',
     rule: 'Para → recipient',
+    exampleEs: 'Este regalo es para ti',
+    exampleEn: 'This gift is for you',
     tip: 'Intended recipient or beneficiary → para. Gracias por el regalo uses por (thanks for).',
   },
   {
@@ -249,6 +304,8 @@ const RAW: {
     front: 'I study in order to learn',
     back: 'Estudio para aprender',
     rule: 'Para → purpose',
+    exampleEs: 'para + infinitive = in order to',
+    exampleEn: 'I study in order to learn',
     tip: 'para + infinitive = in order to. Motive “because of” is often por.',
   },
   {
@@ -256,6 +313,8 @@ const RAW: {
     front: 'The homework is for Friday',
     back: 'La tarea es para el viernes',
     rule: 'Para → deadline',
+    exampleEs: 'La tarea es para el viernes',
+    exampleEn: 'The homework is for Friday',
     tip: 'Deadlines and due dates → para. Duration “for two hours” → por dos horas.',
   },
   {
@@ -263,6 +322,8 @@ const RAW: {
     front: 'Thanks for your help',
     back: 'Gracias por tu ayuda',
     rule: 'Por → gratitude / cause',
+    exampleEs: 'Gracias por tu ayuda',
+    exampleEn: 'Thanks for your help',
     tip: 'Gracias por… is fixed. Por also covers cause: Llegué tarde por el tráfico.',
   },
   {
@@ -270,6 +331,8 @@ const RAW: {
     front: 'I walked through the park',
     back: 'Caminé por el parque',
     rule: 'Por → through / along',
+    exampleEs: 'Caminé por el parque',
+    exampleEn: 'I walked through the park',
     tip: 'Movement through a space → por. Heading toward a destination → para el parque.',
   },
   {
@@ -277,6 +340,8 @@ const RAW: {
     front: 'I worked for three hours',
     back: 'Trabajé por tres horas',
     rule: 'Por → duration',
+    exampleEs: 'por + time = for (duration)',
+    exampleEn: 'I worked for three hours',
     tip: 'por + time = for (duration). durante also works: durante tres horas.',
   },
   {
@@ -284,6 +349,8 @@ const RAW: {
     front: 'In my opinion…',
     back: 'Para mí…',
     rule: 'Para → opinion',
+    exampleEs: 'Para mí…',
+    exampleEn: 'In a real sentence',
     tip: 'para + person often means “as far as X is concerned.” Por mí can mean “for my sake / fine by me.”',
   },
   {
@@ -291,6 +358,8 @@ const RAW: {
     front: 'Two dollars each / per day',
     back: 'dos dólares por día',
     rule: 'Por → per / rate',
+    exampleEs: 'dos dólares por día',
+    exampleEn: 'Two dollars each / per day',
     tip: 'Rates and “per”: por hora, por persona. Exchange: Te doy 10 por el libro.',
   },
 
@@ -300,6 +369,8 @@ const RAW: {
     front: 'I go to the store',
     back: 'Voy a la tienda',
     rule: 'a',
+    exampleEs: 'Voy a la tienda',
+    exampleEn: 'I go to the store',
     tip: 'a = to / at. With people as direct objects, add personal a: Visito a mi abuela.',
   },
   {
@@ -307,6 +378,8 @@ const RAW: {
     front: 'The book of Ana / Ana’s book',
     back: 'el libro de Ana',
     rule: 'de',
+    exampleEs: 'el libro de Ana',
+    exampleEn: 'The book of Ana / Ana’s book',
     tip: 'de marks possession and origin. No ’s in Spanish — use de.',
   },
   {
@@ -314,6 +387,8 @@ const RAW: {
     front: 'I am in the house / at home',
     back: 'Estoy en la casa / en casa',
     rule: 'en',
+    exampleEs: 'Estoy en la casa',
+    exampleEn: 'I am in the house / at home',
     tip: 'en covers in, on, at for location. en casa is a set phrase for “at home.”',
   },
   {
@@ -321,6 +396,8 @@ const RAW: {
     front: 'coffee with milk / without sugar',
     back: 'café con leche / sin azúcar',
     rule: 'con / sin',
+    exampleEs: 'café con leche',
+    exampleEn: 'coffee with milk / without sugar',
     tip: 'con = with · sin = without. sin takes no article often: sin azúcar.',
   },
   {
@@ -328,6 +405,8 @@ const RAW: {
     front: 'from Monday until Friday',
     back: 'desde el lunes hasta el viernes',
     rule: 'desde / hasta',
+    exampleEs: 'desde el lunes hasta el viernes',
+    exampleEn: 'from Monday until Friday',
     tip: 'desde = from / since · hasta = until / up to. Also: hasta luego.',
   },
   {
@@ -335,6 +414,8 @@ const RAW: {
     front: 'a book about history',
     back: 'un libro sobre historia',
     rule: 'sobre',
+    exampleEs: 'un libro sobre historia',
+    exampleEn: 'a book about history',
     tip: 'sobre = on top of / about. de can also mean “about” in some phrases.',
   },
   {
@@ -342,6 +423,8 @@ const RAW: {
     front: 'I see María (personal a)',
     back: 'Veo a María',
     rule: 'Personal a',
+    exampleEs: 'Veo a María',
+    exampleEn: 'I see María',
     tip: 'Direct object that is a specific person (or pet) needs a. Veo la película — no a for things.',
   },
   {
@@ -349,6 +432,8 @@ const RAW: {
     front: 'Think about / of the future',
     back: 'pensar en el futuro',
     rule: 'Verb + fixed prep',
+    exampleEs: 'pensar en el futuro',
+    exampleEn: 'Think about / of the future',
     tip: 'Many verbs demand a set preposition: soñar con, casarse con, depender de. Learn as chunks.',
   },
 
@@ -358,6 +443,8 @@ const RAW: {
     front: 'I see it (masc. singular)',
     back: 'Lo veo',
     rule: 'Direct object',
+    exampleEs: 'La veo',
+    exampleEn: 'I see it',
     tip: 'lo/la/los/las replace the thing seen. Feminine singular: La veo.',
   },
   {
@@ -365,6 +452,8 @@ const RAW: {
     front: 'She gives me the book → She gives it to me',
     back: 'Me lo da',
     rule: 'Indirect + direct',
+    exampleEs: 'me/te/nos + lo/la… Pronouns before the conjugated verb',
+    exampleEn: 'She gives me the book → She gives it to me',
     tip: 'Order: indirect then direct. me/te/nos + lo/la… Pronouns before the conjugated verb.',
   },
   {
@@ -372,6 +461,8 @@ const RAW: {
     front: 'I give it to him/her (le + lo)',
     back: 'Se lo doy',
     rule: 'le/les → se',
+    exampleEs: 'le/les cannot sit before lo/la/los/las — they become se',
+    exampleEn: 'I give it to him/her',
     tip: 'le/les cannot sit before lo/la/los/las — they become se. Se lo doy a Ana.',
   },
   {
@@ -379,6 +470,8 @@ const RAW: {
     front: 'I want to see it (two options)',
     back: 'Quiero verlo / Lo quiero ver',
     rule: 'Placement',
+    exampleEs: 'Quiero verlo',
+    exampleEn: 'I want to see it',
     tip: 'With infinitive or gerund, attach or place before the conjugated verb — both correct.',
   },
   {
@@ -386,6 +479,8 @@ const RAW: {
     front: 'Tell me (affirmative command)',
     back: 'Dime',
     rule: 'Commands',
+    exampleEs: 'Dime, Háblame',
+    exampleEn: 'Tell me',
     tip: 'Affirmative commands attach pronouns: Dime, Háblame. Negative: No me digas.',
   },
   {
@@ -393,6 +488,8 @@ const RAW: {
     front: 'We call you (plural vosotros region)',
     back: 'Os llamamos',
     rule: 'os',
+    exampleEs: 'In Latin America use los/les + ustedes forms instead',
+    exampleEn: 'We call you',
     tip: 'os = you all (Spain informal). In Latin America use los/les + ustedes forms instead.',
   },
   {
@@ -400,6 +497,8 @@ const RAW: {
     front: 'I don’t know them (people, masc.)',
     back: 'No los conozco',
     rule: 'Direct object',
+    exampleEs: 'No los conozco',
+    exampleEn: 'I don’t know them',
     tip: 'People can be lo/la or use personal a with a noun: No conozco a tus amigos.',
   },
   {
@@ -407,6 +506,8 @@ const RAW: {
     front: 'Can you explain it to us?',
     back: '¿Nos lo puedes explicar? / ¿Puedes explicárnoslo?',
     rule: 'Placement',
+    exampleEs: '¿Nos lo puedes explicar?',
+    exampleEn: 'Can you explain it to us?',
     tip: 'Two pronouns can attach to the infinitive (accent often needed: explicárnoslo) or go before.',
   },
 
@@ -416,6 +517,8 @@ const RAW: {
     front: 'I like coffee',
     back: 'Me gusta el café',
     rule: 'Agreement',
+    exampleEs: 'Me gusta el café',
+    exampleEn: 'I like coffee',
     tip: 'gusta agrees with café (singular). The “I” is me, not the subject.',
   },
   {
@@ -423,6 +526,8 @@ const RAW: {
     front: 'I like books',
     back: 'Me gustan los libros',
     rule: 'Agreement',
+    exampleEs: 'Me gustan los libros',
+    exampleEn: 'I like books',
     tip: 'Plural thing liked → gustan. Me gusta leer is singular because the subject is the infinitive leer.',
   },
   {
@@ -430,6 +535,8 @@ const RAW: {
     front: 'She likes the movie',
     back: 'Le gusta la película',
     rule: 'le / les',
+    exampleEs: 'Le gusta la película',
+    exampleEn: 'She likes the movie',
     tip: 'Clarify with a ella if needed: A ella le gusta. les for ustedes/ellos.',
   },
   {
@@ -437,6 +544,8 @@ const RAW: {
     front: 'We don’t like waiting',
     back: 'No nos gusta esperar',
     rule: 'Negation',
+    exampleEs: 'No nos gusta esperar',
+    exampleEn: 'We don’t like waiting',
     tip: 'no goes before the pronoun+verb chunk: No nos gusta. Infinitive subject stays singular.',
   },
   {
@@ -444,6 +553,8 @@ const RAW: {
     front: 'I love this song (encantar)',
     back: 'Me encanta esta canción',
     rule: 'Same pattern',
+    exampleEs: 'Me encanta esta canción',
+    exampleEn: 'I love this song',
     tip: 'encantar, interesar, faltar, doler follow gustar: Me duelen los pies.',
   },
   {
@@ -451,6 +562,8 @@ const RAW: {
     front: 'I would like a water, please',
     back: 'Me gustaría un agua, por favor',
     rule: 'Polite request',
+    exampleEs: 'Me gustaría un agua, por favor',
+    exampleEn: 'I would like a water, please',
     tip: 'Conditional gustaría softens requests — very common when ordering.',
   },
   {
@@ -458,6 +571,8 @@ const RAW: {
     front: 'Do you like it? (tú)',
     back: '¿Te gusta?',
     rule: 'Questions',
+    exampleEs: '¿Te gusta?',
+    exampleEn: 'Do you like it?',
     tip: 'Invert or use rising intonation. ¿Te gustan? if “they” are plural.',
   },
   {
@@ -465,6 +580,8 @@ const RAW: {
     front: 'They like us / We appeal to them',
     back: 'Les gustamos',
     rule: 'People as subject',
+    exampleEs: 'Me gusta el café.',
+    exampleEn: 'I like coffee.',
     tip: 'If people are what is liked, the verb agrees with those people: Les gustamos (nosotros).',
   },
 
@@ -474,6 +591,8 @@ const RAW: {
     front: 'I wake up at 7',
     back: 'Me despierto a las 7',
     rule: 'Daily routine',
+    exampleEs: 'Me despierto a las 7',
+    exampleEn: 'I wake up at 7',
     tip: 'Many routine verbs are reflexive: despertarse, levantarse, ducharse, vestirse, acostarse.',
   },
   {
@@ -481,6 +600,8 @@ const RAW: {
     front: 'Her name is Ana',
     back: 'Se llama Ana',
     rule: 'llamarse',
+    exampleEs: '¿Cómo te llamas?',
+    exampleEn: 'Her name is Ana',
     tip: 'llamarse = to be called. ¿Cómo te llamas? / Me llamo…',
   },
   {
@@ -488,6 +609,8 @@ const RAW: {
     front: 'I’m leaving (going away)',
     back: 'Me voy',
     rule: 'irse vs ir',
+    exampleEs: 'Me voy a casa can mean “I’m heading home.”',
+    exampleEn: 'I’m leaving',
     tip: 'ir = to go (somewhere) · irse = to leave / go away. Me voy a casa can mean “I’m heading home.”',
   },
   {
@@ -495,6 +618,8 @@ const RAW: {
     front: 'We see each other tomorrow',
     back: 'Nos vemos mañana',
     rule: 'Reciprocal',
+    exampleEs: 'Nos vemos mañana',
+    exampleEn: 'We see each other tomorrow',
     tip: 'Plural reflexives can mean “each other.” Se escriben = they write to each other.',
   },
   {
@@ -502,6 +627,8 @@ const RAW: {
     front: 'I’m going to take a shower',
     back: 'Voy a ducharme / Me voy a duchar',
     rule: 'Placement',
+    exampleEs: 'Voy a ducharme',
+    exampleEn: 'I’m going to take a shower',
     tip: 'Attach to infinitive or put before the conjugated verb — both fine.',
   },
   {
@@ -509,6 +636,8 @@ const RAW: {
     front: 'He falls asleep quickly',
     back: 'Se duerme rápido',
     rule: 'Meaning shift',
+    exampleEs: 'Se duerme rápido',
+    exampleEn: 'He falls asleep quickly',
     tip: 'dormir = to sleep · dormirse = to fall asleep. Similar: despertar vs despertarse.',
   },
   {
@@ -516,6 +645,8 @@ const RAW: {
     front: 'Sit down, please (usted)',
     back: 'Siéntese, por favor',
     rule: 'Commands',
+    exampleEs: 'Siéntese, por favor',
+    exampleEn: 'Sit down, please',
     tip: 'Affirmative command + se attached (accent often added). Negative: No se siente.',
   },
   {
@@ -523,6 +654,8 @@ const RAW: {
     front: 'I wash my hands',
     back: 'Me lavo las manos',
     rule: 'Body parts',
+    exampleEs: 'Me lavo las manos',
+    exampleEn: 'I wash my hands',
     tip: 'Spanish prefers the article, not “my”: Me lavo las manos (not mis manos) when the owner is clear.',
   },
 
@@ -532,6 +665,8 @@ const RAW: {
     front: 'I don’t speak French',
     back: 'No hablo francés',
     rule: 'Basic no',
+    exampleEs: 'No hablo francés',
+    exampleEn: 'I don’t speak French',
     tip: 'no goes right before the conjugated verb (or before object pronouns: No lo veo).',
   },
   {
@@ -539,6 +674,8 @@ const RAW: {
     front: 'I don’t see anyone',
     back: 'No veo a nadie',
     rule: 'Double negative',
+    exampleEs: 'Nadie without no at the start: Nadie vino',
+    exampleEn: 'I don’t see anyone',
     tip: 'no… nadie is correct and required. Nadie without no at the start: Nadie vino.',
   },
   {
@@ -546,6 +683,8 @@ const RAW: {
     front: 'I never eat meat',
     back: 'Nunca como carne / No como carne nunca',
     rule: 'nunca',
+    exampleEs: 'Nunca como carne',
+    exampleEn: 'I never eat meat',
     tip: 'Nunca can start the sentence alone, or follow with no… nunca.',
   },
   {
@@ -553,6 +692,8 @@ const RAW: {
     front: 'There is nothing here',
     back: 'No hay nada aquí',
     rule: 'nada',
+    exampleEs: 'No hay nada aquí',
+    exampleEn: 'There is nothing here',
     tip: 'no… nada. Nada starting: Nada es imposible. Avoid English-style single negation after no.',
   },
   {
@@ -560,6 +701,8 @@ const RAW: {
     front: 'I don’t want any book',
     back: 'No quiero ningún libro',
     rule: 'ningún / ninguna',
+    exampleEs: 'No quiero ningún libro',
+    exampleEn: 'I don’t want any book',
     tip: 'ningún before masculine singular nouns; ninguna before feminine. Plural: ningunos is rare — usually ninguno/ninguna.',
   },
   {
@@ -567,6 +710,8 @@ const RAW: {
     front: 'Me neither / Neither do I',
     back: 'Yo tampoco',
     rule: 'tampoco',
+    exampleEs: 'Positive “me too” is también',
+    exampleEn: 'Me neither / Neither do I',
     tip: 'tampoco = neither / either (negative). Positive “me too” is también.',
   },
   {
@@ -574,6 +719,8 @@ const RAW: {
     front: 'Nobody knows',
     back: 'Nadie sabe',
     rule: 'nadie as subject',
+    exampleEs: 'Nadie sabe',
+    exampleEn: 'Nobody knows',
     tip: 'When nadie/nada starts the sentence, you don’t add no before the verb.',
   },
   {
@@ -581,6 +728,8 @@ const RAW: {
     front: 'I don’t have either / I don’t have one either',
     back: 'No tengo ninguno / No tengo tampoco',
     rule: 'Agreement',
+    exampleEs: 'ninguno agrees when replacing a noun',
+    exampleEn: 'I don’t have either / I don’t have one either',
     tip: 'ninguno agrees when replacing a noun. tampoco denies addition: Tampoco tengo tiempo.',
   },
 
@@ -590,6 +739,8 @@ const RAW: {
     front: 'taller than',
     back: 'más alto/a que',
     rule: 'más / menos',
+    exampleEs: 'más + adj + que',
+    exampleEn: 'taller than',
     tip: 'más + adj + que. menos bajo que = less short than. Agree alto/alta with the person.',
   },
   {
@@ -597,6 +748,8 @@ const RAW: {
     front: 'as interesting as',
     back: 'tan interesante como',
     rule: 'Equality',
+    exampleEs: 'tanto/a/os/as + noun + como',
+    exampleEn: 'as interesting as',
     tip: 'tan + adjective/adverb + como. For nouns: tanto/a/os/as + noun + como.',
   },
   {
@@ -604,6 +757,8 @@ const RAW: {
     front: 'as many books as',
     back: 'tantos libros como',
     rule: 'tanto + noun',
+    exampleEs: 'Ella es más alta que yo.',
+    exampleEn: 'She is taller than I am.',
     tip: 'tanto agrees: tanta agua, tantos libros, tantas ideas.',
   },
   {
@@ -611,6 +766,8 @@ const RAW: {
     front: 'better / worse',
     back: 'mejor / peor',
     rule: 'Irregulars',
+    exampleEs: 'Ella es más alta que yo.',
+    exampleEn: 'She is taller than I am.',
     tip: 'Use mejor/peor instead of más bueno/más malo in most comparisons of quality.',
   },
   {
@@ -618,6 +775,8 @@ const RAW: {
     front: 'older / younger (people)',
     back: 'mayor / menor',
     rule: 'Irregulars',
+    exampleEs: 'más viejo can sound blunt for people',
+    exampleEn: 'older / younger',
     tip: 'mayor/menor for age. más viejo can sound blunt for people; más grande is size.',
   },
   {
@@ -625,6 +784,8 @@ const RAW: {
     front: 'the most interesting book',
     back: 'el libro más interesante',
     rule: 'Superlative',
+    exampleEs: 'el libro más interesante',
+    exampleEn: 'the most interesting book',
     tip: 'el/la/los/las + noun + más/menos + adj, or el más interesante de…',
   },
   {
@@ -632,6 +793,8 @@ const RAW: {
     front: 'very easy (absolute superlative)',
     back: 'facilísimo / muy fácil',
     rule: '-ísimo',
+    exampleEs: 'facilísimo',
+    exampleEn: 'very easy',
     tip: '-ísimo intensifies: buenísimo, rapidísimo. Spelling changes: rico → riquísimo.',
   },
   {
@@ -639,6 +802,8 @@ const RAW: {
     front: 'more than 10 (numbers)',
     back: 'más de 10',
     rule: 'más de',
+    exampleEs: 'más de 10',
+    exampleEn: 'more than 10',
     tip: 'Before numbers use más de / menos de, not más que. más que before clauses/nouns.',
   },
 
@@ -648,6 +813,8 @@ const RAW: {
     front: 'this book / these books',
     back: 'este libro / estos libros',
     rule: 'este',
+    exampleEs: 'Esta casa es bonita.',
+    exampleEn: 'This house is pretty.',
     tip: 'Near the speaker. Feminine: esta / estas.',
   },
   {
@@ -655,6 +822,8 @@ const RAW: {
     front: 'that book (near you) / those',
     back: 'ese libro / esos libros',
     rule: 'ese',
+    exampleEs: 'Esta casa es bonita.',
+    exampleEn: 'This house is pretty.',
     tip: 'Near the listener or medium distance. esa / esas feminine.',
   },
   {
@@ -662,6 +831,8 @@ const RAW: {
     front: 'that book over there',
     back: 'aquel libro',
     rule: 'aquel',
+    exampleEs: 'Esta casa es bonita.',
+    exampleEn: 'This house is pretty.',
     tip: 'Far from both. aquella / aquellos / aquellas. Common in writing and some regions.',
   },
   {
@@ -669,6 +840,8 @@ const RAW: {
     front: 'this / that (idea, neuter)',
     back: 'esto / eso',
     rule: 'Neuter',
+    exampleEs: '¿Qué es eso?',
+    exampleEn: 'this / that',
     tip: 'esto/eso/aquello never change for gender — they point to situations or unnamed things: ¿Qué es eso?',
   },
   {
@@ -676,6 +849,8 @@ const RAW: {
     front: 'here / there / over there',
     back: 'aquí / ahí / allí',
     rule: 'Place adverbs',
+    exampleEs: 'Some speakers use acá/allá (especially Latin America)',
+    exampleEn: 'here / there / over there',
     tip: 'Pair with este/ese/aquel. Some speakers use acá/allá (especially Latin America).',
   },
   {
@@ -683,6 +858,8 @@ const RAW: {
     front: 'I want this one (feminine)',
     back: 'Quiero esta',
     rule: 'Pronoun use',
+    exampleEs: 'Quiero esta',
+    exampleEn: 'I want this one',
     tip: 'Demonstratives can stand alone when the noun is clear. Modern Spanish drops written accents on these pronouns.',
   },
   {
@@ -690,6 +867,8 @@ const RAW: {
     front: 'Those days (far / past nuance)',
     back: 'aquellos días',
     rule: 'aquel',
+    exampleEs: 'en aquellos tiempos = in those days',
+    exampleEn: 'Those days',
     tip: 'aquel often colors remoteness in time: en aquellos tiempos = in those days.',
   },
   {
@@ -697,6 +876,8 @@ const RAW: {
     front: 'What is that?',
     back: '¿Qué es eso?',
     rule: 'eso',
+    exampleEs: '¿Qué es eso?',
+    exampleEn: 'What is that?',
     tip: 'Neuter eso for an unknown object or situation. ¿Qué es esto? if it’s near you.',
   },
 
@@ -706,6 +887,8 @@ const RAW: {
     front: 'my house / my houses',
     back: 'mi casa / mis casas',
     rule: 'Short forms',
+    exampleEs: 'mi casa',
+    exampleEn: 'my house / my houses',
     tip: 'mi/mis agree with the noun owned, not with “I.” No gender change for mi/tu/su.',
   },
   {
@@ -713,6 +896,8 @@ const RAW: {
     front: 'our book / our house',
     back: 'nuestro libro / nuestra casa',
     rule: 'nuestro',
+    exampleEs: 'Mi hermano vive aquí.',
+    exampleEn: 'My brother lives here.',
     tip: 'nuestro/vuestro change for gender and number: nuestros, nuestras.',
   },
   {
@@ -720,6 +905,8 @@ const RAW: {
     front: 'his / her / your (usted) / their book',
     back: 'su libro',
     rule: 'su ambiguity',
+    exampleEs: 'El libro de él',
+    exampleEn: 'his / her / your (usted) / their book',
     tip: 'Clarify: el libro de él / de ella / de usted / de ellos. sus libros for plural nouns.',
   },
   {
@@ -727,6 +914,8 @@ const RAW: {
     front: 'The book is mine',
     back: 'El libro es mío',
     rule: 'Long forms',
+    exampleEs: 'El libro es mío',
+    exampleEn: 'The book is mine',
     tip: 'mío/tuyo/suyo… after ser or after a noun: un amigo mío = a friend of mine.',
   },
   {
@@ -734,6 +923,8 @@ const RAW: {
     front: 'mine (the masculine one)',
     back: 'el mío',
     rule: 'el mío',
+    exampleEs: 'el mío',
+    exampleEn: 'mine',
     tip: 'Article + long form replaces a noun: ¿Tu coche? El mío es azul.',
   },
   {
@@ -741,6 +932,8 @@ const RAW: {
     front: 'your (tú) names',
     back: 'tus nombres',
     rule: 'tu / tus',
+    exampleEs: 'tus nombres',
+    exampleEn: 'your (tú) names',
     tip: 'tu without accent = possessive · tú with accent = subject pronoun “you.”',
   },
   {
@@ -748,6 +941,8 @@ const RAW: {
     front: 'a friend of hers',
     back: 'una amiga suya',
     rule: 'Long forms',
+    exampleEs: 'una amiga suya',
+    exampleEn: 'a friend of hers',
     tip: 'After indefinite nouns, long possessives are natural: un compañero suyo.',
   },
   {
@@ -755,6 +950,8 @@ const RAW: {
     front: 'Whose is this?',
     back: '¿De quién es esto?',
     rule: 'de quién',
+    exampleEs: '¿De quién es esto?',
+    exampleEn: 'Whose is this?',
     tip: 'Possession questions use de quién, not a possessive adjective.',
   },
 
@@ -764,6 +961,8 @@ const RAW: {
     front: 'Yesterday I ate tapas (completed)',
     back: 'Ayer comí tapas',
     rule: 'Preterite',
+    exampleEs: 'Ayer comí tapas',
+    exampleEn: 'Yesterday I ate tapas',
     tip: 'Single completed action → preterite. Time markers: ayer, anoche, el año pasado.',
   },
   {
@@ -771,6 +970,8 @@ const RAW: {
     front: 'I used to eat tapas every Friday',
     back: 'Comía tapas todos los viernes',
     rule: 'Imperfect',
+    exampleEs: 'Comía tapas todos los viernes',
+    exampleEn: 'I used to eat tapas every Friday',
     tip: 'Habit or repeated past → imperfect. todos los… is a classic imperfect cue.',
   },
   {
@@ -778,6 +979,8 @@ const RAW: {
     front: 'It was raining when I left',
     back: 'Llovía cuando salí',
     rule: 'Background + event',
+    exampleEs: 'Llovía cuando salí',
+    exampleEn: 'It was raining when I left',
     tip: 'Imperfect = ongoing background · preterite = interrupting/completed event.',
   },
   {
@@ -785,6 +988,8 @@ const RAW: {
     front: 'I was 10 years old',
     back: 'Tenía 10 años',
     rule: 'Age / clock / weather',
+    exampleEs: 'Tenía 10 años',
+    exampleEn: 'I was 10 years old',
     tip: 'Age, clock time, and weather descriptions in the past usually take imperfect.',
   },
   {
@@ -792,6 +997,8 @@ const RAW: {
     front: 'It was 2:00',
     back: 'Eran las dos',
     rule: 'Clock',
+    exampleEs: 'Eran las dos',
+    exampleEn: 'It was 2:00',
     tip: 'Past clock time: era la una / eran las… Preterite would sound like “became 2:00” in a story beat.',
   },
   {
@@ -799,6 +1006,8 @@ const RAW: {
     front: 'She started to speak',
     back: 'Empezó a hablar',
     rule: 'Preterite',
+    exampleEs: 'Empezó a hablar',
+    exampleEn: 'She started to speak',
     tip: 'Beginnings and endings (empezar, terminar, llegar) often preterite when they mark plot points.',
   },
   {
@@ -806,6 +1015,8 @@ const RAW: {
     front: 'The house was big and white',
     back: 'La casa era grande y blanca',
     rule: 'Description',
+    exampleEs: 'La casa era grande y blanca',
+    exampleEn: 'The house was big and white',
     tip: 'Setting the scene — appearance, personality, ongoing states — imperfect.',
   },
   {
@@ -813,6 +1024,8 @@ const RAW: {
     front: 'I wanted to help, so I called',
     back: 'Quería ayudar, así que llamé',
     rule: 'Mental state + action',
+    exampleEs: 'Quería ayudar, así que llamé',
+    exampleEn: 'I wanted to help, so I called',
     tip: 'Ongoing desire/feeling (quería) often imperfect; the action taken (llamé) preterite.',
   },
 
@@ -822,6 +1035,8 @@ const RAW: {
     front: 'Speak! (tú, affirmative)',
     back: '¡Habla!',
     rule: 'Tú affirmative',
+    exampleEs: '¡Habla!',
+    exampleEn: 'Speak!',
     tip: 'Most -ar verbs: take present él/ella form. Irregulars: haz, ve, ten, ven, sal, sé, di, pon.',
   },
   {
@@ -829,6 +1044,8 @@ const RAW: {
     front: 'Don’t speak! (tú)',
     back: '¡No hables!',
     rule: 'Tú negative',
+    exampleEs: '¡No hables!',
+    exampleEn: 'Don’t speak!',
     tip: 'Negative tú uses present subjunctive: no hables, no comas, no vivas.',
   },
   {
@@ -836,6 +1053,8 @@ const RAW: {
     front: 'Come! (tú irregular)',
     back: '¡Ven!',
     rule: 'Irregular tú',
+    exampleEs: 'ven, ten, pon, haz, sal, sé, di, ve (ir)',
+    exampleEn: 'Come!',
     tip: 'Memorize: ven, ten, pon, haz, sal, sé, di, ve (ir). Negative: no vengas.',
   },
   {
@@ -843,6 +1062,8 @@ const RAW: {
     front: 'Speak, please (usted)',
     back: 'Hable, por favor',
     rule: 'Usted',
+    exampleEs: 'Hable, por favor',
+    exampleEn: 'Speak, please',
     tip: 'Usted commands = present subjunctive for yes and no: Hable / No hable.',
   },
   {
@@ -850,6 +1071,8 @@ const RAW: {
     front: 'Tell me the truth (tú)',
     back: 'Dime la verdad',
     rule: 'Pronouns',
+    exampleEs: 'Dime la verdad',
+    exampleEn: 'Tell me the truth',
     tip: 'Attach pronouns to affirmative commands. Accent: dígamelo (usted). Negative: No me digas.',
   },
   {
@@ -857,6 +1080,8 @@ const RAW: {
     front: 'Let’s go / Let’s eat',
     back: 'Vamos / Comamos',
     rule: 'Nosotros',
+    exampleEs: '¡Ven aquí! / Escúchame.',
+    exampleEn: 'Come here! / Listen to me.',
     tip: 'vamos can mean “let’s go.” Other verbs: present subjunctive — comamos, hablemos. Negative: no comamos.',
   },
   {
@@ -864,6 +1089,8 @@ const RAW: {
     front: 'Sit down (tú)',
     back: 'Siéntate',
     rule: 'Reflexive command',
+    exampleEs: 'stem + te attached (accent)',
+    exampleEn: 'Sit down',
     tip: 'Affirmative: stem + te attached (accent). Negative: No te sientes.',
   },
   {
@@ -871,6 +1098,8 @@ const RAW: {
     front: 'Please open the window (ustedes)',
     back: 'Abran la ventana, por favor',
     rule: 'Ustedes',
+    exampleEs: 'Abran la ventana, por favor',
+    exampleEn: 'Please open the window',
     tip: 'Latin America uses ustedes for plural you. Form = present subjunctive plural.',
   },
   {
@@ -878,6 +1107,8 @@ const RAW: {
     front: 'Come here (tú)',
     back: '¡Ven aquí!',
     rule: 'Useful',
+    exampleEs: '¡Ven aquí!',
+    exampleEn: 'Come here',
     tip: 'venir → ven. LatAm: Ven acá. Soften: Ven aquí, por favor.',
   },
   {
@@ -885,6 +1116,8 @@ const RAW: {
     front: 'Go there (tú)',
     back: '¡Ve allí!',
     rule: 'Useful',
+    exampleEs: '¡Ve allí!',
+    exampleEn: 'Go there',
     tip: 'ir → ve. Negative: No vayas allí. Don’t confuse with ver → ve (“look”).',
   },
   {
@@ -892,6 +1125,8 @@ const RAW: {
     front: 'Eat! (tú)',
     back: '¡Come!',
     rule: 'Useful',
+    exampleEs: '¡Come!',
+    exampleEn: 'Eat!',
     tip: 'comer → come. Don’t eat: No comas.',
   },
   {
@@ -899,6 +1134,8 @@ const RAW: {
     front: 'Listen to me (tú)',
     back: 'Escúchame',
     rule: 'Useful',
+    exampleEs: 'No me escuches (rare',
+    exampleEn: 'Listen to me',
     tip: 'escuchar + me with accent. Negative: No me escuches (rare; usually No me ignores).',
   },
   {
@@ -906,6 +1143,8 @@ const RAW: {
     front: 'Help me (tú)',
     back: 'Ayúdame',
     rule: 'Useful',
+    exampleEs: '¡Ayuda!',
+    exampleEn: 'Help me',
     tip: 'Urgent: ¡Ayuda! Formal: Ayúdeme.',
   },
   {
@@ -913,6 +1152,8 @@ const RAW: {
     front: 'Don’t go (tú)',
     back: 'No te vayas',
     rule: 'Useful',
+    exampleEs: 'No te vayas',
+    exampleEn: 'Don’t go',
     tip: 'Negative of irse. Don’t go to a place: No vayas a…',
   },
 ]

@@ -23,15 +23,14 @@ import {
   type PersistedProgress,
 } from '../lib/progress'
 import { usePersistentProgress } from '../lib/usePersistentProgress'
-import { useSpanishVoice } from '../lib/useSpanishVoice'
 import { getTrackReverse, saveSession } from '../lib/session'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { SpeakButton } from '../components/SpeakButton'
 import { CardExplain } from '../components/CardExplain'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { CardVisual } from '../components/CardVisual'
+import { DirectionToggle } from '../components/DirectionToggle'
 import { GrammarLessonPanel } from '../components/GrammarLessonPanel'
-import { GrammarVisual } from '../components/GrammarVisual'
 
 export const GRAMMAR_KEY = 'habla:grammar:v1'
 
@@ -83,7 +82,6 @@ export function GrammarTrack({ onBack }: Props) {
   const learnedInSection = learnedCount(activeDeck, progress.byId)
   const learnedTotal = learnedCount(grammarCards, progress.byId)
   const masteryPct = deckMasteryPercent(activeDeck, progress.byId)
-  const trackMasteryPct = deckMasteryPercent(grammarCards, progress.byId)
 
   const currentId = progress.queue[progress.index]
   const current =
@@ -96,19 +94,6 @@ export function GrammarTrack({ onBack }: Props) {
       : 0
   const reviewCard = scopedLearned[reviewIndex]
   const lesson = getGrammarLesson(section)
-
-  const voice = useSpanishVoice({
-    spanishText: phase === 'study' ? current?.back : undefined,
-    showingSpanish:
-      phase === 'study' && (reverse ? !flipped : flipped),
-    cardKey: phase === 'study' ? current?.id : undefined,
-  })
-  useSpanishVoice({
-    spanishText: phase === 'review-learned' ? reviewCard?.back : undefined,
-    showingSpanish:
-      phase === 'review-learned' && (reverse ? !flipped : flipped),
-    cardKey: phase === 'review-learned' ? reviewCard?.id : undefined,
-  })
 
   usePersistentProgress(progress, GRAMMAR_KEY, grammarCards)
 
@@ -141,9 +126,6 @@ export function GrammarTrack({ onBack }: Props) {
   const flip = () => {
     const next = !flipped
     setFlipped(next)
-    const showSpanish = reverse ? !next : next
-    if (showSpanish && voice.autoSpeak && current?.back) voice.replay()
-    else if (!showSpanish) voice.stop()
   }
 
   const onCorrect = () => {
@@ -203,6 +185,12 @@ export function GrammarTrack({ onBack }: Props) {
   const promptOf = (card: GrammarCard) => (reverse ? card.back : card.front)
   const answerOf = (card: GrammarCard) => (reverse ? card.front : card.back)
   const speakOf = (card: GrammarCard) => card.speak ?? card.back
+
+  const setDirection = (next: boolean) => {
+    setReverse(next)
+    setFlipped(false)
+    saveSession({ reverseByTrack: { grammar: next } })
+  }
 
   return (
     <div className="app grammar-theme">
@@ -291,7 +279,7 @@ export function GrammarTrack({ onBack }: Props) {
 
         <main className="stage">
           {phase === 'start' && (
-            <section className="panel start-panel">
+            <section className="panel start-panel grammar-start">
               <button type="button" className="back-btn back-hub" onClick={onBack}>
                 <span className="back-btn-icon" aria-hidden="true">
                   ←
@@ -301,33 +289,31 @@ export function GrammarTrack({ onBack }: Props) {
               <p className="brand">Habla</p>
               <h1>Grammar</h1>
               <p className="subtitle">
-                Lessons with lots of examples — then flashcards
-              </p>
-              <p className="lede">
-                Each chapter is a colorful mini-class: rules, bilingual examples,
-                and side-by-side contrasts. Then drill cards with tips on every
-                reveal.
+                One short lesson, then a few cards.
               </p>
 
-              <div className="chapter-list" aria-label="Grammar chapters">
+              <div
+                className="grammar-chapter-chips"
+                role="listbox"
+                aria-label="Grammar chapters"
+              >
                 {GRAMMAR_SECTIONS.map((s) => {
                   const deck = filterGrammar(grammarCards, s.id)
                   const pct = deckMasteryPercent(deck, progress.byId)
-                  const learnedN = learnedCount(deck, progress.byId)
+                  const active = section === s.id
                   return (
                     <button
                       key={s.id}
                       type="button"
-                      className={`chapter-list-item chapter-row ${section === s.id ? 'is-active' : ''}`}
+                      role="option"
+                      aria-selected={active}
+                      className={`grammar-chip ${active ? 'is-active' : ''}`}
                       onClick={() => setSection(s.id)}
                     >
-                      <GrammarVisual id={s.id} size="thumb" />
-                      <ChapterProgress
-                        size="sm"
-                        label={s.label}
-                        percent={pct}
-                        detail={`${learnedN} / ${deck.length}`}
-                      />
+                      <span className="grammar-chip-label">{s.label}</span>
+                      {s.id !== 'all' && (
+                        <span className="grammar-chip-pct">{pct}%</span>
+                      )}
                     </button>
                   )
                 })}
@@ -339,40 +325,11 @@ export function GrammarTrack({ onBack }: Props) {
                 overview={section === 'all'}
               />
 
-              <ChapterProgress
-                label="Selected chapter"
-                percent={masteryPct}
-                detail={`${learnedInSection} of ${activeDeck.length} · track ${trackMasteryPct}%`}
-              />
-
-              <div className="options">
-                <label className="option">
-                  <input
-                    type="checkbox"
-                    checked={reverse}
-                    onChange={(e) => {
-                      const on = e.target.checked
-                      setReverse(on)
-                      saveSession({ reverseByTrack: { grammar: on } })
-                    }}
-                  />
-                  Spanish → English (reverse practice)
-                </label>
-                {voice.supported && (
-                  <label className="option">
-                    <input
-                      type="checkbox"
-                      checked={voice.autoSpeak}
-                      onChange={(e) => voice.setAutoSpeak(e.target.checked)}
-                    />
-                    Auto-read Spanish aloud
-                  </label>
-                )}
-              </div>
-
               <div className="cta-row">
                 <button type="button" className="primary-btn" onClick={start}>
-                  {hasSavedProgress ? 'Continue studying' : 'Start flashcards'}
+                  {hasSavedProgress
+                    ? `Practice ${sectionLabel}`
+                    : `Start ${sectionLabel}`}
                 </button>
                 {hasSavedProgress && (
                   <button
@@ -380,14 +337,13 @@ export function GrammarTrack({ onBack }: Props) {
                     className="secondary-btn"
                     onClick={() => setConfirmReset(true)}
                   >
-                    Reset this track
+                    Reset
                   </button>
                 )}
               </div>
 
-              <p className="meta">
-                {sectionLabel} · {activeDeck.length} cards · {learningLeft} still
-                learning · {learnedInSection} learned in section
+              <p className="meta grammar-meta">
+                {activeDeck.length} cards · {learningLeft} left · {masteryPct}%
               </p>
             </section>
           )}
@@ -402,12 +358,18 @@ export function GrammarTrack({ onBack }: Props) {
               masteryPct={masteryPct}
               flipped={flipped}
               onFlip={flip}
+              reverse={reverse}
+              onDirectionChange={setDirection}
               frontLabel={reverse ? 'Español' : 'English'}
               backLabel={reverse ? 'English' : 'Español'}
               front={promptOf(current)}
               back={answerOf(current)}
               speakText={speakOf(current)}
               tip={current.tip}
+              cardFront={current.front}
+              cardBack={current.back}
+              exampleEs={current.exampleEs}
+              exampleEn={current.exampleEn}
               rule={current.rule}
               section={current.section}
               cardFx={cardFx}
@@ -459,12 +421,18 @@ export function GrammarTrack({ onBack }: Props) {
               )}
               flipped={flipped}
               onFlip={flip}
+              reverse={reverse}
+              onDirectionChange={setDirection}
               frontLabel={reverse ? 'Español' : 'English'}
               backLabel={reverse ? 'English' : 'Español'}
               front={promptOf(reviewCard)}
               back={answerOf(reviewCard)}
               speakText={speakOf(reviewCard)}
               tip={reviewCard.tip}
+              cardFront={reviewCard.front}
+              cardBack={reviewCard.back}
+              exampleEs={reviewCard.exampleEs}
+              exampleEn={reviewCard.exampleEn}
               rule={reviewCard.rule}
               section={reviewCard.section}
               onMissed={() => {
@@ -537,12 +505,20 @@ function StudyPanel(props: {
   masteryPct: number
   flipped: boolean
   onFlip: () => void
+  reverse: boolean
+  onDirectionChange: (reverse: boolean) => void
+  learnLabel?: string
+  recallLabel?: string
   frontLabel: string
   backLabel: string
   front: string
   back: string
   speakText: string
   tip: string
+  cardFront: string
+  cardBack: string
+  exampleEs?: string
+  exampleEn?: string
   rule?: string
   section?: string
   cardFx?: 'correct' | 'incorrect' | null
@@ -563,12 +539,20 @@ function StudyPanel(props: {
     masteryPct,
     flipped,
     onFlip,
+    reverse,
+    onDirectionChange,
+    learnLabel,
+    recallLabel,
     frontLabel,
     backLabel,
     front,
     back,
     speakText,
     tip,
+    cardFront,
+    cardBack,
+    exampleEs,
+    exampleEn,
     rule,
     section,
     cardFx = null,
@@ -610,6 +594,12 @@ function StudyPanel(props: {
             {streakLabel ?? `Streak ${streak ?? 0}/${STREAK_TO_LEARNED}`}
           </span>
         </div>
+        <DirectionToggle
+          reverse={reverse}
+          onChange={onDirectionChange}
+          learnLabel={learnLabel}
+          recallLabel={recallLabel}
+        />
         <div className="study-progress-wrap">
           <ChapterProgress size="sm" label="Chapter" percent={masteryPct} />
         </div>
@@ -647,7 +637,7 @@ function StudyPanel(props: {
         </div>
       </button>
 
-      <CardExplain visible={flipped} tip={tip} rule={rule} />
+      <CardExplain visible={flipped} tip={tip} rule={rule} front={cardFront} back={cardBack} exampleEs={exampleEs} exampleEn={exampleEn} />
 
       <div className="actions">
         <button

@@ -89,6 +89,8 @@ const RAW: {
   category: DailyCategory
   situation: DailySituation
   tip: string
+  exampleEs?: string
+  exampleEn?: string
 }[] = [
   // Greetings
   {
@@ -96,6 +98,8 @@ const RAW: {
     es: 'Hola',
     category: 'greetings',
     situation: 'general',
+    exampleEs: 'Hola',
+    exampleEn: 'Hello',
     tip: 'Universal and informal. Fine with strangers in Latin America; add buenos días/tardes for more polish.',
   },
   {
@@ -103,6 +107,8 @@ const RAW: {
     es: 'Buenos días',
     category: 'greetings',
     situation: 'general',
+    exampleEs: 'Buenos días',
+    exampleEn: 'Good morning',
     tip: 'Used until midday (roughly until lunch). Always plural: buenos días, never buen día in greetings.',
   },
   {
@@ -110,6 +116,8 @@ const RAW: {
     es: 'Buenas tardes',
     category: 'greetings',
     situation: 'general',
+    exampleEs: 'Buenas tardes',
+    exampleEn: 'Good afternoon',
     tip: 'From lunchtime until dark. Switch to buenas noches after sunset.',
   },
   {
@@ -117,6 +125,8 @@ const RAW: {
     es: 'Buenas noches',
     category: 'greetings',
     situation: 'general',
+    exampleEs: 'Buenas noches',
+    exampleEn: 'Good evening / Good night',
     tip: 'Both “hello after dark” and “good night” when leaving. Context decides the meaning.',
   },
   {
@@ -124,6 +134,8 @@ const RAW: {
     es: '¿Cómo estás?',
     category: 'greetings',
     situation: 'friends',
+    exampleEs: '¿Cómo estás?',
+    exampleEn: 'How are you?',
     tip: 'tú form. For strangers/elders use ¿Cómo está? or ¿Cómo está usted?',
   },
   {
@@ -131,6 +143,8 @@ const RAW: {
     es: '¿Cómo está usted?',
     category: 'greetings',
     situation: 'general',
+    exampleEs: '¿Cómo está usted?',
+    exampleEn: 'How are you?',
     tip: 'usted + está. Expected with older people, clients, and in formal service settings.',
   },
   {
@@ -159,6 +173,8 @@ const RAW: {
     es: 'Mucho gusto',
     category: 'greetings',
     situation: 'general',
+    exampleEs: 'Encantado/a de conocerte (more emphatic)',
+    exampleEn: 'Nice to meet you',
     tip: 'Standard intro reply. Also: Encantado/a de conocerte (more emphatic).',
   },
   {
@@ -166,6 +182,8 @@ const RAW: {
     es: 'Hasta luego',
     category: 'greetings',
     situation: 'general',
+    exampleEs: 'Hasta luego',
+    exampleEn: 'See you later',
     tip: 'Neutral goodbye when you expect to see them again someday — not necessarily later today.',
   },
   {
@@ -173,6 +191,8 @@ const RAW: {
     es: 'Hasta mañana',
     category: 'greetings',
     situation: 'general',
+    exampleEs: 'Hasta mañana',
+    exampleEn: 'See you tomorrow',
     tip: 'hasta + time word. Also: hasta el lunes, hasta pronto.',
   },
   {
@@ -180,6 +200,8 @@ const RAW: {
     es: 'Hasta pronto',
     category: 'greetings',
     situation: 'friends',
+    exampleEs: 'Warmer than adiós',
+    exampleEn: 'See you soon',
     tip: 'Warmer than adiós; implies you’ll reconnect before long.',
   },
   {
@@ -187,6 +209,8 @@ const RAW: {
     es: 'Adiós',
     category: 'greetings',
     situation: 'general',
+    exampleEs: 'Adiós',
+    exampleEn: 'Bye',
     tip: 'Can sound final. Among friends, chao/chau is more common day-to-day.',
   },
   {
@@ -194,6 +218,8 @@ const RAW: {
     es: 'Cuídate',
     category: 'greetings',
     situation: 'friends',
+    exampleEs: 'Cuídate.',
+    exampleEn: 'Take care.',
     tip: 'Reflexive command: cuidar + te. Formal: Cuídese.',
   },
   {
@@ -201,6 +227,8 @@ const RAW: {
     es: 'Bienvenido / Bienvenida',
     category: 'greetings',
     situation: 'general',
+    exampleEs: 'Bienvenido',
+    exampleEn: 'Welcome',
     tip: 'Agree with gender: bienvenido (m), bienvenida (f), bienvenidos/as (plural).',
   },
 
@@ -210,6 +238,8 @@ const RAW: {
     es: 'Por favor',
     category: 'politeness',
     situation: 'general',
+    exampleEs: 'Por favor',
+    exampleEn: 'Please',
     tip: 'Goes before or after the request. Softens commands: Pásame el sal, por favor.',
   },
   {
@@ -217,6 +247,8 @@ const RAW: {
     es: 'Gracias',
     category: 'politeness',
     situation: 'general',
+    exampleEs: 'Reply with de nada or con gusto',
+    exampleEn: 'Thank you',
     tip: 'Reply with de nada or con gusto. Add muchas for stronger thanks.',
   },
   {
@@ -224,6 +256,8 @@ const RAW: {
     es: 'Muchas gracias',
     category: 'politeness',
     situation: 'general',
+    exampleEs: 'Muchas gracias',
+    exampleEn: 'Thank you very much',
     tip: 'muchas agrees with implied gracias (feminine plural). Even stronger: mil gracias.',
   },
   {
@@ -238,6 +272,8 @@ const RAW: {
     es: 'Perdón / Disculpe',
     category: 'politeness',
     situation: 'general',
+    exampleEs: 'perdón = bumping into someone or mild apology',
+    exampleEn: 'Excuse me',
     tip: 'perdón = bumping into someone or mild apology; disculpe (formal) to get attention or interrupt.',
   },
   {
@@ -252,6 +288,8 @@ const RAW: {
     es: 'No hay problema',
     category: 'politeness',
     situation: 'general',
+    exampleEs: 'no worries”) in everyday speech',
+    exampleEn: 'No problem',
     tip: 'Also no pasa nada (“it’s fine / no worries”) in everyday speech.',
   },
   {
@@ -259,6 +297,8 @@ const RAW: {
     es: 'Por supuesto',
     category: 'politeness',
     situation: 'general',
+    exampleEs: 'claro, cómo no, desde luego',
+    exampleEn: 'Of course',
     tip: 'Confident yes. Casual cousins: claro, cómo no, desde luego.',
   },
   {
@@ -266,6 +306,8 @@ const RAW: {
     es: 'Con mucho gusto',
     category: 'politeness',
     situation: 'general',
+    exampleEs: 'Con mucho gusto',
+    exampleEn: 'With pleasure',
     tip: 'Warm reply to thanks or a request. Short form: con gusto.',
   },
   {
@@ -273,6 +315,8 @@ const RAW: {
     es: '¿Puedo…?',
     category: 'politeness',
     situation: 'general',
+    exampleEs: '¿Puedo…?',
+    exampleEn: 'May I…?',
     tip: 'poder (yo) + infinitive: ¿Puedo pasar? Soft permission request.',
   },
   {
@@ -280,6 +324,8 @@ const RAW: {
     es: '¿Podrías…?',
     category: 'politeness',
     situation: 'general',
+    exampleEs: '¿Podrías…?',
+    exampleEn: 'Could you…?',
     tip: 'Conditional of poder — politer than ¿puedes? Formal: ¿Podría…?',
   },
   {
@@ -287,6 +333,8 @@ const RAW: {
     es: '¿Te importaría…?',
     category: 'politeness',
     situation: 'friends',
+    exampleEs: '¿Te importaría…?',
+    exampleEn: 'Would you mind…?',
     tip: 'importar in conditional + infinitive/clause. Formal: ¿Le importaría…?',
   },
   {
@@ -294,6 +342,8 @@ const RAW: {
     es: 'Después de usted',
     category: 'politeness',
     situation: 'general',
+    exampleEs: 'Después de usted',
+    exampleEn: 'After you',
     tip: 'Door/queue courtesy. Informal: después de ti.',
   },
   {
@@ -301,6 +351,8 @@ const RAW: {
     es: '¡Salud!',
     category: 'politeness',
     situation: 'general',
+    exampleEs: '¡Salud!',
+    exampleEn: 'Bless you',
     tip: 'Said after a sneeze — same word as “cheers.” Context makes the meaning clear.',
   },
 
@@ -380,6 +432,8 @@ const RAW: {
     es: '¿Dónde están mis llaves?',
     category: 'home',
     situation: 'home',
+    exampleEs: '¿Dónde están mis llaves?',
+    exampleEn: 'Where are my keys?',
     tip: 'llaves is plural → están. Possessive mis before plural nouns.',
   },
   {
@@ -387,6 +441,8 @@ const RAW: {
     es: 'Enciende la luz',
     category: 'home',
     situation: 'home',
+    exampleEs: 'Enciende la luz',
+    exampleEn: 'Turn on the light',
     tip: 'tú command of encender (e→ie stem change). Formal: encienda.',
   },
   {
@@ -394,6 +450,8 @@ const RAW: {
     es: 'Apaga la tele',
     category: 'home',
     situation: 'home',
+    exampleEs: 'Apaga la tele',
+    exampleEn: 'Turn off the TV',
     tip: 'tele is the everyday shortening of televisión. Verb: apagar.',
   },
   {
@@ -401,6 +459,8 @@ const RAW: {
     es: 'Cierra la puerta',
     category: 'home',
     situation: 'home',
+    exampleEs: 'Cierra la puerta',
+    exampleEn: 'Close the door',
     tip: 'cerrar (e→ie). Don’t confuse with cerrar con llave (lock).',
   },
   {
@@ -408,6 +468,8 @@ const RAW: {
     es: 'Abre la ventana',
     category: 'home',
     situation: 'home',
+    exampleEs: 'Abre la ventana',
+    exampleEn: 'Open the window',
     tip: 'abrir is regular in the tú command: abre.',
   },
   {
@@ -422,6 +484,8 @@ const RAW: {
     es: '¿Cerraste con llave?',
     category: 'home',
     situation: 'home',
+    exampleEs: '¿Cerraste con llave?',
+    exampleEn: 'Did you lock the door?',
     tip: 'cerrar con llave = lock. Plain cerraste can just mean “did you close?”',
   },
   {
@@ -438,6 +502,8 @@ const RAW: {
     es: 'Me cepillo los dientes',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me cepillo los dientes',
+    exampleEn: 'I brush my teeth',
     tip: 'cepillarse. Body parts take the article: los dientes (not mis dientes) when the owner is clear.',
   },
   {
@@ -445,6 +511,8 @@ const RAW: {
     es: 'Me peino',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me peino',
+    exampleEn: 'I comb my hair',
     tip: 'peinarse. Also: Me peino el pelo.',
   },
   {
@@ -452,6 +520,8 @@ const RAW: {
     es: 'Me cepillo el pelo',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me cepillo el pelo',
+    exampleEn: 'I brush my hair',
     tip: 'cepillarse el pelo / el cabello. Different from peinarse (comb).',
   },
   {
@@ -459,6 +529,8 @@ const RAW: {
     es: 'Me lavo la cara',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me lavo la cara',
+    exampleEn: 'I wash my face',
     tip: 'lavarse + la cara. Same pattern: Me lavo las manos.',
   },
   {
@@ -466,6 +538,8 @@ const RAW: {
     es: 'Me lavo las manos',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me lavo las manos',
+    exampleEn: 'I wash my hands',
     tip: 'Before eating: Me lavo las manos antes de comer.',
   },
   {
@@ -473,6 +547,8 @@ const RAW: {
     es: 'Me ducho',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me ducho',
+    exampleEn: 'I take a shower',
     tip: 'ducharse. Progressive: Me estoy duchando.',
   },
   {
@@ -480,6 +556,8 @@ const RAW: {
     es: 'Me visto',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me visto',
+    exampleEn: 'I get dressed',
     tip: 'vestirse (e→i irregular stem). Me visto rápido por la mañana.',
   },
   {
@@ -487,6 +565,8 @@ const RAW: {
     es: 'Me desvisto',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me desvisto',
+    exampleEn: 'I get undressed',
     tip: 'desvestirse — opposite of vestirse.',
   },
   {
@@ -494,6 +574,8 @@ const RAW: {
     es: 'Me despierto temprano',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me despierto temprano',
+    exampleEn: 'I wake up early',
     tip: 'despertarse (e→ie). temprano = early; tarde = late.',
   },
   {
@@ -501,6 +583,8 @@ const RAW: {
     es: 'Me levanto a las 7',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me levanto a las 7',
+    exampleEn: 'I get up at 7',
     tip: 'levantarse. Clock: a las + hour. a la una for 1:00.',
   },
   {
@@ -508,6 +592,8 @@ const RAW: {
     es: 'Hago la cama',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Hago la cama',
+    exampleEn: 'I make the bed',
     tip: 'hacer la cama — not reflexive.',
   },
   {
@@ -515,6 +601,8 @@ const RAW: {
     es: 'Desayuno rápido',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Desayuno pan y café',
+    exampleEn: 'I have breakfast quickly',
     tip: 'desayunar. You can add food: Desayuno pan y café.',
   },
   {
@@ -522,6 +610,8 @@ const RAW: {
     es: 'Salgo hacia el trabajo / Me voy al trabajo',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Salgo hacia el trabajo',
+    exampleEn: 'I leave for work',
     tip: 'salir or irse. Both common for “heading out.” Prefer practicing: Me voy al trabajo.',
   },
   {
@@ -529,6 +619,8 @@ const RAW: {
     es: 'Llego a casa cansado / cansada',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Llego a casa cansado',
+    exampleEn: 'I come home tired',
     tip: 'llegar a casa + adjective. Match gender: cansado/cansada.',
   },
   {
@@ -536,6 +628,8 @@ const RAW: {
     es: 'Ceno a las 8',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Ceno a las 8',
+    exampleEn: 'I have dinner at 8',
     tip: 'cenar. In Spain dinner is often later than in the US.',
   },
   {
@@ -543,6 +637,8 @@ const RAW: {
     es: 'Me cepillo los dientes antes de acostarme',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me cepillo los dientes antes de acostarme',
+    exampleEn: 'I brush my teeth before bed',
     tip: 'antes de + infinitive. acostarme keeps the reflexive attached.',
   },
   {
@@ -550,6 +646,8 @@ const RAW: {
     es: 'Me pongo el pijama',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me pongo el pijama',
+    exampleEn: 'I put on pajamas',
     tip: 'ponerse. Also: Me cambio de ropa.',
   },
   {
@@ -557,6 +655,8 @@ const RAW: {
     es: 'Me acuesto',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me acuesto',
+    exampleEn: 'I go to bed',
     tip: 'acostarse (o→ue). “I go to bed at 11”: Me acuesto a las once.',
   },
   {
@@ -564,6 +664,8 @@ const RAW: {
     es: 'Me duermo enseguida',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Me duermo enseguida',
+    exampleEn: 'I fall asleep right away',
     tip: 'dormirse. enseguida / inmediatamente = right away.',
   },
   {
@@ -571,6 +673,8 @@ const RAW: {
     es: 'Buenas noches — que duermas bien',
     category: 'routine',
     situation: 'routine',
+    exampleEs: 'Buenas noches — que duermas bien',
+    exampleEn: 'Good night — sleep well',
     tip: 'que + subjunctive for wishes: que duermas bien / que descanses.',
   },
 
@@ -587,6 +691,8 @@ const RAW: {
     es: '¿Qué quieres comer?',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: '¿Qué quieres comer?',
+    exampleEn: 'What do you want to eat?',
     tip: 'querer + infinitive. Soften with ¿qué te gustaría comer?',
   },
   {
@@ -594,6 +700,8 @@ const RAW: {
     es: 'La carta, por favor',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: 'La carta, por favor',
+    exampleEn: 'The menu, please',
     tip: 'In many countries la carta = menu; el menú often means a fixed-price lunch special.',
   },
   {
@@ -601,6 +709,8 @@ const RAW: {
     es: 'Quisiera agua',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: 'Quisiera agua',
+    exampleEn: 'I would like water',
     tip: 'quisiera (imperfect subjunctive of querer) is the polite restaurant default — softer than quiero.',
   },
   {
@@ -608,6 +718,8 @@ const RAW: {
     es: 'Un café, por favor',
     category: 'food',
     situation: 'cafe',
+    exampleEs: 'Un café, por favor',
+    exampleEn: 'A coffee, please',
     tip: 'Bare un café gets you the house coffee. Specify size/milk if you care: un café con leche grande.',
   },
   {
@@ -615,6 +727,8 @@ const RAW: {
     es: 'La cuenta, por favor',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: 'La cuenta, por favor',
+    exampleEn: 'The check, please',
     tip: 'la cuenta = the bill. Catch a waiter’s eye and say this — don’t wait for them to offer.',
   },
   {
@@ -622,6 +736,8 @@ const RAW: {
     es: '¿Esto es picante?',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: '¿Esto es picante?',
+    exampleEn: 'Is this spicy?',
     tip: 'picante = spicy-hot. Don’t confuse with caliente (temperature-hot).',
   },
   {
@@ -643,6 +759,8 @@ const RAW: {
     es: 'Esto está delicioso',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: 'ser delicioso describes a dish in general',
+    exampleEn: 'This is delicious',
     tip: 'estar for how food tastes right now. ser delicioso describes a dish in general.',
   },
   {
@@ -650,6 +768,8 @@ const RAW: {
     es: '¡Salud!',
     category: 'food',
     situation: 'friends',
+    exampleEs: '¡Salud!',
+    exampleEn: 'Cheers!',
     tip: 'Toast word. Raise glasses, make eye contact — same ¡Salud! as after a sneeze.',
   },
   {
@@ -657,6 +777,8 @@ const RAW: {
     es: '¿Me das más?',
     category: 'food',
     situation: 'friends',
+    exampleEs: '¿Me das más?',
+    exampleEn: 'Can I have more?',
     tip: 'Informal dar. At a restaurant: ¿Me puede traer más…? is politer.',
   },
   {
@@ -671,6 +793,8 @@ const RAW: {
     es: '¿Quieres postre?',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: '¿Quieres postre?',
+    exampleEn: 'Do you want dessert?',
     tip: 'postre is masculine: un postre. Plural: ¿quieren postre?',
   },
   {
@@ -685,6 +809,8 @@ const RAW: {
     es: 'El desayuno',
     category: 'food',
     situation: 'cafe',
+    exampleEs: '“I have breakfast” = desayuno (no “tengo breakfast”)',
+    exampleEn: 'Breakfast',
     tip: 'Noun with article. Verb form: desayunar. “I have breakfast” = desayuno (no “tengo breakfast”).',
   },
   {
@@ -692,6 +818,8 @@ const RAW: {
     es: 'La cena',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: 'La cena',
+    exampleEn: 'Dinner',
     tip: 'Feminine noun. Verb: cenar. In Spain dinner is often later than in the US.',
   },
   {
@@ -699,6 +827,8 @@ const RAW: {
     es: 'Sin azúcar, por favor',
     category: 'food',
     situation: 'cafe',
+    exampleEs: 'Sin azúcar, por favor',
+    exampleEn: 'Without sugar, please',
     tip: 'sin + noun = without. Pattern works everywhere: sin hielo, sin cebolla, sin gluten.',
   },
   {
@@ -706,6 +836,8 @@ const RAW: {
     es: '¿Para aquí o para llevar?',
     category: 'food',
     situation: 'cafe',
+    exampleEs: '¿Para aquí o para llevar?',
+    exampleEn: 'For here or to go?',
     tip: 'Staff question. Answer: para aquí or para llevar. Mexico also uses para llevar / para aquí.',
   },
 
@@ -715,6 +847,8 @@ const RAW: {
     es: '¿Cuánto cuesta esto?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿Cuánto cuesta esto?',
+    exampleEn: 'How much is this?',
     tip: 'costar (o→ue). Plural: ¿cuánto cuestan estos? Also: ¿cuánto es?',
   },
   {
@@ -729,6 +863,8 @@ const RAW: {
     es: '¿Hay descuento?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿Hay descuento?',
+    exampleEn: 'Do you have a discount?',
     tip: 'hay = there is. Also: ¿tienen descuento? or ¿está en oferta?',
   },
   {
@@ -743,6 +879,8 @@ const RAW: {
     es: '¿Lo tienen en otra talla?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿Lo tienen en otra talla?',
+    exampleEn: 'Do you have this in another size?',
     tip: 'talla = clothing size. Shoes often use número. lo/la matches the item’s gender.',
   },
   {
@@ -750,6 +888,8 @@ const RAW: {
     es: '¿Puedo probármelo?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿Puedo probármelo?',
+    exampleEn: 'Can I try this on?',
     tip: 'probarse + lo. Pronoun attaches to infinitive; accent shifts: probármelo.',
   },
   {
@@ -764,6 +904,8 @@ const RAW: {
     es: '¿Aceptan tarjeta?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿aceptan tarjeta de crédito / débito?',
+    exampleEn: 'Do you take cards?',
     tip: 'aceptar. Specify: ¿aceptan tarjeta de crédito / débito?',
   },
   {
@@ -771,6 +913,8 @@ const RAW: {
     es: '¿Solo efectivo?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿Solo efectivo?',
+    exampleEn: 'Cash only?',
     tip: 'efectivo = cash. Also: ¿solo en efectivo?',
   },
   {
@@ -778,6 +922,8 @@ const RAW: {
     es: '¿Dónde está el probador?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿Dónde está el probador?',
+    exampleEn: 'Where is the fitting room?',
     tip: 'el probador (or los vestidores in some regions). Ask before carrying a pile of clothes.',
   },
   {
@@ -785,6 +931,8 @@ const RAW: {
     es: 'Necesito una bolsa',
     category: 'shopping',
     situation: 'store',
+    exampleEs: 'In Spain you may hear bolsa or bolsa de plástico',
+    exampleEn: 'I need a bag',
     tip: 'bolsa = shopping bag. In Spain you may hear bolsa or bolsa de plástico.',
   },
   {
@@ -792,6 +940,8 @@ const RAW: {
     es: '¿Está en oferta?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿Está en oferta?',
+    exampleEn: 'Is it on sale?',
     tip: 'en oferta / en rebaja(s). Seasonal sales: las rebajas.',
   },
   {
@@ -799,6 +949,8 @@ const RAW: {
     es: 'El recibo, por favor',
     category: 'shopping',
     situation: 'store',
+    exampleEs: 'El recibo, por favor',
+    exampleEn: 'Receipt, please',
     tip: 'recibo or ticket/factura. Keep it for returns — often required.',
   },
   {
@@ -806,6 +958,8 @@ const RAW: {
     es: 'Quiero devolver esto',
     category: 'shopping',
     situation: 'store',
+    exampleEs: 'Quiero devolver esto',
+    exampleEn: 'I want to return this',
     tip: 'devolver = return merchandise. Bring ID + receipt; policies vary by country.',
   },
 
@@ -815,6 +969,8 @@ const RAW: {
     es: '¿Dónde está el baño?',
     category: 'travel',
     situation: 'directions',
+    exampleEs: '¿Dónde está el baño?',
+    exampleEn: 'Where is the bathroom?',
     tip: 'el baño everywhere; Spain also uses los servicios. Essential first travel phrase.',
   },
   {
@@ -822,6 +978,8 @@ const RAW: {
     es: '¿Cómo llego a…?',
     category: 'travel',
     situation: 'directions',
+    exampleEs: '¿Cómo llego al museo / a la estación?',
+    exampleEn: 'How do I get to…?',
     tip: 'llegar a + place. Fill in: ¿Cómo llego al museo / a la estación?',
   },
   {
@@ -829,6 +987,8 @@ const RAW: {
     es: '¿Está lejos?',
     category: 'travel',
     situation: 'directions',
+    exampleEs: '¿Está lejos?',
+    exampleEn: 'Is it far?',
     tip: 'estar for location. Opposite: ¿está cerca?',
   },
   {
@@ -836,6 +996,8 @@ const RAW: {
     es: '¿Está cerca?',
     category: 'travel',
     situation: 'directions',
+    exampleEs: '¿Está cerca?',
+    exampleEn: 'Is it nearby?',
     tip: 'cerca / lejos are adverbs here — no agreement. cerca de + noun for “near X.”',
   },
   {
@@ -843,6 +1005,8 @@ const RAW: {
     es: 'Siga derecho',
     category: 'travel',
     situation: 'directions',
+    exampleEs: 'Siga derecho',
+    exampleEn: 'Go straight',
     tip: 'Formal command (usted) of seguir. Informal: sigue derecho / todo recto (Spain).',
   },
   {
@@ -850,6 +1014,8 @@ const RAW: {
     es: 'Gire a la izquierda',
     category: 'travel',
     situation: 'directions',
+    exampleEs: 'Gire a la izquierda',
+    exampleEn: 'Turn left',
     tip: 'Formal girar. Informal: gira a la izquierda. Noun: la izquierda.',
   },
   {
@@ -857,6 +1023,8 @@ const RAW: {
     es: 'Gire a la derecha',
     category: 'travel',
     situation: 'directions',
+    exampleEs: 'Gire a la derecha',
+    exampleEn: 'Turn right',
     tip: 'Mirror of left. a la derecha / a la izquierda — memorize the pair.',
   },
   {
@@ -864,6 +1032,8 @@ const RAW: {
     es: 'En la esquina',
     category: 'travel',
     situation: 'directions',
+    exampleEs: 'La esquina de A y B',
+    exampleEn: 'At the corner',
     tip: 'Location phrase. “On the corner of A and B”: en la esquina de A y B.',
   },
   {
@@ -871,6 +1041,8 @@ const RAW: {
     es: 'Necesito un taxi',
     category: 'travel',
     situation: 'directions',
+    exampleEs: 'Necesito un taxi',
+    exampleEn: 'I need a taxi',
     tip: 'Straight need statement. App taxis: pide un Uber / un taxi por la app.',
   },
   {
@@ -878,6 +1050,8 @@ const RAW: {
     es: '¿Dónde está la parada de autobús?',
     category: 'travel',
     situation: 'directions',
+    exampleEs: '¿Dónde está la parada de autobús?',
+    exampleEn: 'Where is the bus stop?',
     tip: 'parada = stop. Also: parada de bus / de camión (Mexico for city bus).',
   },
   {
@@ -885,6 +1059,8 @@ const RAW: {
     es: '¿Este tren va a…?',
     category: 'travel',
     situation: 'directions',
+    exampleEs: '¿Este tren va a…?',
+    exampleEn: 'Does this train go to…?',
     tip: 'ir a + destination. Confirm before boarding: ¿Este tren va al centro?',
   },
   {
@@ -899,6 +1075,8 @@ const RAW: {
     es: 'El aeropuerto',
     category: 'travel',
     situation: 'airport',
+    exampleEs: 'El aeropuerto',
+    exampleEn: 'Airport',
     tip: 'Masculine. Stress: a-e-ro-PUER-to. “To the airport”: al aeropuerto (a + el).',
   },
   {
@@ -906,6 +1084,8 @@ const RAW: {
     es: 'El hotel',
     category: 'travel',
     situation: 'hotel',
+    exampleEs: 'El hotel',
+    exampleEn: 'Hotel',
     tip: 'Masculine despite ending in -el. Silent h — pronounce “otel.”',
   },
   {
@@ -913,6 +1093,8 @@ const RAW: {
     es: 'Tengo una reserva',
     category: 'travel',
     situation: 'hotel',
+    exampleEs: 'Tengo una reserva',
+    exampleEn: 'I have a reservation',
     tip: 'reserva (not reservación in many places, though both exist). Show confirmation if asked.',
   },
   {
@@ -920,6 +1102,8 @@ const RAW: {
     es: '¿A qué hora sale?',
     category: 'travel',
     situation: 'airport',
+    exampleEs: '¿A qué hora sale?',
+    exampleEn: 'What time does it leave?',
     tip: 'salir for departures. a qué hora = at what time. Arrive: ¿a qué hora llega?',
   },
   {
@@ -927,6 +1111,8 @@ const RAW: {
     es: '¿A qué hora llega?',
     category: 'travel',
     situation: 'airport',
+    exampleEs: '¿A qué hora llega?',
+    exampleEn: 'What time does it arrive?',
     tip: 'llegar for arrivals. Subject can be el vuelo, el tren, el bus.',
   },
   {
@@ -934,6 +1120,8 @@ const RAW: {
     es: 'Un boleto, por favor',
     category: 'travel',
     situation: 'airport',
+    exampleEs: 'Un boleto, por favor',
+    exampleEn: 'One ticket, please',
     tip: 'boleto (LatAm) / billete (Spain). Specify: de ida / de ida y vuelta.',
   },
 
@@ -943,6 +1131,8 @@ const RAW: {
     es: '¿Qué hora es?',
     category: 'time',
     situation: 'general',
+    exampleEs: '¿Qué hora es?',
+    exampleEn: 'What time is it?',
     tip: 'Singular qué hora es — not qué horas. Answer: Es la una / Son las dos.',
   },
   {
@@ -964,6 +1154,8 @@ const RAW: {
     es: 'Hoy',
     category: 'time',
     situation: 'general',
+    exampleEs: 'La mañana',
+    exampleEn: 'Today',
     tip: 'No article. hoy por la mañana / tarde / noche for parts of the day.',
   },
   {
@@ -971,6 +1163,8 @@ const RAW: {
     es: 'Mañana',
     category: 'time',
     situation: 'general',
+    exampleEs: 'La mañana',
+    exampleEn: 'Tomorrow',
     tip: 'Also means “morning” (la mañana). Context: nos vemos mañana vs por la mañana.',
   },
   {
@@ -978,6 +1172,8 @@ const RAW: {
     es: 'Ayer',
     category: 'time',
     situation: 'general',
+    exampleEs: 'Ayer',
+    exampleEn: 'Yesterday',
     tip: 'Past time word — triggers preterite/imperfect: Ayer fui al cine.',
   },
   {
@@ -985,6 +1181,8 @@ const RAW: {
     es: 'Ahora',
     category: 'time',
     situation: 'general',
+    exampleEs: 'ahora can also mean “in a bit” regionally — clarify if needed',
+    exampleEn: 'Now',
     tip: 'ahora mismo = right now. ahora can also mean “in a bit” regionally — clarify if needed.',
   },
   {
@@ -992,6 +1190,8 @@ const RAW: {
     es: 'Más tarde',
     category: 'time',
     situation: 'general',
+    exampleEs: 'Comparative más + tarde',
+    exampleEn: 'Later',
     tip: 'Comparative más + tarde. Casual: luego.',
   },
   {
@@ -999,6 +1199,8 @@ const RAW: {
     es: 'Pronto',
     category: 'time',
     situation: 'general',
+    exampleEs: 'Pronto',
+    exampleEn: 'Soon',
     tip: 'Adverb. hasta pronto = see you soon. Very soon: muy pronto / enseguida.',
   },
   {
@@ -1006,6 +1208,8 @@ const RAW: {
     es: 'En un minuto',
     category: 'time',
     situation: 'home',
+    exampleEs: 'En un minuto',
+    exampleEn: 'In a minute',
     tip: 'en + time span. Also: en un momento, ahorita (LatAm, vague “soon”).',
   },
   {
@@ -1013,6 +1217,8 @@ const RAW: {
     es: 'Esta semana',
     category: 'time',
     situation: 'general',
+    exampleEs: 'La semana pasada',
+    exampleEn: 'This week',
     tip: 'Demonstrative esta agrees with semana (f). Last week: la semana pasada.',
   },
   {
@@ -1020,6 +1226,8 @@ const RAW: {
     es: 'La próxima semana',
     category: 'time',
     situation: 'general',
+    exampleEs: 'La próxima semana',
+    exampleEn: 'Next week',
     tip: 'Also: la semana que viene. Both are common.',
   },
   {
@@ -1027,6 +1235,8 @@ const RAW: {
     es: 'El fin de semana',
     category: 'time',
     situation: 'friends',
+    exampleEs: 'El fin de semana',
+    exampleEn: 'Weekend',
     tip: 'Often shortened to el finde in casual speech (especially Spain/LatAm youth).',
   },
   {
@@ -1034,6 +1244,8 @@ const RAW: {
     es: '¿Estás libre esta noche?',
     category: 'time',
     situation: 'friends',
+    exampleEs: '¿Estás libre esta noche?',
+    exampleEn: 'Are you free tonight?',
     tip: 'estar libre for availability. esta noche = tonight (not “this night” word-for-word).',
   },
   {
@@ -1048,6 +1260,8 @@ const RAW: {
     es: 'Date prisa',
     category: 'time',
     situation: 'friends',
+    exampleEs: '¿Puedes apurarte?',
+    exampleEn: 'Hurry up',
     tip: 'Reflexive darse prisa. Softer: ¿Puedes apurarte? Formal: dense prisa.',
   },
   {
@@ -1055,6 +1269,8 @@ const RAW: {
     es: 'Espera un momento',
     category: 'time',
     situation: 'general',
+    exampleEs: 'Espera un momento',
+    exampleEn: 'Wait a moment',
     tip: 'tú command of esperar. Formal: espere un momento. Phone: un momentito.',
   },
   {
@@ -1062,6 +1278,8 @@ const RAW: {
     es: 'Todos los días',
     category: 'time',
     situation: 'general',
+    exampleEs: 'Todos los días',
+    exampleEn: 'Every day / everyday',
     tip: 'Also: cada día. Adjective “everyday” (ordinary): cotidiano / de cada día.',
   },
   {
@@ -1069,6 +1287,8 @@ const RAW: {
     es: 'Todas las mañanas',
     category: 'time',
     situation: 'home',
+    exampleEs: 'Todas las mañanas',
+    exampleEn: 'Every morning',
     tip: 'Habitual mornings. Also: por las mañanas.',
   },
   {
@@ -1076,6 +1296,8 @@ const RAW: {
     es: 'Todas las tardes',
     category: 'time',
     situation: 'general',
+    exampleEs: 'Todas las tardes',
+    exampleEn: 'Every afternoon',
     tip: 'Also: cada tarde / por las tardes.',
   },
   {
@@ -1083,6 +1305,8 @@ const RAW: {
     es: 'Todas las noches',
     category: 'time',
     situation: 'home',
+    exampleEs: 'Todas las noches',
+    exampleEn: 'Every night',
     tip: 'After dark habits: Leo todas las noches.',
   },
   {
@@ -1090,6 +1314,8 @@ const RAW: {
     es: 'Todas las semanas',
     category: 'time',
     situation: 'general',
+    exampleEs: 'Todas las semanas',
+    exampleEn: 'Every week',
     tip: 'Also: cada semana.',
   },
   {
@@ -1097,6 +1323,8 @@ const RAW: {
     es: 'Todos los meses',
     category: 'time',
     situation: 'general',
+    exampleEs: 'Todos los meses',
+    exampleEn: 'Every month',
     tip: 'Also: cada mes · una vez al mes = once a month.',
   },
   {
@@ -1104,6 +1332,8 @@ const RAW: {
     es: 'Todos los años',
     category: 'time',
     situation: 'general',
+    exampleEs: 'Todos los años',
+    exampleEn: 'Every year',
     tip: 'Also: cada año.',
   },
   {
@@ -1111,6 +1341,8 @@ const RAW: {
     es: 'Todos los lunes',
     category: 'time',
     situation: 'work',
+    exampleEs: 'todos los + plural weekday',
+    exampleEn: 'Every Monday',
     tip: 'Pattern: todos los + plural weekday.',
   },
   {
@@ -1118,6 +1350,8 @@ const RAW: {
     es: 'Todos los fines de semana',
     category: 'time',
     situation: 'friends',
+    exampleEs: 'Todos los fines de semana',
+    exampleEn: 'Every weekend',
     tip: 'Casual: todos los findes.',
   },
   {
@@ -1125,6 +1359,8 @@ const RAW: {
     es: 'Siempre',
     category: 'time',
     situation: 'general',
+    exampleEs: 'No voy nunca)',
+    exampleEn: 'Always',
     tip: 'Siempre estudio / Estudio siempre. Never = nunca (often with no: No voy nunca).',
   },
   {
@@ -1132,6 +1368,8 @@ const RAW: {
     es: 'Nunca',
     category: 'time',
     situation: 'general',
+    exampleEs: 'No como nunca carne → better: Nunca como carne',
+    exampleEn: 'Never',
     tip: 'Double negative is correct: No como nunca carne → better: Nunca como carne / No como carne nunca.',
   },
   {
@@ -1139,6 +1377,8 @@ const RAW: {
     es: 'A veces',
     category: 'time',
     situation: 'general',
+    exampleEs: 'de vez en cuando',
+    exampleEn: 'Sometimes',
     tip: 'Also: de vez en cuando.',
   },
   {
@@ -1146,6 +1386,8 @@ const RAW: {
     es: 'A menudo',
     category: 'time',
     situation: 'general',
+    exampleEs: 'A menudo',
+    exampleEn: 'Often',
     tip: 'Also: frecuentemente / muchas veces.',
   },
   {
@@ -1153,6 +1395,8 @@ const RAW: {
     es: 'Normalmente',
     category: 'time',
     situation: 'general',
+    exampleEs: 'por lo general',
+    exampleEn: 'Usually',
     tip: 'Also: por lo general / generalmente.',
   },
   {
@@ -1160,6 +1404,8 @@ const RAW: {
     es: 'Una vez al día',
     category: 'time',
     situation: 'home',
+    exampleEs: 'una/dos/tres veces + a + period',
+    exampleEn: 'Once a day',
     tip: 'Pattern: una/dos/tres veces + a + period.',
   },
   {
@@ -1167,6 +1413,8 @@ const RAW: {
     es: 'Dos veces a la semana',
     category: 'time',
     situation: 'general',
+    exampleEs: 'Dos veces a la semana',
+    exampleEn: 'Twice a week',
     tip: 'a la semana · al mes · al año.',
   },
   {
@@ -1174,6 +1422,8 @@ const RAW: {
     es: 'Una vez al mes',
     category: 'time',
     situation: 'general',
+    exampleEs: 'Una vez al mes',
+    exampleEn: 'Once a month',
     tip: 'al before masculine mes/día/año; a la before semana.',
   },
   {
@@ -1181,6 +1431,8 @@ const RAW: {
     es: 'De vez en cuando',
     category: 'time',
     situation: 'friends',
+    exampleEs: 'Occasional habits — softer than a veces',
+    exampleEn: 'Every now and then',
     tip: 'Occasional habits — softer than a veces.',
   },
 
@@ -1246,6 +1498,8 @@ const RAW: {
     es: 'Me encanta',
     category: 'feelings',
     situation: 'friends',
+    exampleEs: 'Me encanta',
+    exampleEn: 'I love it',
     tip: 'gustar-type verb: thing is subject. Plural: me encantan. Stronger than me gusta.',
   },
   {
@@ -1253,6 +1507,8 @@ const RAW: {
     es: 'Lo odio',
     category: 'feelings',
     situation: 'friends',
+    exampleEs: 'no me gusta nada',
+    exampleEn: 'I hate it',
     tip: 'odiar + direct object. Soften: no me gusta nada.',
   },
   {
@@ -1260,6 +1516,8 @@ const RAW: {
     es: 'Te extraño',
     category: 'feelings',
     situation: 'friends',
+    exampleEs: 'Te extraño',
+    exampleEn: 'I miss you',
     tip: 'LatAm: extrañar. Spain: te echo de menos. Both mean “I miss you.”',
   },
   {
@@ -1283,6 +1541,8 @@ const RAW: {
     es: 'Me llamo…',
     category: 'social',
     situation: 'general',
+    exampleEs: 'Me llamo…',
+    exampleEn: 'In a real sentence',
     tip: 'llamarse. Also: Soy… (more identity-focused).',
   },
   {
@@ -1290,6 +1550,8 @@ const RAW: {
     es: '¿De dónde eres?',
     category: 'social',
     situation: 'friends',
+    exampleEs: '¿De dónde eres?',
+    exampleEn: 'Where are you from?',
     tip: 'ser de for origin. Formal: ¿De dónde es usted?',
   },
   {
@@ -1304,6 +1566,8 @@ const RAW: {
     es: '¿Hablas inglés?',
     category: 'social',
     situation: 'general',
+    exampleEs: '¿Hablas inglés?',
+    exampleEn: 'Do you speak English?',
     tip: 'Languages lowercase in Spanish: inglés, español. Formal: ¿Habla inglés?',
   },
   {
@@ -1311,6 +1575,8 @@ const RAW: {
     es: 'Un poco de español',
     category: 'social',
     situation: 'general',
+    exampleEs: 'Un poco de español',
+    exampleEn: 'A little Spanish',
     tip: 'Humble learner line. Also: hablo un poco de español.',
   },
   {
@@ -1318,6 +1584,8 @@ const RAW: {
     es: '¿Puedes repetir?',
     category: 'social',
     situation: 'general',
+    exampleEs: '¿Puedes repetir?',
+    exampleEn: 'Can you repeat that?',
     tip: 'Add por favor. Formal: ¿Puede repetir? + más despacio if needed.',
   },
   {
@@ -1325,6 +1593,8 @@ const RAW: {
     es: 'Más despacio, por favor',
     category: 'social',
     situation: 'general',
+    exampleEs: 'Más despacio, por favor',
+    exampleEn: 'More slowly, please',
     tip: 'despacio / lento. Lifesaver with fast speakers.',
   },
   {
@@ -1332,6 +1602,8 @@ const RAW: {
     es: '¿Qué significa eso?',
     category: 'social',
     situation: 'general',
+    exampleEs: '¿Qué significa eso?',
+    exampleEn: 'What does that mean?',
     tip: 'significar. Point or quote the word: ¿Qué significa “…“?',
   },
   {
@@ -1339,6 +1611,8 @@ const RAW: {
     es: 'Estoy de acuerdo',
     category: 'social',
     situation: 'work',
+    exampleEs: 'Estoy de acuerdo',
+    exampleEn: 'I agree',
     tip: 'Fixed phrase with estar. Stronger: totalmente de acuerdo.',
   },
   {
@@ -1353,6 +1627,8 @@ const RAW: {
     es: '¿De verdad?',
     category: 'social',
     situation: 'friends',
+    exampleEs: '¿De verdad?',
+    exampleEn: 'Really?',
     tip: 'Surprise/check. Also: ¿En serio? / ¿Ah, sí?',
   },
   {
@@ -1360,6 +1636,8 @@ const RAW: {
     es: '¡No puede ser!',
     category: 'social',
     situation: 'friends',
+    exampleEs: '¡No puede ser!',
+    exampleEn: 'No way!',
     tip: 'Disbelief. Casual LatAm: ¡No manches! / ¡Qué va!',
   },
   {
@@ -1374,6 +1652,8 @@ const RAW: {
     es: '¡Felicidades!',
     category: 'social',
     situation: 'friends',
+    exampleEs: '¡Felicidades!',
+    exampleEn: 'Congratulations!',
     tip: 'Also ¡Enhorabuena! (Spain, for achievements). Birthdays often get ¡Felicidades! too.',
   },
   {
@@ -1381,6 +1661,8 @@ const RAW: {
     es: '¡Feliz cumpleaños!',
     category: 'social',
     situation: 'friends',
+    exampleEs: '¡Feliz cumpleaños!',
+    exampleEn: 'Happy birthday!',
     tip: 'feliz + noun. Soft z in LatAm; th-sound in much of Spain.',
   },
   {
@@ -1388,6 +1670,8 @@ const RAW: {
     es: '¡Buena suerte!',
     category: 'social',
     situation: 'friends',
+    exampleEs: '¡Buena suerte!',
+    exampleEn: 'Good luck!',
     tip: 'Before exams/interviews. Reply: ¡Gracias! or ¡La voy a necesitar!',
   },
   {
@@ -1395,6 +1679,8 @@ const RAW: {
     es: 'Te presento a…',
     category: 'social',
     situation: 'friends',
+    exampleEs: 'Te presento a…',
+    exampleEn: 'Let me introduce you',
     tip: 'presentar a + name. Formal: Le presento a…',
   },
   {
@@ -1402,6 +1688,8 @@ const RAW: {
     es: '¿Estás libre este fin de semana?',
     category: 'social',
     situation: 'friends',
+    exampleEs: '¿Estás libre este fin de semana?',
+    exampleEn: 'Are you free this weekend?',
     tip: 'Classic invite opener. Follow with: ¿Quieres…?',
   },
   {
@@ -1418,6 +1706,8 @@ const RAW: {
     es: 'Tengo que trabajar',
     category: 'work',
     situation: 'work',
+    exampleEs: 'tener que + infinitive = have to',
+    exampleEn: 'I have to work',
     tip: 'tener que + infinitive = have to. Strong obligation pattern.',
   },
   {
@@ -1425,6 +1715,8 @@ const RAW: {
     es: 'Tengo una reunión',
     category: 'work',
     situation: 'work',
+    exampleEs: 'Una reunión a las tres',
+    exampleEn: 'I have a meeting',
     tip: 'reunión for meetings. Add time: Tengo una reunión a las tres.',
   },
   {
@@ -1439,6 +1731,8 @@ const RAW: {
     es: '¿Podemos hablar después?',
     category: 'work',
     situation: 'work',
+    exampleEs: '¿Te parece si hablamos después?',
+    exampleEn: 'Can we talk later?',
     tip: 'Polite deferral. Soften: ¿Te parece si hablamos después?',
   },
   {
@@ -1460,6 +1754,8 @@ const RAW: {
     es: 'Tengo tarea',
     category: 'work',
     situation: 'home',
+    exampleEs: 'Tengo tarea',
+    exampleEn: 'I have homework',
     tip: 'tarea (LatAm) / deberes (Spain). Plural often: tengo tareas.',
   },
   {
@@ -1467,6 +1763,8 @@ const RAW: {
     es: '¿A qué te dedicas?',
     category: 'work',
     situation: 'work',
+    exampleEs: '¿A qué te dedicas?',
+    exampleEn: 'What do you do?',
     tip: 'Natural “what’s your job?” Formal: ¿A qué se dedica?',
   },
   {
@@ -1474,6 +1772,8 @@ const RAW: {
     es: 'Trabajo desde casa',
     category: 'work',
     situation: 'work',
+    exampleEs: 'trabajo híbrido',
+    exampleEn: 'I work from home',
     tip: 'desde casa / en casa / remoto. Hybrid: trabajo híbrido.',
   },
   {
@@ -1481,6 +1781,8 @@ const RAW: {
     es: 'La fecha límite',
     category: 'work',
     situation: 'work',
+    exampleEs: 'La fecha límite',
+    exampleEn: 'Deadline',
     tip: 'Also la fecha de entrega. “By Friday”: para el viernes.',
   },
 
@@ -1490,6 +1792,8 @@ const RAW: {
     es: 'Me duele la cabeza',
     category: 'health',
     situation: 'doctor',
+    exampleEs: 'Me duele la cabeza',
+    exampleEn: 'I have a headache',
     tip: 'doler like gustar: body part is subject. Plural: me duelen los pies.',
   },
   {
@@ -1497,6 +1801,8 @@ const RAW: {
     es: 'Me duele el estómago',
     category: 'health',
     situation: 'doctor',
+    exampleEs: 'Me duele el estómago',
+    exampleEn: 'My stomach hurts',
     tip: 'Use definite article with body parts, not mi: me duele el estómago.',
   },
   {
@@ -1504,6 +1810,8 @@ const RAW: {
     es: 'Tengo un resfriado',
     category: 'health',
     situation: 'doctor',
+    exampleEs: 'Tengo un resfriado',
+    exampleEn: 'I have a cold',
     tip: 'Also: estoy resfriado/a. Flu: tengo gripe / una gripe.',
   },
   {
@@ -1511,6 +1819,8 @@ const RAW: {
     es: 'Necesito un médico',
     category: 'health',
     situation: 'doctor',
+    exampleEs: 'Necesito un médico',
+    exampleEn: 'I need a doctor',
     tip: 'médico/a; doctor/a also used. Emergency: necesito un médico ahora.',
   },
   {
@@ -1518,6 +1828,8 @@ const RAW: {
     es: 'La farmacia',
     category: 'health',
     situation: 'doctor',
+    exampleEs: '¿me puede recomendar…?',
+    exampleEn: 'Pharmacy',
     tip: 'Feminine. Many Latin American pharmacies advise on OTC meds; ask ¿me puede recomendar…?',
   },
   {
@@ -1525,6 +1837,8 @@ const RAW: {
     es: 'Me duele aquí',
     category: 'health',
     situation: 'doctor',
+    exampleEs: 'me duele aquí cuando respiro',
+    exampleEn: 'It hurts here',
     tip: 'Point while saying aquí. Specify: me duele aquí cuando respiro.',
   },
   {
@@ -1532,6 +1846,8 @@ const RAW: {
     es: 'Me siento mareado / mareada',
     category: 'health',
     situation: 'doctor',
+    exampleEs: 'Me siento mareado',
+    exampleEn: 'I feel dizzy',
     tip: 'mareado = dizzy/nauseous. Gender agreement. Also: tengo mareos.',
   },
   {
@@ -1539,6 +1855,8 @@ const RAW: {
     es: 'Que te mejores',
     category: 'health',
     situation: 'friends',
+    exampleEs: 'Que te mejores',
+    exampleEn: 'Get well soon',
     tip: 'Subjunctive wish: que + subjunctive. Formal: Que se mejore.',
   },
   {
@@ -1553,6 +1871,8 @@ const RAW: {
     es: 'Emergencia',
     category: 'health',
     situation: 'doctor',
+    exampleEs: '¡Emergencia!',
+    exampleEn: 'Emergency',
     tip: 'Shout ¡Emergencia! or ¡Ayuda! Know local emergency numbers (often 911/112).',
   },
 
@@ -1576,6 +1896,8 @@ const RAW: {
     es: 'Mándame un mensaje',
     category: 'phone',
     situation: 'phone',
+    exampleEs: 'Mándame un mensaje',
+    exampleEn: 'Text me',
     tip: 'Command: mandar + me. Also: escríbeme / mándame un WhatsApp.',
   },
   {
@@ -1583,6 +1905,8 @@ const RAW: {
     es: '¿Me oyes?',
     category: 'phone',
     situation: 'phone',
+    exampleEs: '¿Me oyes?',
+    exampleEn: 'Can you hear me?',
     tip: 'oír. Formal: ¿Me oye? Bad connection staple.',
   },
   {
@@ -1590,6 +1914,8 @@ const RAW: {
     es: 'Hay mala señal',
     category: 'phone',
     situation: 'phone',
+    exampleEs: 'La cobertura es mala',
+    exampleEn: 'The signal is bad',
     tip: 'hay + noun. Also: no tengo señal / la cobertura es mala.',
   },
   {
@@ -1604,6 +1930,8 @@ const RAW: {
     es: '¿Estás en línea?',
     category: 'phone',
     situation: 'phone',
+    exampleEs: '¿Estás en línea?',
+    exampleEn: 'Are you online?',
     tip: 'en línea / conectado/a. Chat apps: ¿Estás disponible?',
   },
   {
@@ -1611,6 +1939,8 @@ const RAW: {
     es: 'Se me murió el celular',
     category: 'phone',
     situation: 'phone',
+    exampleEs: 'Se me murió el celular',
+    exampleEn: 'My phone died',
     tip: 'se me + verb = accidental/unfortunate. celular (LatAm) / móvil (Spain).',
   },
   {
@@ -1618,6 +1948,8 @@ const RAW: {
     es: '¿Hay wifi?',
     category: 'phone',
     situation: 'cafe',
+    exampleEs: '¿Hay wifi?',
+    exampleEn: 'Do you have Wi‑Fi?',
     tip: 'wifi pronounced “wee-fee.” Also: ¿Tienen wifi?',
   },
   {
@@ -1662,6 +1994,8 @@ const RAW: {
     es: '¡Qué buen día!',
     category: 'weather',
     situation: 'general',
+    exampleEs: '¡Qué buen día!',
+    exampleEn: 'In a real sentence',
     tip: 'qué + adjective + noun for exclamations. Agree buen with día (m).',
   },
   {
@@ -1669,6 +2003,8 @@ const RAW: {
     es: 'Lleva una chaqueta',
     category: 'weather',
     situation: 'friends',
+    exampleEs: 'Lleva una chaqueta',
+    exampleEn: 'Bring a jacket',
     tip: 'llevar = bring/wear/take depending on context. tú command: lleva.',
   },
   {
@@ -1685,6 +2021,8 @@ const RAW: {
     es: '¡Ayuda!',
     category: 'help',
     situation: 'general',
+    exampleEs: '¡Ayuda!',
+    exampleEn: 'Help!',
     tip: 'Urgent shout. Also ¡Socorro! in emergencies.',
   },
   {
@@ -1692,6 +2030,8 @@ const RAW: {
     es: '¿Me puedes ayudar?',
     category: 'help',
     situation: 'general',
+    exampleEs: '¿Me puedes ayudar?',
+    exampleEn: 'Can you help me?',
     tip: 'Clitic me before conjugated verb. Formal: ¿Me puede ayudar?',
   },
   {
@@ -1713,6 +2053,8 @@ const RAW: {
     es: '¿Sabes dónde…?',
     category: 'help',
     situation: 'directions',
+    exampleEs: '¿Sabes dónde…?',
+    exampleEn: 'Do you know where…?',
     tip: 'saber + question word. Formal: ¿Sabe dónde…?',
   },
   {
@@ -1720,6 +2062,8 @@ const RAW: {
     es: '¿Todo bien?',
     category: 'help',
     situation: 'friends',
+    exampleEs: '¿Todo bien?',
+    exampleEn: 'Is everything okay?',
     tip: 'Quick check-in. Fuller: ¿Está todo bien?',
   },
   {
@@ -1734,6 +2078,8 @@ const RAW: {
     es: 'Ten cuidado',
     category: 'help',
     situation: 'general',
+    exampleEs: 'tener cuidado → ten cuidado (irregular tú command)',
+    exampleEn: 'Be careful',
     tip: 'tener cuidado → ten cuidado (irregular tú command). Formal: tenga cuidado.',
   },
   {
@@ -1741,6 +2087,8 @@ const RAW: {
     es: 'Llama a la policía',
     category: 'help',
     situation: 'general',
+    exampleEs: 'Llama a la policía',
+    exampleEn: 'Call the police',
     tip: 'llamar a + person/service. Personal a used with policía here as institution/personified.',
   },
   {
@@ -1748,6 +2096,8 @@ const RAW: {
     es: 'Necesito ayuda',
     category: 'help',
     situation: 'general',
+    exampleEs: 'Necesito ayuda con esto',
+    exampleEn: 'I need help',
     tip: 'Clear need statement. Add con: Necesito ayuda con esto.',
   },
   {
@@ -1755,6 +2105,8 @@ const RAW: {
     es: '¿Hay algún problema?',
     category: 'help',
     situation: 'general',
+    exampleEs: '¿Hay algún problema?',
+    exampleEn: 'Is there a problem?',
     tip: 'hay + algún(o). Soft challenge when service feels off.',
   },
   {
@@ -1762,6 +2114,8 @@ const RAW: {
     es: 'Déjame en paz',
     category: 'help',
     situation: 'general',
+    exampleEs: 'Déjame en paz',
+    exampleEn: 'Leave me alone',
     tip: 'Strong boundary. Softer: Por favor, déjame.',
   },
   {
@@ -1769,6 +2123,8 @@ const RAW: {
     es: 'Perdí mi billetera / cartera',
     category: 'help',
     situation: 'general',
+    exampleEs: 'Preterite perdí for completed loss',
+    exampleEn: 'I lost my wallet',
     tip: 'billetera/cartera vary by region; Spain often cartera. Preterite perdí for completed loss.',
   },
   {
@@ -1776,6 +2132,8 @@ const RAW: {
     es: '¿Dónde puedo cargar el celular?',
     category: 'help',
     situation: 'airport',
+    exampleEs: '¿Dónde puedo cargar el celular?',
+    exampleEn: 'Where can I charge my phone?',
     tip: 'cargar el celular/móvil. Travel essential in airports and cafés.',
   },
 
@@ -1787,6 +2145,8 @@ const RAW: {
     es: 'Un café grande, por favor',
     category: 'food',
     situation: 'cafe',
+    exampleEs: 'Un café grande, por favor',
+    exampleEn: 'A large coffee, please',
     tip: 'Size after the noun: café pequeño / mediano / grande. Some chains use tallas by name.',
   },
   {
@@ -1794,6 +2154,8 @@ const RAW: {
     es: 'Un café mediano',
     category: 'food',
     situation: 'cafe',
+    exampleEs: 'Un café mediano',
+    exampleEn: 'A medium coffee',
     tip: 'mediano = medium. Spain often: mediano or regular depending on the shop.',
   },
   {
@@ -1801,6 +2163,8 @@ const RAW: {
     es: 'Con leche',
     category: 'food',
     situation: 'cafe',
+    exampleEs: 'con leche de avena',
+    exampleEn: 'With milk',
     tip: 'café con leche is a set drink. Specify plant milk: con leche de avena / almendra.',
   },
   {
@@ -1808,6 +2172,8 @@ const RAW: {
     es: 'Para llevar, por favor',
     category: 'food',
     situation: 'cafe',
+    exampleEs: 'Para llevar, por favor',
+    exampleEn: 'To go, please',
     tip: 'Answer to ¿para aquí o para llevar? Opposite: para aquí / para tomar aquí.',
   },
   {
@@ -1815,6 +2181,8 @@ const RAW: {
     es: 'Un espresso / un café solo, por favor',
     category: 'food',
     situation: 'cafe',
+    exampleEs: 'Un espresso',
+    exampleEn: 'An espresso, please',
     tip: 'café solo (Spain) ≈ espresso. cortado = espresso with a splash of milk.',
   },
   {
@@ -1822,6 +2190,8 @@ const RAW: {
     es: 'Descafeinado, por favor',
     category: 'food',
     situation: 'cafe',
+    exampleEs: 'Descafeinado, por favor',
+    exampleEn: 'Decaf, please',
     tip: 'Adjective after the drink: un café descafeinado. Short: un descafeinado.',
   },
   {
@@ -1829,6 +2199,8 @@ const RAW: {
     es: 'Sin azúcar',
     category: 'food',
     situation: 'cafe',
+    exampleEs: 'no le ponga azúcar (formal request to barista)',
+    exampleEn: 'No sugar',
     tip: 'sin + noun. Also: no le ponga azúcar (formal request to barista).',
   },
   {
@@ -1836,6 +2208,8 @@ const RAW: {
     es: '¿Tienen leche de avena?',
     category: 'food',
     situation: 'cafe',
+    exampleEs: '¿Tienen leche de avena?',
+    exampleEn: 'Do you have oat milk?',
     tip: 'leche de + plant. Common: avena, almendra, soya/soja.',
   },
 
@@ -1845,6 +2219,8 @@ const RAW: {
     es: 'Una mesa para dos, por favor',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: 'Una mesa para dos, por favor',
+    exampleEn: 'A table for two, please',
     tip: 'para + number of people. Add name if reserved: a nombre de…',
   },
   {
@@ -1852,6 +2228,8 @@ const RAW: {
     es: 'Tenemos una reserva',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: 'Tenemos una reserva',
+    exampleEn: 'We have a reservation',
     tip: 'Same reserva as hotels. Follow with: a nombre de García, para las ocho.',
   },
   {
@@ -1859,6 +2237,8 @@ const RAW: {
     es: '¿Qué me recomienda?',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: '¿Qué me recomienda?',
+    exampleEn: 'What do you recommend?',
     tip: 'Formal usted to staff. Informal friend: ¿Qué me recomiendas?',
   },
   {
@@ -1873,6 +2253,8 @@ const RAW: {
     es: '¿Podemos dividir la cuenta?',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: '¿Podemos dividir la cuenta?',
+    exampleEn: 'Can we split the bill?',
     tip: 'dividir / separar la cuenta. Some places: ¿cuentas separadas?',
   },
   {
@@ -1880,6 +2262,8 @@ const RAW: {
     es: '¿Agua con gas o sin gas?',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: '¿Agua con gas o sin gas?',
+    exampleEn: 'Still or sparkling water?',
     tip: 'sin gas = still; con gas = sparkling. Answer with one of the two phrases.',
   },
   {
@@ -1887,6 +2271,8 @@ const RAW: {
     es: '¿Podemos sentarnos afuera / en la terraza?',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: '¿Podemos sentarnos afuera / en la terraza?',
+    exampleEn: 'Could we sit outside?',
     tip: 'terraza = patio. afuera/fuera regional; both understood.',
   },
   {
@@ -1894,6 +2280,8 @@ const RAW: {
     es: '¿La propina está incluida?',
     category: 'food',
     situation: 'restaurant',
+    exampleEs: '¿La propina está incluida?',
+    exampleEn: 'The tip is included?',
     tip: 'propina = tip. Norms vary widely by country — asking avoids double-tipping.',
   },
 
@@ -1903,6 +2291,8 @@ const RAW: {
     es: '¿Dónde hago el check-in / el registro?',
     category: 'travel',
     situation: 'airport',
+    exampleEs: '¿Dónde hago el check-in',
+    exampleEn: 'Where do I check in?',
     tip: 'check-in is widely used; registro also works. Look for mostrador = counter.',
   },
   {
@@ -1910,6 +2300,8 @@ const RAW: {
     es: 'Mi tarjeta de embarque',
     category: 'travel',
     situation: 'airport',
+    exampleEs: 'tarjeta de embarque = boarding pass',
+    exampleEn: 'My boarding pass',
     tip: 'tarjeta de embarque = boarding pass. Show it at security and the gate.',
   },
   {
@@ -1917,6 +2309,8 @@ const RAW: {
     es: '¿Cuál es la puerta / el gate?',
     category: 'travel',
     situation: 'airport',
+    exampleEs: '¿Cuál es la puerta',
+    exampleEn: 'What gate is it?',
     tip: 'puerta (de embarque) in Spanish; many airports also print “gate.”',
   },
   {
@@ -1924,6 +2318,8 @@ const RAW: {
     es: 'El vuelo está demorado / retrasado',
     category: 'travel',
     situation: 'airport',
+    exampleEs: 'El vuelo está demorado',
+    exampleEn: 'The flight is delayed',
     tip: 'demorado (LatAm) / retrasado (Spain). Check pantallas = departure boards.',
   },
   {
@@ -1931,6 +2327,8 @@ const RAW: {
     es: '¿Dónde está la recogida de equipaje?',
     category: 'travel',
     situation: 'airport',
+    exampleEs: '¿Dónde está la recogida de equipaje?',
+    exampleEn: 'Where is baggage claim?',
     tip: 'Also: reclamo de equipaje (LatAm). Follow signs for arriving flights.',
   },
   {
@@ -1938,6 +2336,8 @@ const RAW: {
     es: 'La aduana',
     category: 'travel',
     situation: 'airport',
+    exampleEs: 'La aduana',
+    exampleEn: 'Customs',
     tip: 'Pass through aduana after immigration. “Nothing to declare”: nada que declarar.',
   },
   {
@@ -1945,6 +2345,8 @@ const RAW: {
     es: 'El control de pasaportes / migración',
     category: 'travel',
     situation: 'airport',
+    exampleEs: 'El control de pasaportes',
+    exampleEn: 'Passport control',
     tip: 'migración / inmigración for immigration desks. Have passport ready.',
   },
   {
@@ -1952,6 +2354,8 @@ const RAW: {
     es: '¿Esta es la fila de seguridad?',
     category: 'travel',
     situation: 'airport',
+    exampleEs: '¿Esta es la fila de seguridad?',
+    exampleEn: 'Is this the security line?',
     tip: 'fila (LatAm) / cola (Spain) = line/queue. seguridad = security checkpoint.',
   },
   {
@@ -1959,6 +2363,8 @@ const RAW: {
     es: 'Falta mi equipaje / No aparece mi maleta',
     category: 'travel',
     situation: 'airport',
+    exampleEs: 'Go to mostrador de equipaje extraviado with your baggage tag (talón)',
+    exampleEn: 'My luggage is missing',
     tip: 'Go to mostrador de equipaje extraviado with your baggage tag (talón).',
   },
 
@@ -1989,6 +2395,8 @@ const RAW: {
     es: '¿Me puede dar una toalla extra?',
     category: 'travel',
     situation: 'hotel',
+    exampleEs: '¿Me puede dar una toalla extra?',
+    exampleEn: 'Can I have an extra towel?',
     tip: 'Formal puede for staff. toalla = towel; almohada = pillow; jabón = soap.',
   },
   {
@@ -1996,6 +2404,8 @@ const RAW: {
     es: 'La habitación es / está demasiado ruidosa',
     category: 'travel',
     situation: 'hotel',
+    exampleEs: '¿Hay otra habitación más tranquila?',
+    exampleEn: 'The room is too noisy',
     tip: 'Request a change: ¿Hay otra habitación más tranquila?',
   },
   {
@@ -2003,6 +2413,8 @@ const RAW: {
     es: '¿El desayuno está incluido?',
     category: 'travel',
     situation: 'hotel',
+    exampleEs: '¿El desayuno está incluido?',
+    exampleEn: 'Is breakfast included?',
     tip: 'incluido/a agrees with the noun. Confirm hours: ¿Hasta qué hora hay desayuno?',
   },
   {
@@ -2010,6 +2422,8 @@ const RAW: {
     es: '¿Puedo dejar aquí las maletas?',
     category: 'travel',
     situation: 'hotel',
+    exampleEs: '¿Puedo dejar aquí las maletas?',
+    exampleEn: 'Can I leave my bags here?',
     tip: 'Common after checkout. Consigna = luggage storage.',
   },
   {
@@ -2017,6 +2431,8 @@ const RAW: {
     es: '¿Tienen habitaciones disponibles?',
     category: 'travel',
     situation: 'hotel',
+    exampleEs: '¿Tienen habitaciones disponibles?',
+    exampleEn: 'Do you have any rooms available?',
     tip: 'Walk-in question. Add dates: para esta noche / para dos noches.',
   },
 
@@ -2026,6 +2442,8 @@ const RAW: {
     es: '¿Quieres que salgamos / nos juntemos?',
     category: 'social',
     situation: 'friends',
+    exampleEs: '¿Quieres que salgamos',
+    exampleEn: 'Do you want to hang out?',
     tip: 'querer que + subjunctive. Casual: ¿Salimos? / ¿Nos vemos?',
   },
   {
@@ -2040,6 +2458,8 @@ const RAW: {
     es: '¿Quieres tomar algo?',
     category: 'social',
     situation: 'friends',
+    exampleEs: '¿Quieres tomar algo?',
+    exampleEn: 'Want to grab a drink?',
     tip: 'tomar algo = get a drink/snack. Clear and casual invite.',
   },
   {
@@ -2047,6 +2467,8 @@ const RAW: {
     es: 'Cuenta conmigo / Me apunto',
     category: 'social',
     situation: 'friends',
+    exampleEs: 'me apunto = I’m in (signing up)',
+    exampleEn: 'Count me in',
     tip: 'me apunto = I’m in (signing up). cuenta conmigo = you can count on me.',
   },
   {
@@ -2061,6 +2483,8 @@ const RAW: {
     es: 'Suena divertido / Suena bien',
     category: 'social',
     situation: 'friends',
+    exampleEs: '¡Dale!',
+    exampleEn: 'That sounds fun',
     tip: 'Positive reply to a plan. Stronger commit: ¡Dale! / ¡Va!',
   },
 
@@ -2070,6 +2494,8 @@ const RAW: {
     es: '¿Puedo cambiar esto?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿Puedo cambiar esto?',
+    exampleEn: 'Can I exchange this?',
     tip: 'cambiar = exchange; devolver = return for refund. Policies differ — bring the receipt.',
   },
   {
@@ -2091,6 +2517,8 @@ const RAW: {
     es: '¿Dónde está la caja?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿Dónde está la caja?',
+    exampleEn: 'Where is the checkout?',
     tip: 'caja = register/checkout. Also: mostrador de pago.',
   },
   {
@@ -2098,6 +2526,8 @@ const RAW: {
     es: '¿Hacen envoltorio para regalo?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿Hacen envoltorio para regalo?',
+    exampleEn: 'Do you gift wrap?',
     tip: 'Also: ¿Lo pueden envolver para regalo?',
   },
   {
@@ -2105,6 +2535,8 @@ const RAW: {
     es: '¿Tienen una talla más pequeña?',
     category: 'shopping',
     situation: 'store',
+    exampleEs: '¿Tienen una talla más pequeña?',
+    exampleEn: 'Do you have a smaller size?',
     tip: 'más pequeña / más grande for size direction. Shoes: un número más chico.',
   },
 
@@ -2114,6 +2546,8 @@ const RAW: {
     es: 'Tengo fiebre',
     category: 'health',
     situation: 'doctor',
+    exampleEs: '¿qué temperatura tengo?',
+    exampleEn: 'I have a fever',
     tip: 'tener fiebre. High fever: tengo mucha fiebre. Temperature: ¿qué temperatura tengo?',
   },
   {
@@ -2121,6 +2555,8 @@ const RAW: {
     es: 'Necesito una receta',
     category: 'health',
     situation: 'doctor',
+    exampleEs: 'Necesito una receta',
+    exampleEn: 'I need a prescription',
     tip: 'receta médica = prescription. Pharmacies often require it for antibiotics.',
   },
   {
@@ -2128,6 +2564,8 @@ const RAW: {
     es: '¿Cada cuánto lo tomo?',
     category: 'health',
     situation: 'doctor',
+    exampleEs: '¿Cada cuánto lo tomo?',
+    exampleEn: 'How often do I take this?',
     tip: 'cada cuánto = how often. Labels: cada 8 horas / con las comidas.',
   },
   {
@@ -2142,6 +2580,8 @@ const RAW: {
     es: 'Tengo náuseas / Me siento mareado',
     category: 'health',
     situation: 'doctor',
+    exampleEs: 'El estómago y tengo náuseas',
+    exampleEn: 'I feel nauseous',
     tip: 'náuseas often plural. Point to stomach if relevant: me duele el estómago y tengo náuseas.',
   },
   {
@@ -2149,6 +2589,8 @@ const RAW: {
     es: '¿Dónde está la farmacia más cercana?',
     category: 'health',
     situation: 'doctor',
+    exampleEs: '¿Dónde está la farmacia más cercana?',
+    exampleEn: 'Where is the nearest pharmacy?',
     tip: 'más cercana agrees with farmacia. 24h: farmacia de turno / 24 horas.',
   },
 
@@ -2158,6 +2600,8 @@ const RAW: {
     es: 'Disculpe, ¿cómo llego al museo?',
     category: 'travel',
     situation: 'directions',
+    exampleEs: 'Disculpe, ¿cómo llego al museo?',
+    exampleEn: 'Excuse me, how do I get to the museum?',
     tip: 'disculpe + question. a + el → al before masculine singular places.',
   },
   {
@@ -2165,6 +2609,8 @@ const RAW: {
     es: '¿Este es el camino correcto?',
     category: 'travel',
     situation: 'directions',
+    exampleEs: '¿Este es el camino correcto?',
+    exampleEn: 'Is this the right way?',
     tip: 'Confirm before walking far. Also: ¿Voy bien para…?',
   },
   {
@@ -2172,6 +2618,8 @@ const RAW: {
     es: '¿A cuántas cuadras queda?',
     category: 'travel',
     situation: 'directions',
+    exampleEs: '¿A cuántas cuadras queda?',
+    exampleEn: 'How many blocks is it?',
     tip: 'cuadra = city block (LatAm). Spain often uses manzana or minutes instead.',
   },
   {
@@ -2202,6 +2650,8 @@ const RAW: {
     es: 'Ven aquí',
     category: 'commands',
     situation: 'home',
+    exampleEs: 'Ven aquí',
+    exampleEn: 'Come here',
     tip: 'venir → ven. LatAm often: Ven acá. Soften: Ven aquí, por favor.',
   },
   {
@@ -2209,6 +2659,8 @@ const RAW: {
     es: 'Ve allí',
     category: 'commands',
     situation: 'directions',
+    exampleEs: 'allá also common in LatAm',
+    exampleEn: 'Go there',
     tip: 'ir → ve (irregular). allá also common in LatAm.',
   },
   {
@@ -2216,6 +2668,8 @@ const RAW: {
     es: 'Come',
     category: 'commands',
     situation: 'home',
+    exampleEs: 'tú of comer',
+    exampleEn: 'Eat',
     tip: 'tú of comer. Come despacio / Come todo.',
   },
   {
@@ -2223,6 +2677,8 @@ const RAW: {
     es: 'Bebe agua',
     category: 'commands',
     situation: 'home',
+    exampleEs: 'Por favor',
+    exampleEn: 'Drink water',
     tip: 'beber → bebe. Soften with por favor.',
   },
   {
@@ -2230,6 +2686,8 @@ const RAW: {
     es: 'Siéntate',
     category: 'commands',
     situation: 'general',
+    exampleEs: 'Siéntate',
+    exampleEn: 'Sit down',
     tip: 'sentarse. Formal: Siéntese. Guests: Pasa, siéntate.',
   },
   {
@@ -2237,6 +2695,8 @@ const RAW: {
     es: 'Levántate',
     category: 'commands',
     situation: 'home',
+    exampleEs: 'Levántate',
+    exampleEn: 'Stand up',
     tip: 'Same verb as morning “get up.”',
   },
   {
@@ -2244,6 +2704,8 @@ const RAW: {
     es: 'Escucha',
     category: 'commands',
     situation: 'general',
+    exampleEs: 'Escúchame = listen to me',
+    exampleEn: 'Listen',
     tip: 'Escúchame = listen to me.',
   },
   {
@@ -2251,6 +2713,8 @@ const RAW: {
     es: 'Mira',
     category: 'commands',
     situation: 'friends',
+    exampleEs: '¡Mira!',
+    exampleEn: 'Look',
     tip: '¡Mira! = check this out. Mira eso.',
   },
   {
@@ -2258,6 +2722,8 @@ const RAW: {
     es: '¡Cuidado!',
     category: 'commands',
     situation: 'general',
+    exampleEs: '¡Cuidado!',
+    exampleEn: 'Watch out',
     tip: 'Instant warning. Also: Ten cuidado.',
   },
   {
@@ -2265,6 +2731,8 @@ const RAW: {
     es: 'Espera',
     category: 'commands',
     situation: 'general',
+    exampleEs: 'Un momento',
+    exampleEn: 'Wait',
     tip: 'Espérame / Espera un momento.',
   },
   {
@@ -2272,6 +2740,8 @@ const RAW: {
     es: 'Para',
     category: 'commands',
     situation: 'general',
+    exampleEs: '¡Pare!',
+    exampleEn: 'Stop',
     tip: 'Or Detente. Taxi/driver: ¡Pare! (usted) / ¡Para!',
   },
   {
@@ -2279,6 +2749,8 @@ const RAW: {
     es: 'Abre la puerta',
     category: 'commands',
     situation: 'home',
+    exampleEs: 'Abre la puerta',
+    exampleEn: 'Open the door',
     tip: 'abrir → abre. Window: Abre la ventana.',
   },
   {
@@ -2286,6 +2758,8 @@ const RAW: {
     es: 'Cierra la ventana',
     category: 'commands',
     situation: 'home',
+    exampleEs: 'Cierra la ventana',
+    exampleEn: 'Close the window',
     tip: 'cerrar → cierra (e→ie).',
   },
   {
@@ -2293,6 +2767,8 @@ const RAW: {
     es: 'Dame eso',
     category: 'commands',
     situation: 'home',
+    exampleEs: '¿Me das eso, por favor?',
+    exampleEn: 'Give me that',
     tip: 'dar → dame. Polite: ¿Me das eso, por favor?',
   },
   {
@@ -2300,6 +2776,8 @@ const RAW: {
     es: 'Tráeme un café',
     category: 'commands',
     situation: 'cafe',
+    exampleEs: 'Tráeme un café',
+    exampleEn: 'Bring me a coffee',
     tip: 'traer + me with accent. Café: Tráeme un café, por favor.',
   },
   {
@@ -2307,6 +2785,8 @@ const RAW: {
     es: 'Ayúdame',
     category: 'commands',
     situation: 'general',
+    exampleEs: '¡Ayuda!',
+    exampleEn: 'Help me',
     tip: 'Urgent: ¡Ayuda! Formal: Ayúdeme.',
   },
   {
@@ -2314,6 +2794,8 @@ const RAW: {
     es: 'Dime',
     category: 'commands',
     situation: 'friends',
+    exampleEs: 'decir → di + me',
+    exampleEn: 'Tell me',
     tip: 'decir → di + me. Dime qué pasó.',
   },
   {
@@ -2321,6 +2803,8 @@ const RAW: {
     es: 'Llámame luego',
     category: 'commands',
     situation: 'phone',
+    exampleEs: 'Llámame luego',
+    exampleEn: 'Call me later',
     tip: 'llamar + me. Also: Llámame mañana.',
   },
   {
@@ -2328,6 +2812,8 @@ const RAW: {
     es: 'Hazlo',
     category: 'commands',
     situation: 'work',
+    exampleEs: 'No lo hagas',
+    exampleEn: 'Do it',
     tip: 'hacer → haz + lo. Negative: No lo hagas.',
   },
   {
@@ -2335,6 +2821,8 @@ const RAW: {
     es: 'Ponlo aquí',
     category: 'commands',
     situation: 'home',
+    exampleEs: 'Ponlo aquí',
+    exampleEn: 'Put it here',
     tip: 'poner → pon + lo.',
   },
   {
@@ -2342,6 +2830,8 @@ const RAW: {
     es: 'Pasa / Adelante',
     category: 'commands',
     situation: 'home',
+    exampleEs: 'Pasa',
+    exampleEn: 'Come in',
     tip: 'Welcoming someone at the door.',
   },
   {
@@ -2349,6 +2839,8 @@ const RAW: {
     es: 'Date prisa',
     category: 'commands',
     situation: 'friends',
+    exampleEs: 'Apúrate',
+    exampleEn: 'Hurry up',
     tip: 'LatAm: Apúrate.',
   },
   {
@@ -2356,6 +2848,8 @@ const RAW: {
     es: 'Habla más despacio',
     category: 'commands',
     situation: 'general',
+    exampleEs: '¿Puedes hablar más despacio?',
+    exampleEn: 'Speak slower',
     tip: 'Learner essential. Softer: ¿Puedes hablar más despacio?',
   },
   {
@@ -2363,6 +2857,8 @@ const RAW: {
     es: 'Repite, por favor',
     category: 'commands',
     situation: 'general',
+    exampleEs: 'Repite, por favor',
+    exampleEn: 'Repeat, please',
     tip: 'Formal: Repita, por favor.',
   },
   {
@@ -2391,6 +2887,8 @@ const RAW: {
     es: 'Sígueme',
     category: 'commands',
     situation: 'directions',
+    exampleEs: 'Sígueme',
+    exampleEn: 'Follow me',
     tip: 'seguir + me. Formal: Sígame.',
   },
   {
@@ -2398,6 +2896,8 @@ const RAW: {
     es: 'Gira a la izquierda',
     category: 'commands',
     situation: 'directions',
+    exampleEs: 'Gira a la izquierda',
+    exampleEn: 'Turn left',
     tip: 'Right: Gira a la derecha. Straight: Sigue derecho.',
   },
   {
@@ -2405,6 +2905,8 @@ const RAW: {
     es: 'Silencio',
     category: 'commands',
     situation: 'work',
+    exampleEs: 'Cállate (blunt)',
+    exampleEn: 'Be quiet',
     tip: 'Polite hush. Stronger: Cállate (blunt).',
   },
   {
@@ -2412,6 +2914,8 @@ const RAW: {
     es: 'Despiértate',
     category: 'commands',
     situation: 'routine',
+    exampleEs: 'Despiértate',
+    exampleEn: 'Wake up',
     tip: 'despertarse. Soften with por favor.',
   },
   {
@@ -2419,6 +2923,8 @@ const RAW: {
     es: 'Duerme / Acuéstate',
     category: 'commands',
     situation: 'routine',
+    exampleEs: 'acuéstate = get in bed',
+    exampleEn: 'Go to sleep',
     tip: 'duerme = sleep; acuéstate = get in bed.',
   },
   {
@@ -2426,6 +2932,8 @@ const RAW: {
     es: 'Lávate las manos',
     category: 'commands',
     situation: 'home',
+    exampleEs: 'Lávate las manos',
+    exampleEn: 'Wash your hands',
     tip: 'Classic before-meal command.',
   },
 ]
@@ -2437,6 +2945,8 @@ export const dailyPhraseCards: DailyPhraseCard[] = RAW.map((item, i) => ({
   category: item.category,
   situation: item.situation,
   tip: item.tip,
+  exampleEs: item.exampleEs,
+  exampleEn: item.exampleEn,
 }))
 
 export function filterDailyPhrases(
