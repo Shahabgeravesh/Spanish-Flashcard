@@ -36,6 +36,7 @@ import { ChapterMark } from '../components/ChapterMark'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { FlashcardStudyPanel } from '../components/FlashcardStudyPanel'
 import { ResetModal } from '../components/ResetModal'
+import { TrackStartHero } from '../components/TrackStartHero'
 
 export const NUMBER_KEY = 'habla:numbers:v1'
 const NUMBER_LEGACY = ['lexora:numbers:v1']
@@ -393,142 +394,171 @@ export function NumbersTrack({ onBack }: Props) {
 
         <main className="stage">
           {phase === 'start' && (
-            <section className="panel start-panel">
+            <>
               <button type="button" className="back-btn back-hub" onClick={onBack}>
-                <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
+                <span className="back-btn-icon" aria-hidden="true">
+                  ←
+                </span>{' '}
+                All tracks
               </button>
-              <p className="brand">Spanish Deck</p>
-              <h1>Numbers</h1>
-              <p className="subtitle">1 → 1,000,000 · Digits ↔ Spanish</p>
-              <p className="lede">
-                Study Regular patterns and Irregular special forms separately —
-                then drill random numbers in your range up to one million.
-              </p>
-
-              <div
-                className="mode-toggle verb-sections"
-                role="group"
-                aria-label="Number type"
-              >
-                <button
-                  type="button"
-                  className={`tense-chip verb-section-chip ${numberGroup === 'irregular' ? 'is-active' : ''}`}
-                  onClick={() => setNumberGroup('irregular')}
-                >
-                  Irregular
-                  <span className="tense-count">
-                    {deckMasteryPercent(
-                      filterNumberCards(numberCards, { group: 'irregular' }),
-                      progress.byId,
-                    )}
-                    %
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  className={`tense-chip verb-section-chip ${numberGroup === 'regular' ? 'is-active' : ''}`}
-                  onClick={() => setNumberGroup('regular')}
-                >
-                  Regular
-                  <span className="tense-count">
-                    {deckMasteryPercent(
-                      filterNumberCards(numberCards, { group: 'regular' }),
-                      progress.byId,
-                    )}
-                    %
-                  </span>
-                </button>
-              </div>
-              <p className="section-hint">
-                {numberGroup === 'irregular'
-                  ? 'Special forms: 1–29, cien, quinientos / setecientos / novecientos, mil, un millón…'
-                  : 'Formula patterns: treinta y…, doscientos…, dos mil…'}
-              </p>
-
-              <div className="mode-toggle" role="group" aria-label="Study mode">
-                <button
-                  type="button"
-                  className={`tense-chip ${mode === 'foundations' ? 'is-active' : ''}`}
-                  onClick={() => setMode('foundations')}
-                >
-                  Foundations
-                </button>
-                <button
-                  type="button"
-                  className={`tense-chip ${mode === 'drill' ? 'is-active' : ''}`}
-                  onClick={() => setMode('drill')}
-                >
-                  Random drill
-                </button>
-              </div>
-
-              <div className="chapter-list" aria-label="Number range chapters">
-                {NUMBER_RANGES.map((r) => {
-                  const deck = filterNumberCards(numberCards, {
-                    range: r.id,
-                    group: numberGroup,
-                  })
-                  const pct = deckMasteryPercent(deck, progress.byId)
-                  const learned = learnedCount(deck, progress.byId)
-                  return (
+              <TrackStartHero
+                title="Numbers"
+                subtitle="1 → 1,000,000 · Digits ↔ Spanish"
+                description="Study irregular forms and regular patterns by range, then drill random numbers up to one million."
+                visualId="numbers"
+                masteryPct={trackMasteryPct}
+                masteryLabel="Track progress"
+                masteryDetail={`${learnedTotal} learned overall · selected range ${masteryPct}%`}
+                stats={[
+                  {
+                    label: 'Cards',
+                    value: String(
+                      mode === 'drill' ? DRILL_SIZE : activeFoundations.length,
+                    ),
+                  },
+                  {
+                    label: mode === 'drill' ? 'Drill size' : 'Learning',
+                    value: String(
+                      mode === 'drill' ? DRILL_SIZE : learningLeft,
+                    ),
+                  },
+                  {
+                    label: 'Learned',
+                    value: String(learnedInSection),
+                  },
+                ]}
+                previewPrompt={
+                  activeFoundations[0]?.front ??
+                  formatNumberDisplay(42)
+                }
+                previewAnswer={
+                  activeFoundations[0]?.back ?? numberToSpanish(42)
+                }
+                previewHint={
+                  mode === 'drill' ? 'Drill style' : 'Example card'
+                }
+                actions={
+                  <>
                     <button
-                      key={r.id}
                       type="button"
-                      className={`chapter-list-item chapter-row ${rangeFilter === r.id ? 'is-active' : ''}`}
-                      onClick={() => setRangeFilter(r.id)}
+                      className="primary-btn"
+                      onClick={start}
+                      disabled={
+                        mode === 'foundations' && activeFoundations.length === 0
+                      }
                     >
-                      <ChapterMark seed={String(r.id)} label={r.label} />
-                      <ChapterProgress
-                        size="sm"
-                        label={r.label}
-                        percent={pct}
-                        detail={`${learned} / ${deck.length}`}
-                      />
+                      {mode === 'drill'
+                        ? `Drill ${numberGroup} · ${rangeLabel}`
+                        : hasSavedProgress
+                          ? 'Continue foundations'
+                          : 'Start foundations'}
                     </button>
-                  )
-                })}
-              </div>
-
-              <ChapterProgress
-                label="Selected chapter"
-                percent={masteryPct}
-                detail={`${learnedInSection} of ${activeFoundations.length} · track ${trackMasteryPct}%`}
-              />
-
-              <div className="cta-row">
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={start}
-                  disabled={
-                    mode === 'foundations' && activeFoundations.length === 0
-                  }
+                    {hasSavedProgress && mode === 'foundations' && (
+                      <button
+                        type="button"
+                        className="secondary-btn"
+                        onClick={() => setConfirmReset(true)}
+                      >
+                        Reset this track
+                      </button>
+                    )}
+                  </>
+                }
+                footer={
+                  <p className="meta">
+                    {mode === 'drill'
+                      ? `${DRILL_SIZE} ${numberGroup} numbers · range ${rangeLabel}`
+                      : activeFoundations.length === 0
+                        ? `No ${numberGroup} foundation cards in this range — try Irregular or a wider range.`
+                        : `${numberGroup} · ${activeFoundations.length} cards · ${learningLeft} still learning`}
+                  </p>
+                }
+              >
+                <div
+                  className="mode-toggle verb-sections"
+                  role="group"
+                  aria-label="Number type"
                 >
-                  {mode === 'drill'
-                    ? `Drill ${numberGroup} · ${rangeLabel}`
-                    : hasSavedProgress
-                      ? 'Continue foundations'
-                      : 'Start foundations'}
-                </button>
-                {hasSavedProgress && mode === 'foundations' && (
                   <button
                     type="button"
-                    className="secondary-btn"
-                    onClick={() => setConfirmReset(true)}
+                    className={`tense-chip verb-section-chip ${numberGroup === 'irregular' ? 'is-active' : ''}`}
+                    onClick={() => setNumberGroup('irregular')}
                   >
-                    Reset this track
+                    Irregular
+                    <span className="tense-count">
+                      {deckMasteryPercent(
+                        filterNumberCards(numberCards, { group: 'irregular' }),
+                        progress.byId,
+                      )}
+                      %
+                    </span>
                   </button>
-                )}
-              </div>
+                  <button
+                    type="button"
+                    className={`tense-chip verb-section-chip ${numberGroup === 'regular' ? 'is-active' : ''}`}
+                    onClick={() => setNumberGroup('regular')}
+                  >
+                    Regular
+                    <span className="tense-count">
+                      {deckMasteryPercent(
+                        filterNumberCards(numberCards, { group: 'regular' }),
+                        progress.byId,
+                      )}
+                      %
+                    </span>
+                  </button>
+                </div>
+                <p className="section-hint">
+                  {numberGroup === 'irregular'
+                    ? 'Special forms: 1–29, cien, quinientos / setecientos / novecientos, mil, un millón…'
+                    : 'Formula patterns: treinta y…, doscientos…, dos mil…'}
+                </p>
 
-              <p className="meta">
-                {mode === 'drill'
-                  ? `${DRILL_SIZE} ${numberGroup} numbers · range ${rangeLabel}`
-                  : activeFoundations.length === 0
-                    ? `No ${numberGroup} foundation cards in this range — try Irregular or a wider range.`
-                    : `${numberGroup} · ${activeFoundations.length} cards · ${learningLeft} still learning · ${learnedInSection} learned in section`}
-              </p>
-            </section>
+                <div className="mode-toggle" role="group" aria-label="Study mode">
+                  <button
+                    type="button"
+                    className={`tense-chip ${mode === 'foundations' ? 'is-active' : ''}`}
+                    onClick={() => setMode('foundations')}
+                  >
+                    Foundations
+                  </button>
+                  <button
+                    type="button"
+                    className={`tense-chip ${mode === 'drill' ? 'is-active' : ''}`}
+                    onClick={() => setMode('drill')}
+                  >
+                    Random drill
+                  </button>
+                </div>
+
+                <div className="chapter-list" aria-label="Number range chapters">
+                  {NUMBER_RANGES.map((r) => {
+                    const deck = filterNumberCards(numberCards, {
+                      range: r.id,
+                      group: numberGroup,
+                    })
+                    const pct = deckMasteryPercent(deck, progress.byId)
+                    const learned = learnedCount(deck, progress.byId)
+                    return (
+                      <button
+                        key={r.id}
+                        type="button"
+                        className={`chapter-list-item chapter-row ${rangeFilter === r.id ? 'is-active' : ''}`}
+                        onClick={() => setRangeFilter(r.id)}
+                      >
+                        <ChapterMark seed={String(r.id)} label={r.label} />
+                        <ChapterProgress
+                          size="sm"
+                          label={r.label}
+                          percent={pct}
+                          detail={`${learned} / ${deck.length}`}
+                        />
+                      </button>
+                    )
+                  })}
+                </div>
+              </TrackStartHero>
+            </>
           )}
 
           {phase === 'study' && currentFoundation && (

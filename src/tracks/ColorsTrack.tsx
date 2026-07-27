@@ -22,12 +22,12 @@ import {
   type PersistedProgress,
 } from '../lib/progress'
 import { usePersistentProgress } from '../lib/usePersistentProgress'
-import { useSpanishVoice } from '../lib/useSpanishVoice'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { ChapterMark } from '../components/ChapterMark'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { FlashcardStudyPanel } from '../components/FlashcardStudyPanel'
 import { ResetModal } from '../components/ResetModal'
+import { TrackStartHero } from '../components/TrackStartHero'
 
 export const COLORS_KEY = 'habla:colors:v1'
 
@@ -87,13 +87,6 @@ export function ColorsTrack({ onBack }: Props) {
       ? (progress.byId[String(currentId)]?.streak ?? 0)
       : 0
   const reviewCard = scopedLearned[reviewIndex]
-
-  const voice = useSpanishVoice({
-    spanishText: phase === 'study' ? current?.back : undefined,
-  })
-  useSpanishVoice({
-    spanishText: phase === 'review-learned' ? reviewCard?.back : undefined,
-  })
 
   usePersistentProgress(progress, COLORS_KEY, colorCards)
 
@@ -283,79 +276,117 @@ export function ColorsTrack({ onBack }: Props) {
 
         <main className="stage">
           {phase === 'start' && (
-            <section className="panel start-panel">
+            <>
               <button
                 type="button"
                 className="back-btn back-hub"
                 onClick={onBack}
               >
-                <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
+                <span className="back-btn-icon" aria-hidden="true">
+                  ←
+                </span>{' '}
+                All tracks
               </button>
-              <p className="brand">Spanish Deck</p>
-              <h1>Colors</h1>
-              <p className="subtitle">
-                {colorCards.length} cards · names, shades & phrases
-              </p>
-              <p className="lede">
-                Learn Spanish color words with live swatches, light/dark shades,
-                and everyday lines like “¿De qué color es?”
-              </p>
-
-              <div className="chapter-list" aria-label="Color chapters">
-                {COLOR_FILTERS.map((f) => {
-                  const deck = filterColorCards(colorCards, f.id)
-                  const pct = deckMasteryPercent(deck, progress.byId)
-                  const learned = learnedCount(deck, progress.byId)
-                  return (
-                    <button
-                      key={f.id}
-                      type="button"
-                      className={`chapter-list-item chapter-row ${filter === f.id ? 'is-active' : ''}`}
-                      onClick={() => setFilter(f.id)}
-                    >
-                      <ChapterMark seed={String(f.id)} label={f.label} />
-                      <ChapterProgress
-                        size="sm"
-                        label={f.label}
-                        percent={pct}
-                        detail={`${learned} / ${deck.length}`}
-                      />
-                    </button>
+              <TrackStartHero
+                title="Colors"
+                subtitle="Names, shades, and color phrases"
+                description="Learn Spanish color words with live swatches, light and dark shades, and everyday lines like “¿De qué color es?”"
+                visualId="colors"
+                masteryPct={trackMasteryPct}
+                masteryLabel="Track progress"
+                masteryDetail={`${learnedTotal} learned overall · selected section ${masteryPct}%`}
+                stats={[
+                  { label: 'Cards', value: String(activeDeck.length) },
+                  { label: 'Learning', value: String(learningLeft) },
+                  { label: 'Learned', value: String(learnedInSection) },
+                ]}
+                previewPrompt={activeDeck[0]?.front ?? 'red'}
+                previewAnswer={activeDeck[0]?.back ?? 'rojo / roja'}
+                previewHint="Example card"
+                previewExtra={
+                  (activeDeck[0]?.swatch ||
+                    colorCards.find((c) => c.swatch)?.swatch) && (
+                    <div
+                      className="track-start-preview-swatch"
+                      style={{
+                        background:
+                          activeDeck[0]?.swatch ??
+                          colorCards.find((c) => c.swatch)?.swatch,
+                      }}
+                      aria-hidden="true"
+                    />
                   )
-                })}
-              </div>
-
-              <ChapterProgress
-                label="Selected chapter"
-                percent={masteryPct}
-                detail={`${learnedInSection} of ${activeDeck.length} · track ${trackMasteryPct}%`}
-              />
-
-              {voice.supported && (
-                <div className="options">
+                }
+                actions={
+                  <>
+                    <button
+                      type="button"
+                      className="primary-btn"
+                      onClick={start}
+                      disabled={activeDeck.length === 0}
+                    >
+                      {hasSavedProgress ? 'Continue studying' : 'Start studying'}
+                    </button>
+                    {hasSavedProgress && (
+                      <button
+                        type="button"
+                        className="secondary-btn"
+                        onClick={() => setConfirmReset(true)}
+                      >
+                        Reset this track
+                      </button>
+                    )}
+                  </>
+                }
+                footer={
+                  <p className="meta">
+                    {filterLabel} · {activeDeck.length} cards · {learningLeft}{' '}
+                    still learning
+                  </p>
+                }
+              >
+                <div className="chapter-list" aria-label="Color chapters">
+                  {COLOR_FILTERS.map((f) => {
+                    const deck = filterColorCards(colorCards, f.id)
+                    const pct = deckMasteryPercent(deck, progress.byId)
+                    const learned = learnedCount(deck, progress.byId)
+                    return (
+                      <button
+                        key={f.id}
+                        type="button"
+                        className={`chapter-list-item chapter-row ${filter === f.id ? 'is-active' : ''}`}
+                        onClick={() => setFilter(f.id)}
+                      >
+                        <ChapterMark seed={String(f.id)} label={f.label} />
+                        <ChapterProgress
+                          size="sm"
+                          label={f.label}
+                          percent={pct}
+                          detail={`${learned} / ${deck.length}`}
+                        />
+                      </button>
+                    )
+                  })}
                 </div>
-              )}
 
-              <div className="cta-row" style={{ marginTop: '1.35rem' }}>
-                <button type="button" className="primary-btn" onClick={start}>
-                  {hasSavedProgress ? 'Continue studying' : 'Start studying'}
-                </button>
-                {hasSavedProgress && (
-                  <button
-                    type="button"
-                    className="secondary-btn"
-                    onClick={() => setConfirmReset(true)}
-                  >
-                    Reset this track
-                  </button>
-                )}
-              </div>
-
-              <p className="meta">
-                {filterLabel} · {activeDeck.length} cards · {learningLeft} still
-                learning · always shuffled
-              </p>
-            </section>
+                <div
+                  className="track-start-swatch-row"
+                  aria-label="Color swatch preview"
+                >
+                  {colorCards
+                    .filter((c) => c.kind === 'basic' && c.swatch)
+                    .slice(0, 8)
+                    .map((c) => (
+                      <span
+                        key={c.id}
+                        className="track-start-swatch-chip"
+                        style={{ background: c.swatch }}
+                        title={c.back}
+                      />
+                    ))}
+                </div>
+              </TrackStartHero>
+            </>
           )}
 
           {phase === 'study' && current && (

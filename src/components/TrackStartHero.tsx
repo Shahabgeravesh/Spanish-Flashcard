@@ -15,6 +15,8 @@ type Props = {
   previewPrompt?: string
   previewAnswer?: string
   previewHint?: string
+  /** Optional visual inside the preview card (e.g. color swatch). */
+  previewExtra?: ReactNode
   children?: ReactNode
   actions: ReactNode
   footer?: ReactNode
@@ -34,6 +36,7 @@ export function TrackStartHero({
   previewPrompt,
   previewAnswer,
   previewHint = 'Example card',
+  previewExtra,
   children,
   actions,
   footer,
@@ -75,10 +78,11 @@ export function TrackStartHero({
           {footer}
         </div>
 
-        {(previewPrompt || previewAnswer) && (
+        {(previewPrompt || previewAnswer || previewExtra) && (
           <aside className="track-start-preview" aria-label="Practice preview">
             <p className="track-start-preview-kicker">{previewHint}</p>
             <div className="track-start-preview-card">
+              {previewExtra}
               {previewPrompt && (
                 <p className="track-start-preview-prompt">{previewPrompt}</p>
               )}

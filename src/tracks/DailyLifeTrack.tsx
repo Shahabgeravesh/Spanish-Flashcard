@@ -31,6 +31,7 @@ import { ChapterMark } from '../components/ChapterMark'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { FlashcardStudyPanel } from '../components/FlashcardStudyPanel'
 import { ResetModal } from '../components/ResetModal'
+import { TrackStartHero } from '../components/TrackStartHero'
 
 export const DAILY_KEY = 'habla:daily-phrases:v1'
 const DAILY_LEGACY = ['lexora:daily-phrases:v1']
@@ -298,109 +299,118 @@ export function DailyLifeTrack({ onBack }: Props) {
 
         <main className="stage">
           {phase === 'start' && (
-            <section className="panel start-panel">
+            <>
               <button type="button" className="back-btn back-hub" onClick={onBack}>
-                <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
+                <span className="back-btn-icon" aria-hidden="true">
+                  ←
+                </span>{' '}
+                All tracks
               </button>
-              <p className="brand">Spanish Deck</p>
-              <h1>Daily life phrases</h1>
-              <p className="subtitle">
-                {dailyPhraseCards.length} real-world lines · tips · situations
-              </p>
-              <p className="lede">
-                Study by topic or by real situations — café, commands, airport,
-                hotel, doctor, and more. Tips on every reveal — tap Listen when you want sound.
-              </p>
-
-              <p className="filter-heading">By topic</p>
-              <div className="chapter-list" aria-label="Topic chapter progress">
-                {DAILY_CATEGORIES.map((c) => {
-                  const deck = filterDailyPhrases(
-                    dailyPhraseCards,
-                    c.id,
-                    situation,
-                  )
-                  const pct = deckMasteryPercent(deck, progress.byId)
-                  const learned = learnedCount(deck, progress.byId)
-                  return (
+              <TrackStartHero
+                title="Daily Life"
+                subtitle="Phrases for cafés, travel, hotels, and everyday talk"
+                description="Study by topic or situation. Reveal tips and Listen for pronunciation as you practice real-world Spanish."
+                visualId="daily"
+                masteryPct={trackMasteryPct}
+                masteryLabel="Track progress"
+                masteryDetail={`${learnedTotal} learned overall · selected filter ${masteryPct}%`}
+                stats={[
+                  { label: 'Cards', value: String(activeDeck.length) },
+                  { label: 'Learning', value: String(learningLeft) },
+                  { label: 'Learned', value: String(learnedInSection) },
+                ]}
+                previewPrompt={activeDeck[0]?.front ?? 'A table for two, please'}
+                previewAnswer={activeDeck[0]?.back ?? 'Una mesa para dos, por favor'}
+                actions={
+                  <>
                     <button
-                      key={c.id}
                       type="button"
-                      className={`chapter-list-item chapter-row ${category === c.id ? 'is-active' : ''}`}
-                      onClick={() => setCategory(c.id)}
+                      className="primary-btn"
+                      onClick={start}
+                      disabled={activeDeck.length === 0}
                     >
-                      <ChapterMark seed={`cat-${c.id}`} label={c.label} />
-                      <ChapterProgress
-                        size="sm"
-                        label={c.label}
-                        percent={pct}
-                        detail={`${learned} / ${deck.length}`}
-                      />
+                      {hasSavedProgress ? 'Continue studying' : 'Start studying'}
                     </button>
-                  )
-                })}
-              </div>
+                    {hasSavedProgress && (
+                      <button
+                        type="button"
+                        className="secondary-btn"
+                        onClick={() => setConfirmReset(true)}
+                      >
+                        Reset this track
+                      </button>
+                    )}
+                  </>
+                }
+                footer={
+                  <p className="meta">
+                    {filterLabel} · {activeDeck.length} phrases · {learningLeft}{' '}
+                    still learning
+                  </p>
+                }
+              >
+                <p className="filter-heading">By topic</p>
+                <div className="chapter-list" aria-label="Topic chapter progress">
+                  {DAILY_CATEGORIES.map((c) => {
+                    const deck = filterDailyPhrases(
+                      dailyPhraseCards,
+                      c.id,
+                      situation,
+                    )
+                    const pct = deckMasteryPercent(deck, progress.byId)
+                    const learned = learnedCount(deck, progress.byId)
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        className={`chapter-list-item chapter-row ${category === c.id ? 'is-active' : ''}`}
+                        onClick={() => setCategory(c.id)}
+                      >
+                        <ChapterMark seed={`cat-${c.id}`} label={c.label} />
+                        <ChapterProgress
+                          size="sm"
+                          label={c.label}
+                          percent={pct}
+                          detail={`${learned} / ${deck.length}`}
+                        />
+                      </button>
+                    )
+                  })}
+                </div>
 
-              <p className="filter-heading">By situation</p>
-              <div className="chapter-list" aria-label="Situation chapter progress">
-                {DAILY_SITUATIONS.map((s) => {
-                  const deck = filterDailyPhrases(
-                    dailyPhraseCards,
-                    category,
-                    s.id,
-                  )
-                  const pct = deckMasteryPercent(deck, progress.byId)
-                  const learned = learnedCount(deck, progress.byId)
-                  return (
-                    <button
-                      key={s.id}
-                      type="button"
-                      className={`chapter-list-item chapter-row ${situation === s.id ? 'is-active' : ''}`}
-                      onClick={() => setSituation(s.id)}
-                    >
-                      <ChapterMark seed={`sit-${s.id}`} label={s.label} />
-                      <ChapterProgress
-                        size="sm"
-                        label={s.label}
-                        percent={pct}
-                        detail={`${learned} / ${deck.length}`}
-                      />
-                    </button>
-                  )
-                })}
-              </div>
-
-              <ChapterProgress
-                label="Selected chapter"
-                percent={masteryPct}
-                detail={`${learnedInSection} of ${activeDeck.length} in this filter · track ${trackMasteryPct}%`}
-              />
-
-              <div className="cta-row">
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={start}
-                  disabled={activeDeck.length === 0}
+                <p className="filter-heading">By situation</p>
+                <div
+                  className="chapter-list"
+                  aria-label="Situation chapter progress"
                 >
-                  {hasSavedProgress ? 'Continue studying' : 'Start studying'}
-                </button>
-                {hasSavedProgress && (
-                  <button
-                    type="button"
-                    className="secondary-btn"
-                    onClick={() => setConfirmReset(true)}
-                  >
-                    Reset this track
-                  </button>
-                )}
-              </div>
-
-              <p className="meta">
-                {filterLabel} · {activeDeck.length} phrases · {learningLeft}{' '}
-                still learning · {learnedInSection} learned in section
-              </p>
-            </section>
+                  {DAILY_SITUATIONS.map((s) => {
+                    const deck = filterDailyPhrases(
+                      dailyPhraseCards,
+                      category,
+                      s.id,
+                    )
+                    const pct = deckMasteryPercent(deck, progress.byId)
+                    const learned = learnedCount(deck, progress.byId)
+                    return (
+                      <button
+                        key={s.id}
+                        type="button"
+                        className={`chapter-list-item chapter-row ${situation === s.id ? 'is-active' : ''}`}
+                        onClick={() => setSituation(s.id)}
+                      >
+                        <ChapterMark seed={`sit-${s.id}`} label={s.label} />
+                        <ChapterProgress
+                          size="sm"
+                          label={s.label}
+                          percent={pct}
+                          detail={`${learned} / ${deck.length}`}
+                        />
+                      </button>
+                    )
+                  })}
+                </div>
+              </TrackStartHero>
+            </>
           )}
 
           {phase === 'study' && current && (
