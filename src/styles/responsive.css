@@ -1,0 +1,153 @@
+/**
+ * Responsive layouts — fluid breakpoints, no device-specific pixels
+ */
+
+@media (min-width: 40rem) {
+  .hub-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+}
+
+@media (min-width: 56rem) {
+  .hub {
+    padding-top: var(--space-6);
+  }
+
+  .hub-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .hub-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-5);
+    align-items: end;
+  }
+
+  .hub-overall {
+    min-width: 16rem;
+  }
+}
+
+@media (max-width: 54rem) {
+  .shell {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .bin {
+    position: relative;
+    top: 0;
+  }
+
+  .bin:not(.is-open) .bin-body {
+    display: none;
+  }
+
+  .bin.is-open .bin-body {
+    display: block;
+  }
+}
+
+@media (min-width: 54.0625rem) {
+  .bin-toggle {
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 30rem) {
+  .app {
+    padding: var(--space-3);
+    padding-top: max(var(--space-3), env(safe-area-inset-top));
+    padding-bottom: max(var(--space-3), env(safe-area-inset-bottom));
+  }
+
+  .card {
+    height: clamp(14rem, 40vh, 18rem);
+  }
+
+  .actions {
+    grid-template-columns: 1.35fr 1fr;
+  }
+
+  .mark-reveal,
+  .mark-speak {
+    grid-column: 1 / -1;
+  }
+
+  .mark-right {
+    min-height: 3.25rem;
+  }
+
+  .bin-list li {
+    grid-template-columns: 1fr;
+  }
+
+  .bin-relearn {
+    justify-self: start;
+  }
+
+  .direction-label {
+    font-size: var(--text-xs);
+  }
+
+  .hub-header h1 {
+    max-width: none;
+  }
+}
+
+@media (min-width: 48rem) {
+  .stage {
+    max-width: var(--content-default);
+  }
+
+  .story-reader-lines {
+    max-width: 42rem;
+  }
+
+  .exam-panel .panel {
+    max-width: var(--content-default);
+  }
+}
+
+@media (min-width: 64rem) {
+  .shell {
+    grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .story-list,
+  .story-reader {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    max-width: var(--content-wide);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 32rem) {
+  .card {
+    height: clamp(12rem, 52vh, 16rem);
+  }
+
+  .hub {
+    padding-top: var(--space-3);
+  }
+}
+
+/* Prevent horizontal overflow globally */
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+.panel,
+.stage,
+.hub,
+.shell {
+  max-width: 100%;
+}

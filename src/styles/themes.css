@@ -1,0 +1,109 @@
+/**
+ * Track accent themes + hub card tints
+ */
+
+.hub-theme {
+  --accent: #0d6e64;
+  --accent-deep: #0a5c54;
+  --accent-soft: #e6f5f3;
+}
+
+.foundations-theme {
+  --accent: #0d6e64;
+  --accent-deep: #0a5c54;
+  --accent-soft: #e6f5f3;
+}
+
+.grammar-theme {
+  --accent: #a16207;
+  --accent-deep: #854d0e;
+  --accent-soft: #fef9c3;
+}
+
+.stories-theme {
+  --accent: #1d4ed8;
+  --accent-deep: #1e40af;
+  --accent-soft: #dbeafe;
+}
+
+.exam-theme {
+  --accent: #c2410c;
+  --accent-deep: #9a3412;
+  --accent-soft: #ffedd5;
+}
+
+.daily-theme {
+  --accent: #047857;
+  --accent-deep: #065f46;
+  --accent-soft: #d1fae5;
+}
+
+.colors-theme {
+  --accent: #be185d;
+  --accent-deep: #9d174d;
+  --accent-soft: #fce7f3;
+}
+
+.numbers-theme {
+  --accent: #b45309;
+  --accent-deep: #92400e;
+  --accent-soft: #fef3c7;
+}
+
+.phrases-theme {
+  --accent: #be123c;
+  --accent-deep: #9f1239;
+  --accent-soft: #ffe4e6;
+}
+
+.verbs-theme {
+  --accent: #0369a1;
+  --accent-deep: #075985;
+  --accent-soft: #e0f2fe;
+}
+
+/* Hub card identity */
+.hub-foundations {
+  --hub-tint: #0d6e64;
+  --hub-wash: #e6f5f3;
+}
+
+.hub-grammar {
+  --hub-tint: #a16207;
+  --hub-wash: #fef9c3;
+}
+
+.hub-phrases {
+  --hub-tint: #be123c;
+  --hub-wash: #ffe4e6;
+}
+
+.hub-daily {
+  --hub-tint: #047857;
+  --hub-wash: #d1fae5;
+}
+
+.hub-verbs {
+  --hub-tint: #0369a1;
+  --hub-wash: #e0f2fe;
+}
+
+.hub-numbers {
+  --hub-tint: #b45309;
+  --hub-wash: #fef3c7;
+}
+
+.hub-colors {
+  --hub-tint: #be185d;
+  --hub-wash: #fce7f3;
+}
+
+.hub-stories {
+  --hub-tint: #1d4ed8;
+  --hub-wash: #dbeafe;
+}
+
+.hub-exam {
+  --hub-tint: #c2410c;
+  --hub-wash: #ffedd5;
+}

@@ -56,13 +56,12 @@ import {
   loadExamMasteryPercent,
 } from './tracks/ExamTrack'
 import { AnswerBurst, useAnswerFeedback } from './components/AnswerBurst'
-import { SpeakButton } from './components/SpeakButton'
-import { CardExplain } from './components/CardExplain'
 import { CardVisual } from './components/CardVisual'
 import { ChapterMark } from './components/ChapterMark'
 import { TrackVisual } from './components/TrackVisual'
 import { ChapterProgress } from './components/ChapterProgress'
-import { DirectionToggle } from './components/DirectionToggle'
+import { FlashcardStudyPanel } from './components/FlashcardStudyPanel'
+import { ResetModal } from './components/ResetModal'
 import './App.css'
 
 type Track =
@@ -535,14 +534,19 @@ function App() {
 
         <main className="hub">
           <header className="hub-header">
-            <p className="brand">Spanish Deck</p>
-            <h1>Practice Spanish</h1>
-            <p className="lede hub-lede">Pick a track and keep going.</p>
+            <div className="hub-hero">
+              <p className="brand">Spanish Deck</p>
+              <h1>Calm, focused Spanish practice</h1>
+              <p className="lede hub-lede">
+                Nine tracks — flashcards, nightly stories, and honest exams. Progress stays on this device.
+              </p>
+            </div>
             <ChapterProgress
               className="hub-overall"
-              label="Your progress"
+              label="Overall mastery"
               size="md"
               percent={overallPct}
+              detail={`Average across ${9} learning tracks`}
             />
           </header>
 
@@ -950,222 +954,109 @@ function App() {
           )}
 
           {phase === 'study' && current && (
-            <section className="panel study-panel">
-              <header className="study-header">
-                <div className="study-top">
-                  <button
-                    type="button"
-                    className="back-btn back-btn-sm"
-                    onClick={() => setPhase('start')}
-                  >
-                    <span className="back-btn-icon" aria-hidden="true">
-                      ←
-                    </span>{' '}
-                    Home
-                  </button>
-                  <button
-                    type="button"
-                    className="text-btn danger-text"
-                    onClick={() => setConfirmReset(true)}
-                  >
-                    Reset
-                  </button>
-                </div>
-
-                <div className="counters">
-                  <span>{learningLeft} remaining</span>
-                  <span className="dot" aria-hidden="true" />
-                  <span>
-                    {isVerbs
-                      ? `${learnedInSection} in section`
-                      : `${learnedTotal} learned`}
-                  </span>
-                  <span className="dot" aria-hidden="true" />
-                  <span>
-                    Streak {currentStreak}/{STREAK_TO_LEARNED}
-                  </span>
-                </div>
-
-                {!isVerbs && (
-                  <DirectionToggle
-                    reverse={reverse}
-                    onChange={setDirection}
-                  />
-                )}
-
-                <div className="study-progress-wrap">
-                  <ChapterProgress
-                    label={isVerbs ? 'This chapter' : 'Track progress'}
-                    percent={masteryPct}
-                    detail={`${learnedInSection} of ${isVerbs ? activeVerbDeck.length : phraseCards.length} toward 100%`}
-                  />
-                </div>
-              </header>
-
-              <button
-                type="button"
-                className={`card ${flipped ? 'is-flipped' : ''}${cardFx ? ` card-fx-${cardFx}` : ''}`}
-                onClick={flip}
-                aria-label={
-                  flipped ? 'Show prompt' : 'Show answer'
-                }
-                disabled={cardFx != null}
-              >
-                <div className="card-inner">
-                  <div className="card-face card-front">
-                    {isVerbs && currentVerb ? (
-                      <>
-                        <div className="verb-tags">
-                          <span className={`tense-pill tense-${currentVerb.tense}`}>
-                            {TENSE_META[currentVerb.tense].label}
-                          </span>
-                          <span className="group-pill">
-                            {currentVerb.group}
-                          </span>
-                        </div>
-                        <CardVisual
-                          infinitive={currentVerb.infinitive}
-                          tense={currentVerb.tense}
-                          front={currentVerb.front}
-                          back={currentVerb.back}
-                          tip={currentVerb.tip}
-                        />
-                        <p className="card-text verb-infinitive">
-                          {currentVerb.infinitive}
-                        </p>
-                        <p className="verb-prompt">
-                          <span className="verb-pronoun">{currentVerb.pronounEs}</span>
-                          <span className="verb-meaning">
-                            {currentVerb.meaning} · {currentVerb.pronounEn}
-                          </span>
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <span className="lang-tag">
-                          {reverse ? 'Español' : 'English'}
-                        </span>
-                        <CardVisual
-                          front={current.front}
-                          back={current.back}
-                          tip={currentPhrase?.tip}
-                        />
-                        <p className="card-text">
-                          {reverse ? current.back : current.front}
-                        </p>
-                      </>
-                    )}
-                  </div>
-                  <div className="card-face card-back">
-                    {isVerbs && currentVerb ? (
-                      <>
-                        <span className="lang-tag">Conjugated form</span>
-                        <CardVisual
-                          infinitive={currentVerb.infinitive}
-                          tense={currentVerb.tense}
-                          front={currentVerb.front}
-                          back={currentVerb.back}
-                          tip={currentVerb.tip}
-                          size="sm"
-                        />
-                        <p className="card-text">{currentVerb.back}</p>
-                        <p className="verb-answer-meta">
-                          {currentVerb.infinitive} ·{' '}
-                          {TENSE_META[currentVerb.tense].esLabel} ·{' '}
-                          {currentVerb.pronounEs}
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <span className="lang-tag">
-                          {reverse ? 'English' : 'Español'}
-                        </span>
-                        <CardVisual
-                          front={current.front}
-                          back={current.back}
-                          tip={currentPhrase?.tip}
-                          size="sm"
-                        />
-                        <p className="card-text">
-                          {reverse ? current.front : current.back}
-                        </p>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </button>
-
-              <CardExplain
-                visible={flipped}
-                tip={
-                  isVerbs
-                    ? currentVerb?.tip
-                    : currentPhrase?.tip
-                }
-                front={
-                  isVerbs
-                    ? currentVerb?.front
-                    : currentPhrase?.front
-                }
-                back={
-                  isVerbs
-                    ? currentVerb?.back
-                    : currentPhrase?.back
-                }
-                exampleEs={
-                  isVerbs ? undefined : currentPhrase?.exampleEs
-                }
-                exampleEn={
-                  isVerbs ? undefined : currentPhrase?.exampleEn
-                }
-              />
-
-              <div className="actions">
-                <button
-                  type="button"
-                  className="mark mark-right"
-                  onClick={onCorrect}
-                  disabled={!flipped || cardFx != null}
-                  aria-label="Got it — mark this card correct"
-                >
-                  <span className="mark-icon" aria-hidden="true">
-                    ✓
-                  </span>
-                  Got it
-                </button>
-                <button
-                  type="button"
-                  className="mark mark-wrong"
-                  onClick={onIncorrect}
-                  disabled={!flipped || cardFx != null}
-                  aria-label="Missed — mark this card incorrect"
-                >
-                  Missed
-                </button>
-                <button
-                  type="button"
-                  className="mark mark-reveal"
-                  onClick={flip}
-                  disabled={cardFx != null}
-                >
-                  {flipped ? 'Hide' : 'Reveal'}
-                </button>
-                {studySpanish && (
-                  <SpeakButton
-                    text={studySpanish}
-                    variant="mark"
-                    disabled={cardFx != null}
-                  />
-                )}
-              </div>
-              <p className="mark-help">
-                {flipped
+            <FlashcardStudyPanel
+              onHome={() => setPhase('start')}
+              onReset={() => setConfirmReset(true)}
+              learningLeft={learningLeft}
+              learnedInSection={isVerbs ? learnedInSection : learnedTotal}
+              streak={currentStreak}
+              masteryPct={masteryPct}
+              progressLabel={isVerbs ? 'This chapter' : 'Track progress'}
+              flipped={flipped}
+              onFlip={flip}
+              showDirectionToggle={!isVerbs}
+              reverse={reverse}
+              onDirectionChange={setDirection}
+              frontLabel={reverse ? 'Español' : 'English'}
+              backLabel={reverse ? 'English' : 'Español'}
+              front={
+                isVerbs && currentVerb
+                  ? currentVerb.front
+                  : reverse
+                    ? current.back
+                    : current.front
+              }
+              back={
+                isVerbs && currentVerb
+                  ? currentVerb.back
+                  : reverse
+                    ? current.front
+                    : current.back
+              }
+              speakText={
+                (isVerbs ? currentVerb?.back : studySpanish) ?? current.back
+              }
+              tip={isVerbs ? currentVerb?.tip : currentPhrase?.tip}
+              cardFront={current.front}
+              cardBack={current.back}
+              exampleEs={isVerbs ? undefined : currentPhrase?.exampleEs}
+              exampleEn={isVerbs ? undefined : currentPhrase?.exampleEn}
+              infinitive={currentVerb?.infinitive}
+              tense={currentVerb?.tense}
+              cardFx={cardFx}
+              onMissed={onIncorrect}
+              onGotIt={onCorrect}
+              help={
+                flipped
                   ? currentStreak + 1 >= STREAK_TO_LEARNED
                     ? 'Read the explanation, then one more correct sends this into the learned bin.'
                     : 'Read the explanation below. Got it builds streak; Missed resets it and requeues later.'
-                  : 'Flip to reveal Spanish, hear it, and see the explanation.'}
-              </p>
-            </section>
+                  : isVerbs
+                    ? 'Flip to reveal the conjugated form, hear it, and see the tip.'
+                    : 'Flip to reveal Spanish, hear it, and see the explanation.'
+              }
+              frontFace={
+                isVerbs && currentVerb ? (
+                  <>
+                    <div className="verb-tags">
+                      <span className={`tense-pill tense-${currentVerb.tense}`}>
+                        {TENSE_META[currentVerb.tense].label}
+                      </span>
+                      <span className="group-pill">{currentVerb.group}</span>
+                    </div>
+                    <CardVisual
+                      infinitive={currentVerb.infinitive}
+                      tense={currentVerb.tense}
+                      front={currentVerb.front}
+                      back={currentVerb.back}
+                      tip={currentVerb.tip}
+                    />
+                    <p className="card-text verb-infinitive">
+                      {currentVerb.infinitive}
+                    </p>
+                    <p className="verb-prompt">
+                      <span className="verb-pronoun">
+                        {currentVerb.pronounEs}
+                      </span>
+                      <span className="verb-meaning">
+                        {currentVerb.meaning} · {currentVerb.pronounEn}
+                      </span>
+                    </p>
+                  </>
+                ) : undefined
+              }
+              backFace={
+                isVerbs && currentVerb ? (
+                  <>
+                    <span className="lang-tag">Conjugated form</span>
+                    <CardVisual
+                      infinitive={currentVerb.infinitive}
+                      tense={currentVerb.tense}
+                      front={currentVerb.front}
+                      back={currentVerb.back}
+                      tip={currentVerb.tip}
+                      size="sm"
+                    />
+                    <p className="card-text">{currentVerb.back}</p>
+                    <p className="verb-answer-meta">
+                      {currentVerb.infinitive} ·{' '}
+                      {TENSE_META[currentVerb.tense].esLabel} ·{' '}
+                      {currentVerb.pronounEs}
+                    </p>
+                  </>
+                ) : undefined
+              }
+            />
           )}
 
           {phase === 'done' && (
@@ -1216,196 +1107,112 @@ function App() {
           )}
 
           {phase === 'review-learned' && reviewCard && (
-            <section className="panel study-panel">
-              <header className="study-header">
-                <div className="study-top">
-                  <button
-                    type="button"
-                    className="back-btn back-btn-sm"
-                    onClick={() =>
-                      setPhase(learningLeft === 0 ? 'done' : 'study')
-                    }
-                  >
-                    <span className="back-btn-icon" aria-hidden="true">
-                      ←
-                    </span>{' '}
-                    Back
-                  </button>
-                  <span className="counters">
-                    Learned {reviewIndex + 1} / {scopedLearned.length}
-                  </span>
-                </div>
-                {!isVerbs && (
-                  <DirectionToggle
-                    reverse={reverse}
-                    onChange={setDirection}
-                  />
-                )}
-              </header>
-
-              <button
-                type="button"
-                className={`card ${flipped ? 'is-flipped' : ''}`}
-                onClick={flip}
-              >
-                <div className="card-inner">
-                  <div className="card-face card-front">
-                    {isVerbs ? (
-                      <>
-                        <span className="lang-tag">Prompt</span>
-                        <CardVisual
-                          infinitive={(reviewCard as VerbCard).infinitive}
-                          tense={(reviewCard as VerbCard).tense}
-                          front={reviewCard.front}
-                          back={reviewCard.back}
-                          tip={(reviewCard as VerbCard).tip}
-                        />
-                        <p className="card-text">{reviewCard.front}</p>
-                      </>
-                    ) : (
-                      <>
-                        <span className="lang-tag">
-                          {reverse ? 'Español' : 'English'}
-                        </span>
-                        <CardVisual
-                          front={reviewCard.front}
-                          back={reviewCard.back}
-                          tip={
-                            (reviewCard as (typeof phraseCards)[number]).tip
-                          }
-                        />
-                        <p className="card-text">
-                          {reverse ? reviewCard.back : reviewCard.front}
-                        </p>
-                      </>
-                    )}
-                  </div>
-                  <div className="card-face card-back">
-                    <span className="lang-tag">
-                      {isVerbs ? 'Form' : reverse ? 'English' : 'Español'}
-                    </span>
+            <FlashcardStudyPanel
+              homeLabel="Back"
+              onHome={() => setPhase(learningLeft === 0 ? 'done' : 'study')}
+              onReset={() => undefined}
+              hideReset
+              learningLeft={scopedLearned.length - reviewIndex}
+              learnedInSection={scopedLearned.length}
+              streakLabel={`${reviewIndex + 1} / ${scopedLearned.length}`}
+              masteryPct={Math.round(
+                ((reviewIndex + 1) / Math.max(1, scopedLearned.length)) * 100,
+              )}
+              flipped={flipped}
+              onFlip={flip}
+              showDirectionToggle={!isVerbs}
+              reverse={reverse}
+              onDirectionChange={setDirection}
+              frontLabel={reverse ? 'Español' : 'English'}
+              backLabel={
+                isVerbs ? 'Form' : reverse ? 'English' : 'Español'
+              }
+              front={
+                isVerbs
+                  ? reviewCard.front
+                  : reverse
+                    ? reviewCard.back
+                    : reviewCard.front
+              }
+              back={
+                isVerbs || !reverse ? reviewCard.back : reviewCard.front
+              }
+              speakText={reviewSpanish ?? reviewCard.back}
+              tip={
+                isVerbs
+                  ? (reviewCard as VerbCard).tip
+                  : (reviewCard as (typeof phraseCards)[number]).tip
+              }
+              cardFront={reviewCard.front}
+              cardBack={reviewCard.back}
+              exampleEs={
+                isVerbs
+                  ? undefined
+                  : (reviewCard as (typeof phraseCards)[number]).exampleEs
+              }
+              exampleEn={
+                isVerbs
+                  ? undefined
+                  : (reviewCard as (typeof phraseCards)[number]).exampleEn
+              }
+              infinitive={
+                isVerbs ? (reviewCard as VerbCard).infinitive : undefined
+              }
+              tense={isVerbs ? (reviewCard as VerbCard).tense : undefined}
+              onMissed={() => {
+                setReviewIndex((i) => Math.max(0, i - 1))
+                setFlipped(false)
+              }}
+              onGotIt={() => {
+                if (reviewIndex >= scopedLearned.length - 1) {
+                  setPhase(learningLeft === 0 ? 'done' : 'study')
+                  setFlipped(false)
+                  return
+                }
+                setReviewIndex((i) => i + 1)
+                setFlipped(false)
+              }}
+              missedLabel="Previous"
+              gotItLabel={
+                reviewIndex >= scopedLearned.length - 1 ? 'Done' : 'Next'
+              }
+              help="Browsing learned cards."
+              frontFace={
+                isVerbs ? (
+                  <>
+                    <span className="lang-tag">Prompt</span>
                     <CardVisual
-                      infinitive={
-                        isVerbs
-                          ? (reviewCard as VerbCard).infinitive
-                          : undefined
-                      }
+                      infinitive={(reviewCard as VerbCard).infinitive}
+                      tense={(reviewCard as VerbCard).tense}
                       front={reviewCard.front}
                       back={reviewCard.back}
-                      tip={
-                        isVerbs
-                          ? (reviewCard as VerbCard).tip
-                          : (reviewCard as (typeof phraseCards)[number]).tip
-                      }
-                      size="sm"
+                      tip={(reviewCard as VerbCard).tip}
                     />
-                    <p className="card-text">
-                      {isVerbs || !reverse
-                        ? reviewCard.back
-                        : reviewCard.front}
-                    </p>
-                  </div>
-                </div>
-              </button>
-
-              <CardExplain
-                visible={flipped}
-                tip={
-                  isVerbs
-                    ? (reviewCard as VerbCard).tip
-                    : (reviewCard as (typeof phraseCards)[number]).tip
-                }
-                front={reviewCard.front}
-                back={reviewCard.back}
-                exampleEs={
-                  isVerbs
-                    ? undefined
-                    : (reviewCard as (typeof phraseCards)[number]).exampleEs
-                }
-                exampleEn={
-                  isVerbs
-                    ? undefined
-                    : (reviewCard as (typeof phraseCards)[number]).exampleEn
-                }
-              />
-
-              <div className="actions review-actions">
+                    <p className="card-text">{reviewCard.front}</p>
+                  </>
+                ) : undefined
+              }
+              footer={
                 <button
                   type="button"
-                  className="mark mark-reveal"
-                  disabled={reviewIndex === 0}
-                  onClick={() => {
-                    setReviewIndex((i) => Math.max(0, i - 1))
-                    setFlipped(false)
-                  }}
+                  className="ghost-btn center-ghost"
+                  onClick={() => practiceLearnedAgain([reviewCard.id])}
                 >
-                  Previous
+                  Move back to learning
                 </button>
-                {reviewSpanish && (
-                  <SpeakButton text={reviewSpanish} variant="mark" />
-                )}
-                <button
-                  type="button"
-                  className="mark mark-right"
-                  onClick={() => {
-                    if (reviewIndex >= scopedLearned.length - 1) {
-                      setPhase(learningLeft === 0 ? 'done' : 'study')
-                      setFlipped(false)
-                      return
-                    }
-                    setReviewIndex((i) => i + 1)
-                    setFlipped(false)
-                  }}
-                >
-                  {reviewIndex >= scopedLearned.length - 1 ? 'Done' : 'Next'}
-                </button>
-              </div>
-              <button
-                type="button"
-                className="ghost-btn center-ghost"
-                onClick={() => practiceLearnedAgain([reviewCard.id])}
-              >
-                Move back to learning
-              </button>
-            </section>
+              }
+            />
           )}
         </main>
       </div>
 
       {confirmReset && (
-        <div
-          className="modal-backdrop"
-          role="presentation"
-          onClick={() => setConfirmReset(false)}
-        >
-          <div
-            className="modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="reset-title"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 id="reset-title">
-              Reset {isVerbs ? 'verbs' : 'phrases'} progress?
-            </h2>
-            <p>
-              This clears only this track’s learned bin, streaks, and queue. The
-              other track stays untouched.
-            </p>
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="secondary-btn"
-                onClick={() => setConfirmReset(false)}
-              >
-                Cancel
-              </button>
-              <button type="button" className="danger-btn" onClick={resetAll}>
-                Reset this track
-              </button>
-            </div>
-          </div>
-        </div>
+        <ResetModal
+          title={`Reset ${isVerbs ? 'verbs' : 'phrases'} progress?`}
+          description="This clears only this track’s learned bin, streaks, and queue. The other track stays untouched."
+          onCancel={() => setConfirmReset(false)}
+          onConfirm={resetAll}
+        />
       )}
     </div>
   )

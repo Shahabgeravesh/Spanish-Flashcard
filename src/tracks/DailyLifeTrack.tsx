@@ -27,12 +27,10 @@ import {
 import { usePersistentProgress } from '../lib/usePersistentProgress'
 import { getTrackReverse, saveSession } from '../lib/session'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
-import { SpeakButton } from '../components/SpeakButton'
-import { CardExplain } from '../components/CardExplain'
-import { CardVisual } from '../components/CardVisual'
 import { ChapterMark } from '../components/ChapterMark'
 import { ChapterProgress } from '../components/ChapterProgress'
-import { DirectionToggle } from '../components/DirectionToggle'
+import { FlashcardStudyPanel } from '../components/FlashcardStudyPanel'
+import { ResetModal } from '../components/ResetModal'
 
 export const DAILY_KEY = 'habla:daily-phrases:v1'
 const DAILY_LEGACY = ['lexora:daily-phrases:v1']
@@ -406,7 +404,7 @@ export function DailyLifeTrack({ onBack }: Props) {
           )}
 
           {phase === 'study' && current && (
-            <StudyPanel
+            <FlashcardStudyPanel
               onHome={() => setPhase('start')}
               onReset={() => setConfirmReset(true)}
               learningLeft={learningLeft}
@@ -466,7 +464,7 @@ export function DailyLifeTrack({ onBack }: Props) {
           )}
 
           {phase === 'review-learned' && reviewCard && (
-            <StudyPanel
+            <FlashcardStudyPanel
               onHome={() => setPhase('start')}
               onReset={() => undefined}
               hideReset
@@ -516,247 +514,17 @@ export function DailyLifeTrack({ onBack }: Props) {
       </div>
 
       {confirmReset && (
-        <div
-          className="modal-backdrop"
-          role="presentation"
-          onClick={() => setConfirmReset(false)}
-        >
-          <div
-            className="modal"
-            role="dialog"
-            aria-modal="true"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2>Reset daily phrases?</h2>
-            <p>
-              Clears only this track’s learned bin and streaks. Other tracks stay
-              untouched.
-            </p>
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="secondary-btn"
-                onClick={() => setConfirmReset(false)}
-              >
-                Cancel
-              </button>
-              <button type="button" className="danger-btn" onClick={resetAll}>
-                Reset this track
-              </button>
-            </div>
-          </div>
-        </div>
+        <ResetModal
+          title="Reset daily phrases?"
+          description="Clears only this track’s learned bin and streaks. Other tracks stay untouched."
+          onCancel={() => setConfirmReset(false)}
+          onConfirm={resetAll}
+        />
       )}
     </div>
   )
 }
 
-function StudyPanel(props: {
-  onHome: () => void
-  onReset: () => void
-  hideReset?: boolean
-  learningLeft: number
-  learnedInSection: number
-  streak?: number
-  streakLabel?: string
-  masteryPct: number
-  flipped: boolean
-  onFlip: () => void
-  reverse: boolean
-  onDirectionChange: (reverse: boolean) => void
-  learnLabel?: string
-  recallLabel?: string
-  frontLabel: string
-  backLabel: string
-  front: string
-  back: string
-  speakText: string
-  tip: string
-  cardFront: string
-  cardBack: string
-  exampleEs?: string
-  exampleEn?: string
-  situation?: string
-  category?: string
-  cardFx?: 'correct' | 'incorrect' | null
-  onMissed: () => void
-  onGotIt: () => void
-  missedLabel?: string
-  gotItLabel?: string
-  help: string
-}) {
-  const {
-    onHome,
-    onReset,
-    hideReset,
-    learningLeft,
-    learnedInSection,
-    streak,
-    streakLabel,
-    masteryPct,
-    flipped,
-    onFlip,
-    reverse,
-    onDirectionChange,
-    learnLabel,
-    recallLabel,
-    frontLabel,
-    backLabel,
-    front,
-    back,
-    speakText,
-    tip,
-    cardFront,
-    cardBack,
-    exampleEs,
-    exampleEn,
-    situation,
-    category,
-    cardFx = null,
-    onMissed,
-    onGotIt,
-    missedLabel = 'Missed',
-    gotItLabel = 'Got it',
-    help,
-  } = props
-
-  const busy = cardFx != null
-  const situationLabel =
-    situation != null
-      ? DAILY_SITUATIONS.find((s) => s.id === situation)?.label ?? situation
-      : undefined
-
-  return (
-    <section className="panel study-panel">
-      <header className="study-header">
-        <div className="study-top">
-          <button type="button" className="back-btn back-btn-sm" onClick={onHome}>
-            <span className="back-btn-icon" aria-hidden="true">
-              ←
-            </span>{' '}
-            Home
-          </button>
-          {!hideReset && (
-            <button
-              type="button"
-              className="text-btn danger-text"
-              onClick={onReset}
-            >
-              Reset
-            </button>
-          )}
-        </div>
-        <div className="counters">
-          <span>{learningLeft} left</span>
-          <span className="dot" aria-hidden="true" />
-          <span>{learnedInSection} learned</span>
-          <span className="dot" aria-hidden="true" />
-          <span>
-            {streakLabel ?? `Streak ${streak ?? 0}/${STREAK_TO_LEARNED}`}
-          </span>
-        </div>
-        <DirectionToggle
-          reverse={reverse}
-          onChange={onDirectionChange}
-          learnLabel={learnLabel}
-          recallLabel={recallLabel}
-        />
-        <div className="study-progress-wrap">
-          <ChapterProgress
-            size="sm"
-            label="Chapter"
-            percent={masteryPct}
-          />
-        </div>
-      </header>
-
-      <button
-        type="button"
-        className={`card ${flipped ? 'is-flipped' : ''}${cardFx ? ` card-fx-${cardFx}` : ''}`}
-        onClick={onFlip}
-        disabled={busy}
-      >
-        <div className="card-inner">
-          <div className="card-face card-front">
-            <span className="lang-tag">{category ?? frontLabel}</span>
-            <CardVisual
-              front={front}
-              back={back}
-              tip={tip}
-              category={category}
-              situation={situationLabel}
-            />
-            <p className="card-text">{front}</p>
-          </div>
-          <div className="card-face card-back">
-            <span className="lang-tag">{backLabel}</span>
-            <CardVisual
-              front={front}
-              back={back}
-              tip={tip}
-              category={category}
-              situation={situationLabel}
-              size="sm"
-            />
-            <p className="card-text">{back}</p>
-          </div>
-        </div>
-      </button>
-
-      <CardExplain
-        visible={flipped}
-        tip={tip}
-        situation={situationLabel}
-        front={cardFront}
-        back={cardBack}
-        exampleEs={exampleEs}
-        exampleEn={exampleEn}
-      />
-
-      <div className="actions">
-        <button
-          type="button"
-          className="mark mark-right"
-          onClick={onGotIt}
-          disabled={busy || (!flipped && gotItLabel === 'Got it')}
-          aria-label={
-            gotItLabel === 'Got it'
-              ? 'Got it — mark this card correct'
-              : gotItLabel
-          }
-        >
-          <span className="mark-icon" aria-hidden="true">
-            ✓
-          </span>
-          {gotItLabel}
-        </button>
-        <button
-          type="button"
-          className="mark mark-wrong"
-          onClick={onMissed}
-          disabled={busy || (!flipped && missedLabel === 'Missed')}
-          aria-label={
-            missedLabel === 'Missed'
-              ? 'Missed — mark this card incorrect'
-              : missedLabel
-          }
-        >
-          {missedLabel}
-        </button>
-        <button
-          type="button"
-          className="mark mark-reveal"
-          onClick={onFlip}
-          disabled={busy}
-        >
-          {flipped ? 'Hide' : 'Reveal'}
-        </button>
-        <SpeakButton text={speakText} variant="mark" disabled={busy} />
-      </div>
-      <p className="mark-help">{help}</p>
-    </section>
-  )
-}
 
 export function loadDailyLearnedCount(): number {
   const state = loadProgress(dailyPhraseCards, DAILY_KEY, DAILY_LEGACY)

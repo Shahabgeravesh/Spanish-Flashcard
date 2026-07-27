@@ -16,6 +16,7 @@ import {
   sectionBestPercent,
   type ExamProgress,
 } from '../lib/examProgress'
+import { ResetModal } from '../components/ResetModal'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { SpeakButton } from '../components/SpeakButton'
 import { TrackVisual } from '../components/TrackVisual'
@@ -388,15 +389,27 @@ export function ExamTrack({ onBack }: Props) {
           )}
 
           {phase === 'result' && (
-            <section className="panel done-panel">
+            <section className="panel done-panel exam-result-panel">
               <p className="brand">Exam complete</p>
+              <div
+                className="exam-score-ring"
+                style={{
+                  ['--score-pct' as string]: String(
+                    Math.round((score / Math.max(1, queue.length)) * 100),
+                  ),
+                }}
+                aria-hidden="true"
+              >
+                <span className="exam-score-value">
+                  {Math.round((score / Math.max(1, queue.length)) * 100)}%
+                </span>
+              </div>
               <h1>
-                {score} / {queue.length}
+                {score} of {queue.length} correct
               </h1>
               <p className="lede">
-                {Math.round((score / Math.max(1, queue.length)) * 100)}% on{' '}
-                {sectionLabel}. Best in this section:{' '}
-                {sectionBestPercent(progress, section)}%.
+                {sectionLabel} · Best in this section:{' '}
+                {sectionBestPercent(progress, section)}%
               </p>
               <ChapterProgress
                 label="This attempt"
@@ -420,36 +433,13 @@ export function ExamTrack({ onBack }: Props) {
       </div>
 
       {confirmReset && (
-        <div
-          className="modal-backdrop"
-          role="presentation"
-          onClick={() => setConfirmReset(false)}
-        >
-          <div
-            className="modal"
-            role="dialog"
-            aria-modal="true"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2>Reset exam progress?</h2>
-            <p>
-              Clears best scores and attempt history for every exam section.
-              Flashcard tracks stay untouched.
-            </p>
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="secondary-btn"
-                onClick={() => setConfirmReset(false)}
-              >
-                Cancel
-              </button>
-              <button type="button" className="danger-btn" onClick={resetAll}>
-                Reset exams
-              </button>
-            </div>
-          </div>
-        </div>
+        <ResetModal
+          title="Reset exam progress?"
+          description="Clears best scores and attempt history for every exam section. Flashcard tracks stay untouched."
+          confirmLabel="Reset exams"
+          onCancel={() => setConfirmReset(false)}
+          onConfirm={resetAll}
+        />
       )}
     </div>
   )

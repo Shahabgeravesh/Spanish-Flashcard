@@ -3,7 +3,6 @@ import {
   COLOR_FILTERS,
   colorCards,
   filterColorCards,
-  type ColorCard,
   type ColorFilter,
 } from '../data/colors'
 import {
@@ -25,11 +24,10 @@ import {
 import { usePersistentProgress } from '../lib/usePersistentProgress'
 import { useSpanishVoice } from '../lib/useSpanishVoice'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
-import { SpeakButton } from '../components/SpeakButton'
-import { CardExplain } from '../components/CardExplain'
-import { CardVisual } from '../components/CardVisual'
 import { ChapterMark } from '../components/ChapterMark'
 import { ChapterProgress } from '../components/ChapterProgress'
+import { FlashcardStudyPanel } from '../components/FlashcardStudyPanel'
+import { ResetModal } from '../components/ResetModal'
 
 export const COLORS_KEY = 'habla:colors:v1'
 
@@ -361,17 +359,29 @@ export function ColorsTrack({ onBack }: Props) {
           )}
 
           {phase === 'study' && current && (
-            <ColorStudyPanel
-              card={current}
+            <FlashcardStudyPanel
+              onHome={() => setPhase('start')}
+              onReset={() => setConfirmReset(true)}
               learningLeft={learningLeft}
               learnedInSection={learnedInSection}
               streak={currentStreak}
               masteryPct={masteryPct}
               flipped={flipped}
-              cardFx={cardFx}
-              onHome={() => setPhase('start')}
-              onReset={() => setConfirmReset(true)}
               onFlip={flip}
+              showDirectionToggle={false}
+              frontLabel={current.kind}
+              backLabel="Español"
+              front={current.front}
+              back={current.back}
+              speakText={current.back}
+              tip={current.tip}
+              cardFront={current.front}
+              cardBack={current.back}
+              exampleEs={current.exampleEs}
+              exampleEn={current.exampleEn}
+              swatch={current.swatch}
+              kind={current.kind}
+              cardFx={cardFx}
               onMissed={onIncorrect}
               onGotIt={onCorrect}
               help={
@@ -408,8 +418,10 @@ export function ColorsTrack({ onBack }: Props) {
           )}
 
           {phase === 'review-learned' && reviewCard && (
-            <ColorStudyPanel
-              card={reviewCard}
+            <FlashcardStudyPanel
+              onHome={() => setPhase('start')}
+              onReset={() => undefined}
+              hideReset
               learningLeft={scopedLearned.length - reviewIndex}
               learnedInSection={learnedInSection}
               streakLabel={`${reviewIndex + 1} / ${scopedLearned.length}`}
@@ -417,10 +429,20 @@ export function ColorsTrack({ onBack }: Props) {
                 ((reviewIndex + 1) / Math.max(1, scopedLearned.length)) * 100,
               )}
               flipped={flipped}
-              onHome={() => setPhase('start')}
-              hideReset
-              onReset={() => undefined}
               onFlip={flip}
+              showDirectionToggle={false}
+              frontLabel={reviewCard.kind}
+              backLabel="Español"
+              front={reviewCard.front}
+              back={reviewCard.back}
+              speakText={reviewCard.back}
+              tip={reviewCard.tip}
+              cardFront={reviewCard.front}
+              cardBack={reviewCard.back}
+              exampleEs={reviewCard.exampleEs}
+              exampleEn={reviewCard.exampleEn}
+              swatch={reviewCard.swatch}
+              kind={reviewCard.kind}
               onMissed={() => {
                 setReviewIndex((i) => Math.max(0, i - 1))
                 setFlipped(false)
@@ -445,193 +467,14 @@ export function ColorsTrack({ onBack }: Props) {
       </div>
 
       {confirmReset && (
-        <div
-          className="modal-backdrop"
-          role="presentation"
-          onClick={() => setConfirmReset(false)}
-        >
-          <div
-            className="modal"
-            role="dialog"
-            aria-modal="true"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2>Reset colors progress?</h2>
-            <p>
-              Clears only this track’s learned bin and streaks. Other tracks stay
-              untouched.
-            </p>
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="secondary-btn"
-                onClick={() => setConfirmReset(false)}
-              >
-                Cancel
-              </button>
-              <button type="button" className="danger-btn" onClick={resetAll}>
-                Reset this track
-              </button>
-            </div>
-          </div>
-        </div>
+        <ResetModal
+          title="Reset colors progress?"
+          description="Clears only this track’s learned bin and streaks. Other tracks stay untouched."
+          onCancel={() => setConfirmReset(false)}
+          onConfirm={resetAll}
+        />
       )}
     </div>
-  )
-}
-
-function ColorStudyPanel(props: {
-  card: ColorCard
-  learningLeft: number
-  learnedInSection: number
-  streak?: number
-  streakLabel?: string
-  masteryPct: number
-  flipped: boolean
-  cardFx?: 'correct' | 'incorrect' | null
-  onHome: () => void
-  onReset: () => void
-  hideReset?: boolean
-  onFlip: () => void
-  onMissed: () => void
-  onGotIt: () => void
-  missedLabel?: string
-  gotItLabel?: string
-  help: string
-}) {
-  const {
-    card,
-    learningLeft,
-    learnedInSection,
-    streak,
-    streakLabel,
-    masteryPct,
-    flipped,
-    cardFx = null,
-    onHome,
-    onReset,
-    hideReset,
-    onFlip,
-    onMissed,
-    onGotIt,
-    missedLabel = 'Missed',
-    gotItLabel = 'Got it',
-    help,
-  } = props
-
-  const busy = cardFx != null
-
-  return (
-    <section className="panel study-panel">
-      <header className="study-header">
-        <div className="study-top">
-          <button type="button" className="back-btn back-btn-sm" onClick={onHome}>
-            <span className="back-btn-icon" aria-hidden="true">
-              ←
-            </span>{' '}
-            Home
-          </button>
-          {!hideReset && (
-            <button
-              type="button"
-              className="text-btn danger-text"
-              onClick={onReset}
-            >
-              Reset
-            </button>
-          )}
-        </div>
-        <div className="counters">
-          <span>{learningLeft} left</span>
-          <span className="dot" aria-hidden="true" />
-          <span>{learnedInSection} learned</span>
-          <span className="dot" aria-hidden="true" />
-          <span>
-            {streakLabel ?? `Streak ${streak ?? 0}/${STREAK_TO_LEARNED}`}
-          </span>
-        </div>
-        <div className="study-progress-wrap">
-          <ChapterProgress size="sm" label="Chapter" percent={masteryPct} />
-        </div>
-      </header>
-
-      <button
-        type="button"
-        className={`card ${flipped ? 'is-flipped' : ''}${cardFx ? ` card-fx-${cardFx}` : ''}`}
-        onClick={onFlip}
-        disabled={busy}
-      >
-        <div className="card-inner">
-          <div className="card-face card-front">
-            <span className="lang-tag">{card.kind}</span>
-            <CardVisual
-              front={card.front}
-              back={card.back}
-              tip={card.tip}
-              swatch={card.swatch}
-              kind={card.kind}
-            />
-            <p className="card-text">{card.front}</p>
-          </div>
-          <div className="card-face card-back">
-            <span className="lang-tag">Español</span>
-            <CardVisual
-              front={card.front}
-              back={card.back}
-              tip={card.tip}
-              swatch={card.swatch}
-              kind={card.kind}
-              size="sm"
-            />
-            <p className="card-text">{card.back}</p>
-          </div>
-        </div>
-      </button>
-
-      <CardExplain visible={flipped} tip={card.tip} front={card.front} back={card.back} exampleEs={card.exampleEs} exampleEn={card.exampleEn} />
-
-      <div className="actions">
-        <button
-          type="button"
-          className="mark mark-right"
-          onClick={onGotIt}
-          disabled={busy || (!flipped && gotItLabel === 'Got it')}
-          aria-label={
-            gotItLabel === 'Got it'
-              ? 'Got it — mark this card correct'
-              : gotItLabel
-          }
-        >
-          <span className="mark-icon" aria-hidden="true">
-            ✓
-          </span>
-          {gotItLabel}
-        </button>
-        <button
-          type="button"
-          className="mark mark-wrong"
-          onClick={onMissed}
-          disabled={busy || (!flipped && missedLabel === 'Missed')}
-          aria-label={
-            missedLabel === 'Missed'
-              ? 'Missed — mark this card incorrect'
-              : missedLabel
-          }
-        >
-          {missedLabel}
-        </button>
-        <button
-          type="button"
-          className="mark mark-reveal"
-          onClick={onFlip}
-          disabled={busy}
-        >
-          {flipped ? 'Hide' : 'Reveal'}
-        </button>
-        <SpeakButton text={card.back} variant="mark" disabled={busy} />
-      </div>
-      <p className="mark-help">{help}</p>
-    </section>
   )
 }
 

@@ -32,12 +32,10 @@ import {
 import { usePersistentProgress } from '../lib/usePersistentProgress'
 import { getTrackReverse, saveSession } from '../lib/session'
 import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
-import { SpeakButton } from '../components/SpeakButton'
-import { CardExplain } from '../components/CardExplain'
-import { CardVisual } from '../components/CardVisual'
 import { ChapterMark } from '../components/ChapterMark'
 import { ChapterProgress } from '../components/ChapterProgress'
-import { DirectionToggle } from '../components/DirectionToggle'
+import { FlashcardStudyPanel } from '../components/FlashcardStudyPanel'
+import { ResetModal } from '../components/ResetModal'
 
 export const NUMBER_KEY = 'habla:numbers:v1'
 const NUMBER_LEGACY = ['lexora:numbers:v1']
@@ -534,12 +532,12 @@ export function NumbersTrack({ onBack }: Props) {
           )}
 
           {phase === 'study' && currentFoundation && (
-            <StudyPanel
-              titleLeft="← Home"
+            <FlashcardStudyPanel
+              homeLabel="Home"
               onHome={() => setPhase('start')}
               onReset={() => setConfirmReset(true)}
               learningLeft={learningLeft}
-              learnedTotal={learnedInSection}
+              learnedInSection={learnedInSection}
               streak={currentStreak}
               masteryPct={masteryPct}
               flipped={flipped}
@@ -554,8 +552,10 @@ export function NumbersTrack({ onBack }: Props) {
               back={backOf(currentFoundation)}
               speakText={currentFoundation.back}
               tip={tipOf(currentFoundation)}
-              value={currentFoundation.value}
-              hint={false}
+              cardFront={currentFoundation.front}
+              cardBack={currentFoundation.back}
+              visualValue={currentFoundation.value}
+              section="numbers"
               onMissed={onIncorrect}
               onGotIt={onCorrect}
               cardFx={cardFx}
@@ -570,15 +570,16 @@ export function NumbersTrack({ onBack }: Props) {
           )}
 
           {phase === 'drill' && currentDrill && (
-            <StudyPanel
-              titleLeft="← Home"
+            <FlashcardStudyPanel
+              homeLabel="Home"
               onHome={() => setPhase('start')}
               onReset={() => setPhase('start')}
+              hideReset
               learningLeft={drillDeck.length - drillIndex}
-              learnedTotal={drillCorrect}
+              learnedInSection={drillCorrect}
               streakLabel={`${drillCorrect} hit · ${drillMissed} miss`}
               masteryPct={Math.round(
-                ((drillIndex + (flipped ? 0 : 0)) / drillDeck.length) * 100,
+                (drillIndex / Math.max(1, drillDeck.length)) * 100,
               )}
               flipped={flipped}
               onFlip={flip}
@@ -592,8 +593,10 @@ export function NumbersTrack({ onBack }: Props) {
               back={backOf(currentDrill)}
               speakText={currentDrill.back}
               tip={tipOf(currentDrill)}
-              value={currentDrill.value}
-              hint={false}
+              cardFront={currentDrill.front}
+              cardBack={currentDrill.back}
+              visualValue={currentDrill.value}
+              section="numbers"
               onMissed={() => advanceDrill(false)}
               onGotIt={() => advanceDrill(true)}
               cardFx={cardFx}
@@ -634,13 +637,13 @@ export function NumbersTrack({ onBack }: Props) {
           )}
 
           {phase === 'review-learned' && reviewCard && (
-            <StudyPanel
-              titleLeft="← Back"
+            <FlashcardStudyPanel
+              homeLabel="Back"
               onHome={() => setPhase(learningLeft === 0 ? 'done' : 'start')}
               onReset={() => undefined}
               hideReset
               learningLeft={scopedLearned.length - reviewIndex}
-              learnedTotal={learnedInSection}
+              learnedInSection={learnedInSection}
               streakLabel={`${reviewIndex + 1} / ${scopedLearned.length}`}
               masteryPct={Math.round(
                 ((reviewIndex + 1) / Math.max(1, scopedLearned.length)) * 100,
@@ -657,8 +660,10 @@ export function NumbersTrack({ onBack }: Props) {
               back={backOf(reviewCard)}
               speakText={reviewCard.back}
               tip={tipOf(reviewCard)}
-              value={reviewCard.value}
-              hint={false}
+              cardFront={reviewCard.front}
+              cardBack={reviewCard.back}
+              visualValue={reviewCard.value}
+              section="numbers"
               onMissed={() => {
                 setReviewIndex((i) => Math.max(0, i - 1))
                 setFlipped(false)
@@ -683,235 +688,17 @@ export function NumbersTrack({ onBack }: Props) {
       </div>
 
       {confirmReset && (
-        <div
-          className="modal-backdrop"
-          role="presentation"
-          onClick={() => setConfirmReset(false)}
-        >
-          <div
-            className="modal"
-            role="dialog"
-            aria-modal="true"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2>Reset numbers progress?</h2>
-            <p>
-              Clears only the Numbers learned bin and foundation streaks. Phrases
-              and verbs stay untouched.
-            </p>
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="secondary-btn"
-                onClick={() => setConfirmReset(false)}
-              >
-                Cancel
-              </button>
-              <button type="button" className="danger-btn" onClick={resetAll}>
-                Reset this track
-              </button>
-            </div>
-          </div>
-        </div>
+        <ResetModal
+          title="Reset numbers progress?"
+          description="Clears only the Numbers learned bin and foundation streaks. Other tracks stay untouched."
+          onCancel={() => setConfirmReset(false)}
+          onConfirm={resetAll}
+        />
       )}
     </div>
   )
 }
 
-function StudyPanel(props: {
-  titleLeft: string
-  onHome: () => void
-  onReset: () => void
-  hideReset?: boolean
-  learningLeft: number
-  learnedTotal: number
-  streak?: number
-  streakLabel?: string
-  masteryPct: number
-  flipped: boolean
-  onFlip: () => void
-  reverse: boolean
-  onDirectionChange: (reverse: boolean) => void
-  learnLabel?: string
-  recallLabel?: string
-  frontLabel: string
-  backLabel: string
-  front: string
-  back: string
-  speakText?: string
-  tip?: string
-  exampleEs?: string
-  exampleEn?: string
-  value?: number
-  hint: boolean
-  onMissed: () => void
-  onGotIt: () => void
-  missedLabel?: string
-  gotItLabel?: string
-  help: string
-  cardFx?: 'correct' | 'incorrect' | null
-}) {
-  const {
-    titleLeft,
-    onHome,
-    onReset,
-    hideReset,
-    learningLeft,
-    learnedTotal,
-    streak,
-    streakLabel,
-    masteryPct,
-    flipped,
-    onFlip,
-    reverse,
-    onDirectionChange,
-    learnLabel,
-    recallLabel,
-    frontLabel,
-    backLabel,
-    front,
-    back,
-    speakText,
-    tip,
-    exampleEs,
-    exampleEn,
-    value,
-    hint,
-    onMissed,
-    onGotIt,
-    missedLabel = 'Missed',
-    gotItLabel = 'Got it',
-    help,
-    cardFx = null,
-  } = props
-
-  const busy = cardFx != null
-
-  return (
-    <section className="panel study-panel">
-      <header className="study-header">
-        <div className="study-top">
-          <button type="button" className="back-btn back-btn-sm" onClick={onHome}>
-            <span className="back-btn-icon" aria-hidden="true">
-              ←
-            </span>{' '}
-            {titleLeft.replace(/^←\s*/, '')}
-          </button>
-          {!hideReset && (
-            <button
-              type="button"
-              className="text-btn danger-text"
-              onClick={onReset}
-            >
-              Reset
-            </button>
-          )}
-        </div>
-        <div className="counters">
-          <span>{learningLeft} left</span>
-          <span className="dot" aria-hidden="true" />
-          <span>{learnedTotal} scored</span>
-          <span className="dot" aria-hidden="true" />
-          <span>
-            {streakLabel ??
-              `Streak ${streak ?? 0}/${STREAK_TO_LEARNED}`}
-          </span>
-        </div>
-        <DirectionToggle
-          reverse={reverse}
-          onChange={onDirectionChange}
-          learnLabel={learnLabel}
-          recallLabel={recallLabel}
-        />
-        <div className="study-progress-wrap">
-          <ChapterProgress size="sm" label="Progress" percent={masteryPct} />
-        </div>
-      </header>
-
-      <button
-        type="button"
-        className={`card ${flipped ? 'is-flipped' : ''}${cardFx ? ` card-fx-${cardFx}` : ''}`}
-        onClick={onFlip}
-        disabled={busy}
-      >
-        <div className="card-inner">
-          <div className="card-face card-front">
-            <span className="lang-tag">{frontLabel}</span>
-            <CardVisual
-              front={front}
-              back={back}
-              tip={tip}
-              value={value}
-              kind="number"
-            />
-            <p className="card-text number-text">{front}</p>
-            {hint && <span className="flip-hint">Tap to flip</span>}
-          </div>
-          <div className="card-face card-back">
-            <span className="lang-tag">{backLabel}</span>
-            <CardVisual
-              front={front}
-              back={back}
-              tip={tip}
-              value={value}
-              kind="number"
-              size="sm"
-            />
-            <p className="card-text number-text">{back}</p>
-          </div>
-        </div>
-      </button>
-
-      <CardExplain visible={flipped} tip={tip} front={front} back={back} exampleEs={exampleEs} exampleEn={exampleEn} />
-
-      <div className="actions">
-        <button
-          type="button"
-          className="mark mark-right"
-          onClick={onGotIt}
-          disabled={busy || (!flipped && gotItLabel === 'Got it')}
-          aria-label={
-            gotItLabel === 'Got it'
-              ? 'Got it — mark this card correct'
-              : gotItLabel
-          }
-        >
-          <span className="mark-icon" aria-hidden="true">
-            ✓
-          </span>
-          {gotItLabel}
-        </button>
-        <button
-          type="button"
-          className="mark mark-wrong"
-          onClick={onMissed}
-          disabled={busy || (!flipped && missedLabel === 'Missed')}
-          aria-label={
-            missedLabel === 'Missed'
-              ? 'Missed — mark this card incorrect'
-              : missedLabel
-          }
-        >
-          {missedLabel}
-        </button>
-        <button
-          type="button"
-          className="mark mark-reveal"
-          onClick={onFlip}
-          disabled={busy}
-        >
-          {flipped ? 'Hide' : 'Reveal'}
-        </button>
-        <SpeakButton
-          text={speakText ?? (backLabel === 'Spanish' ? back : front)}
-          variant="mark"
-          disabled={busy}
-        />
-      </div>
-      <p className="mark-help">{help}</p>
-    </section>
-  )
-}
 
 export function loadNumberLearnedCount(): number {
   const state = loadProgress(numberCards, NUMBER_KEY, NUMBER_LEGACY)

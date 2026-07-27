@@ -13,6 +13,7 @@ import { canUseStorage } from '../lib/progress'
 import { SpeakButton } from '../components/SpeakButton'
 import { ChapterProgress } from '../components/ChapterProgress'
 import { StoryVisual } from '../components/StoryVisual'
+import { ResetModal } from '../components/ResetModal'
 import {
   goBackOr,
   pushHablaState,
@@ -214,12 +215,11 @@ export function StoriesTrack({ onBack }: Props) {
               <p className="brand">Spanish Deck</p>
               <h1>Stories</h1>
               <p className="subtitle">
-                31 storybook nights — soft, clear, and fun
+                31 short nights — read, listen, and mark what you understand
               </p>
               <p className="lede">
-                One illustrated page each night. Spanish on top, English
-                underneath. Warm stories you can actually enjoy — with the words
-                and tenses you’ve been practicing.
+                Spanish first, English when you need it. Soft illustrations and
+                everyday grammar woven into scenes you’ll want to return to.
               </p>
 
               <ChapterProgress
@@ -474,36 +474,13 @@ export function StoriesTrack({ onBack }: Props) {
       </div>
 
       {confirmReset && (
-        <div
-          className="modal-backdrop"
-          role="presentation"
-          onClick={() => setConfirmReset(false)}
-        >
-          <div
-            className="modal"
-            role="dialog"
-            aria-modal="true"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2>Reset stories?</h2>
-            <p>
-              Clears understood stories and line checkmarks. Other tracks stay
-              untouched.
-            </p>
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="secondary-btn"
-                onClick={() => setConfirmReset(false)}
-              >
-                Cancel
-              </button>
-              <button type="button" className="danger-btn" onClick={resetAll}>
-                Reset stories
-              </button>
-            </div>
-          </div>
-        </div>
+        <ResetModal
+          title="Reset stories?"
+          description="Clears understood stories and line checkmarks. Other tracks stay untouched."
+          confirmLabel="Reset stories"
+          onCancel={() => setConfirmReset(false)}
+          onConfirm={resetAll}
+        />
       )}
     </div>
   )
