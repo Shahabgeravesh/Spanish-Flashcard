@@ -393,7 +393,7 @@ function NightArt({ night, uid }: { night: number; uid: string }) {
         </Frame>
       )
 
-    case 7: // calm doctor
+    case 7: // doctor visit
       return (
         <Frame uid={uid}>
           <rect width="360" height="200" fill="#ecfdf5" />

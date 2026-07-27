@@ -28,6 +28,8 @@ import { AnswerBurst, useAnswerFeedback } from '../components/AnswerBurst'
 import { FlashcardStudyPanel } from '../components/FlashcardStudyPanel'
 import { ResetModal } from '../components/ResetModal'
 import { GrammarLessonPanel } from '../components/GrammarLessonPanel'
+import { TrackVisual } from '../components/TrackVisual'
+import { ChapterProgress } from '../components/ChapterProgress'
 
 export const GRAMMAR_KEY = 'habla:grammar:v1'
 
@@ -79,6 +81,7 @@ export function GrammarTrack({ onBack }: Props) {
   const learnedInSection = learnedCount(activeDeck, progress.byId)
   const learnedTotal = learnedCount(grammarCards, progress.byId)
   const masteryPct = deckMasteryPercent(activeDeck, progress.byId)
+  const trackMasteryPct = deckMasteryPercent(grammarCards, progress.byId)
 
   const currentId = progress.queue[progress.index]
   const current =
@@ -276,7 +279,7 @@ export function GrammarTrack({ onBack }: Props) {
 
         <main className="stage">
           {phase === 'start' && (
-            <section className="panel start-panel grammar-start">
+            <section className="panel start-panel grammar-start track-start">
               <button type="button" className="back-btn back-hub" onClick={onBack}>
                 <span className="back-btn-icon" aria-hidden="true">
                   ←
@@ -284,10 +287,43 @@ export function GrammarTrack({ onBack }: Props) {
                 All tracks
               </button>
               <p className="brand">Spanish Deck</p>
-              <h1>Grammar</h1>
-              <p className="subtitle">
-                One short lesson, then a few cards.
+              <div className="track-start-title-row">
+                <TrackVisual id="grammar" className="track-start-visual" />
+                <div className="track-start-copy">
+                  <h1 className="type-page">Grammar</h1>
+                  <p className="subtitle">
+                    Short lessons, then focused drills
+                  </p>
+                </div>
+              </div>
+              <p className="lede">
+                Learn the rule, then practice it on cards until conjugations and
+                structures stick.
               </p>
+              <ChapterProgress
+                className="track-start-progress"
+                label="Track progress"
+                percent={trackMasteryPct}
+                detail={`${learnedTotal} cards learned · chapter ${masteryPct}%`}
+              />
+              <ul className="track-start-stats" aria-label="Track scope">
+                <li>
+                  <span className="track-start-stat-value">
+                    {activeDeck.length}
+                  </span>
+                  <span className="track-start-stat-label">Cards</span>
+                </li>
+                <li>
+                  <span className="track-start-stat-value">{learningLeft}</span>
+                  <span className="track-start-stat-label">Learning</span>
+                </li>
+                <li>
+                  <span className="track-start-stat-value">
+                    {learnedInSection}
+                  </span>
+                  <span className="track-start-stat-label">Learned</span>
+                </li>
+              </ul>
 
               <div
                 className="grammar-chapter-chips"

@@ -1,0 +1,231 @@
+/**
+ * Track opening screens — rich start layout + preview
+ */
+
+.track-start {
+  max-width: none;
+}
+
+.track-start-layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.track-start-main {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.track-start-title-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.track-start-visual {
+  width: 4.25rem !important;
+  height: 4.25rem !important;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.track-start-copy h1 {
+  margin: 0;
+}
+
+.track-start-progress {
+  margin-top: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.track-start-stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.track-start-stats li {
+  display: grid;
+  gap: 0.15rem;
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--surface-muted);
+  text-align: center;
+}
+
+.track-start-stat-value {
+  font-family: var(--font-display);
+  font-size: var(--type-section);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.track-start-stat-label {
+  font-size: var(--type-meta);
+  color: var(--ink-muted);
+}
+
+.track-start-cta .primary-btn {
+  min-height: var(--btn-height-lg);
+  padding-inline: 1.55rem;
+}
+
+.track-start-preview {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--accent-soft) 55%, #fff) 0%,
+      var(--surface) 60%
+    );
+  box-shadow: var(--shadow-sm);
+}
+
+.track-start-preview-kicker {
+  margin: 0;
+  font-size: var(--type-label);
+  font-weight: 650;
+  color: var(--accent-deep);
+}
+
+.track-start-preview-card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  min-height: 8.5rem;
+}
+
+.track-start-preview-prompt {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-card-prompt);
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.track-start-preview-answer {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-card-answer);
+  font-weight: 600;
+  color: var(--accent-deep);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.track-start-preview-note {
+  margin: 0;
+  font-size: var(--type-meta);
+  color: var(--ink-muted);
+}
+
+.track-start .chapter-list,
+.track-start .tense-filters {
+  margin-top: var(--space-2);
+}
+
+@media (min-width: 48rem) {
+  .track-start-layout {
+    grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.85fr);
+    align-items: start;
+    gap: var(--space-6);
+  }
+
+  .track-start-visual {
+    width: 4.75rem !important;
+    height: 4.75rem !important;
+  }
+
+  .track-start-preview-card {
+    min-height: 11rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .track-start-layout {
+    grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.9fr);
+  }
+}
+
+/* Exam setup card */
+.exam-landing {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.exam-landing-layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.exam-summary-card {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--accent-soft) 60%, #fff),
+      var(--surface) 55%
+    );
+  box-shadow: var(--shadow-sm);
+}
+
+.exam-summary-card h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-section);
+  font-weight: 650;
+}
+
+.exam-summary-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.exam-summary-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--type-label);
+  color: var(--ink-muted);
+}
+
+.exam-summary-list strong {
+  color: var(--ink);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 48rem) {
+  .exam-landing-layout {
+    grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr);
+    align-items: start;
+  }
+}

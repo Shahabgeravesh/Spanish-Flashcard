@@ -213,31 +213,46 @@ export function StoriesTrack({ onBack }: Props) {
                 All tracks
               </button>
               <p className="brand">Spanish Deck</p>
-              <h1>Stories</h1>
+              <h1 className="type-page">Stories</h1>
               <p className="subtitle">
                 31 short nights — read, listen, and mark what you understand
               </p>
               <p className="lede">
-                Spanish first, English when you need it. Soft illustrations and
-                everyday grammar woven into scenes you’ll want to return to.
+                Spanish first, English when you need it. Practice pronouns and
+                tenses inside complete scenes you can finish in a few minutes.
               </p>
 
               <ChapterProgress
                 label="Nights completed"
                 percent={trackMastery}
-                detail={`${understoodCount} of ${stories.length} · ${trackMastery}%`}
+                detail={`${understoodCount} of ${stories.length} understood · ${trackMastery}%`}
               />
 
               {tonight && (
-                <div className="cta-row" style={{ marginTop: '0.85rem' }}>
-                  <button
-                    type="button"
-                    className="primary-btn"
-                    onClick={() => openStory(tonight.id)}
-                  >
-                    Tonight: Night {tonight.night} · {tonight.title}
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  className="story-featured"
+                  onClick={() => openStory(tonight.id)}
+                >
+                  <StoryVisual
+                    scene={tonight.scene}
+                    night={tonight.night}
+                    size="thumb"
+                    title={tonight.titleEn}
+                  />
+                  <div className="story-featured-copy">
+                    <p className="story-featured-kicker">Tonight’s story</p>
+                    <strong className="story-featured-title">
+                      Night {tonight.night} · {tonight.title}
+                    </strong>
+                    <span className="story-featured-meta">
+                      {TENSE_META[tonight.tense].label} · ~{tonight.minutes} min ·{' '}
+                      {tonight.lines.length} lines
+                    </span>
+                    <span className="story-featured-blurb">{tonight.blurb}</span>
+                    <span className="story-featured-cta">Open story</span>
+                  </div>
+                </button>
               )}
 
               <div className="tense-filters" role="group" aria-label="Tense">

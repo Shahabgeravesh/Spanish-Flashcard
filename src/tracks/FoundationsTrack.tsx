@@ -28,6 +28,7 @@ import { ChapterProgress } from '../components/ChapterProgress'
 import { ChapterMark } from '../components/ChapterMark'
 import { FlashcardStudyPanel } from '../components/FlashcardStudyPanel'
 import { ResetModal } from '../components/ResetModal'
+import { TrackStartHero } from '../components/TrackStartHero'
 
 export const FOUNDATIONS_KEY = 'habla:foundations:v1'
 
@@ -276,70 +277,76 @@ export function FoundationsTrack({ onBack }: Props) {
 
         <main className="stage">
           {phase === 'start' && (
-            <section className="panel start-panel">
+            <>
               <button type="button" className="back-btn back-hub" onClick={onBack}>
-                <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
+                <span className="back-btn-icon" aria-hidden="true">
+                  ←
+                </span>{' '}
+                All tracks
               </button>
-              <p className="brand">Spanish Deck</p>
-              <h1>Foundations</h1>
-              <p className="subtitle">
-                Days, months, how often, commands, routines & more
-              </p>
-              <p className="lede">
-                Core building blocks every Spanish learner needs — with tips on
-                every reveal and Listen when you want pronunciation.
-              </p>
-
-              <div className="chapter-list" aria-label="Foundation chapters">
-                {FOUNDATION_SECTIONS.map((s) => {
-                  const deck = filterFoundations(foundationCards, s.id)
-                  const pct = deckMasteryPercent(deck, progress.byId)
-                  const learned = learnedCount(deck, progress.byId)
-                  return (
-                    <button
-                      key={s.id}
-                      type="button"
-                      className={`chapter-list-item chapter-row ${section === s.id ? 'is-active' : ''}`}
-                      onClick={() => setSection(s.id)}
-                    >
-                      <ChapterMark seed={String(s.id)} label={s.label} />
-                      <ChapterProgress
-                        size="sm"
-                        label={s.label}
-                        percent={pct}
-                        detail={`${learned} / ${deck.length}`}
-                      />
+              <TrackStartHero
+                title="Foundations"
+                subtitle="Days, months, commands, routines, and more"
+                description="Build the vocabulary every learner needs. Reveal tips and Listen for pronunciation as you go."
+                visualId="foundations"
+                masteryPct={trackMasteryPct}
+                masteryLabel="Track progress"
+                masteryDetail={`${learnedTotal} learned overall · selected chapter ${masteryPct}%`}
+                stats={[
+                  { label: 'Cards', value: String(activeDeck.length) },
+                  { label: 'Learning', value: String(learningLeft) },
+                  { label: 'Learned', value: String(learnedInSection) },
+                ]}
+                previewPrompt={activeDeck[0]?.front ?? 'Monday'}
+                previewAnswer={activeDeck[0]?.back ?? 'lunes'}
+                actions={
+                  <>
+                    <button type="button" className="primary-btn" onClick={start}>
+                      {hasSavedProgress ? 'Continue studying' : 'Start studying'}
                     </button>
-                  )
-                })}
-              </div>
-
-              <ChapterProgress
-                label="Selected chapter"
-                percent={masteryPct}
-                detail={`${learnedInSection} of ${activeDeck.length} · track ${trackMasteryPct}%`}
-              />
-
-              <div className="cta-row">
-                <button type="button" className="primary-btn" onClick={start}>
-                  {hasSavedProgress ? 'Continue studying' : 'Start studying'}
-                </button>
-                {hasSavedProgress && (
-                  <button
-                    type="button"
-                    className="secondary-btn"
-                    onClick={() => setConfirmReset(true)}
-                  >
-                    Reset this track
-                  </button>
-                )}
-              </div>
-
-              <p className="meta">
-                {sectionLabel} · {activeDeck.length} cards · {learningLeft} still
-                learning · {learnedInSection} learned in section
-              </p>
-            </section>
+                    {hasSavedProgress && (
+                      <button
+                        type="button"
+                        className="secondary-btn"
+                        onClick={() => setConfirmReset(true)}
+                      >
+                        Reset this track
+                      </button>
+                    )}
+                  </>
+                }
+                footer={
+                  <p className="meta">
+                    {sectionLabel} · {activeDeck.length} cards · {learningLeft}{' '}
+                    still learning
+                  </p>
+                }
+              >
+                <div className="chapter-list" aria-label="Foundation chapters">
+                  {FOUNDATION_SECTIONS.map((s) => {
+                    const deck = filterFoundations(foundationCards, s.id)
+                    const pct = deckMasteryPercent(deck, progress.byId)
+                    const learned = learnedCount(deck, progress.byId)
+                    return (
+                      <button
+                        key={s.id}
+                        type="button"
+                        className={`chapter-list-item chapter-row ${section === s.id ? 'is-active' : ''}`}
+                        onClick={() => setSection(s.id)}
+                      >
+                        <ChapterMark seed={String(s.id)} label={s.label} />
+                        <ChapterProgress
+                          size="sm"
+                          label={s.label}
+                          percent={pct}
+                          detail={`${learned} / ${deck.length}`}
+                        />
+                      </button>
+                    )
+                  })}
+                </div>
+              </TrackStartHero>
+            </>
           )}
 
           {phase === 'study' && current && (

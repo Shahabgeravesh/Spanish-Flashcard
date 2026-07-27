@@ -133,7 +133,7 @@ export function ExamTrack({ onBack }: Props) {
       <div className="shell stories-shell">
         <main className="stage">
           {phase === 'start' && (
-            <section className="panel start-panel">
+            <section className="panel start-panel exam-landing">
               <button
                 type="button"
                 className="back-btn back-hub"
@@ -144,89 +144,130 @@ export function ExamTrack({ onBack }: Props) {
                 </span>{' '}
                 All tracks
               </button>
-              <p className="brand">Spanish Deck</p>
-              <h1>Exam</h1>
-              <p className="subtitle">Test yourself — fill blanks & type answers</p>
-              <p className="lede">
-                Pick a section, answer without peeking at flashcards, and track
-                your best score per section.
-              </p>
+              <div className="exam-landing-layout">
+                <div>
+                  <p className="brand">Spanish Deck</p>
+                  <h1 className="type-page">Test what you know</h1>
+                  <p className="subtitle">
+                    Fill blanks and type answers without peeking at flashcards
+                  </p>
+                  <p className="lede">
+                    Choose a section, set the question count, and measure your
+                    best score. Accents are optional.
+                  </p>
 
-              <ChapterProgress
-                label="Exam mastery"
-                percent={trackMastery}
-                detail={`Average of best scores · ${trackMastery}%`}
-              />
+                  <ChapterProgress
+                    label="Exam mastery"
+                    percent={trackMastery}
+                    detail={`Average of best scores · ${trackMastery}%`}
+                  />
 
-              <div className="chapter-list exam-section-list" aria-label="Exam sections">
-                {EXAM_SECTIONS.map((s) => {
-                  const best = sectionBestPercent(progress, s.id)
-                  const stats = progress.bySection[s.id]
-                  return (
-                    <button
-                      key={s.id}
-                      type="button"
-                      className={`chapter-list-item exam-section-row ${section === s.id ? 'is-active' : ''}`}
-                      onClick={() => {
-                        setSection(s.id)
-                        if (s.id === 'grammar') setLength(defaultLengthFor('grammar'))
-                      }}
-                    >
-                      <TrackVisual id={s.id} size="sm" />
-                      <ChapterProgress
-                        size="sm"
-                        label={s.label}
-                        percent={best}
-                        detail={
-                          stats
-                            ? `Best ${best}% · last ${stats.lastScore}/${stats.lastTotal} · ${stats.attempts} tries`
-                            : s.blurb
-                        }
-                      />
-                    </button>
-                  )
-                })}
-              </div>
-
-              <div className="exam-setup">
-                <p className="exam-setup-label">Questions</p>
-                <div className="tense-filters" role="group" aria-label="Length">
-                  {LENGTHS.map((n) => (
-                    <button
-                      key={n}
-                      type="button"
-                      className={`tense-chip ${length === n ? 'is-active' : ''}`}
-                      onClick={() => setLength(n)}
-                    >
-                      {n}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="cta-row">
-                <button type="button" className="primary-btn" onClick={startExam}>
-                  Start {sectionLabel} exam
-                </button>
-                {Object.keys(progress.bySection).length > 0 && (
-                  <button
-                    type="button"
-                    className="secondary-btn"
-                    onClick={() => setConfirmReset(true)}
+                  <div
+                    className="chapter-list exam-section-list"
+                    aria-label="Exam sections"
                   >
-                    Reset exam progress
-                  </button>
-                )}
-              </div>
+                    {EXAM_SECTIONS.map((s) => {
+                      const best = sectionBestPercent(progress, s.id)
+                      const stats = progress.bySection[s.id]
+                      return (
+                        <button
+                          key={s.id}
+                          type="button"
+                          className={`chapter-list-item exam-section-row ${section === s.id ? 'is-active' : ''}`}
+                          onClick={() => {
+                            setSection(s.id)
+                            if (s.id === 'grammar')
+                              setLength(defaultLengthFor('grammar'))
+                          }}
+                        >
+                          <TrackVisual id={s.id} size="sm" />
+                          <ChapterProgress
+                            size="sm"
+                            label={s.label}
+                            percent={best}
+                            detail={
+                              stats
+                                ? `Best ${best}% · last ${stats.lastScore}/${stats.lastTotal} · ${stats.attempts} tries`
+                                : s.blurb
+                            }
+                          />
+                        </button>
+                      )
+                    })}
+                  </div>
 
-              <p className="meta">
-                Accents optional · answers with “/” alternatives accepted ·{' '}
-                {section === 'grammar'
-                  ? grammarExamCoverageNote(length)
-                  : sectionStats
-                    ? `Your best in ${sectionLabel}: ${sectionStats.bestPercent}%`
-                    : `No attempts yet in ${sectionLabel}`}
-              </p>
+                  <div className="exam-setup">
+                    <p className="exam-setup-label">Questions</p>
+                    <div
+                      className="tense-filters"
+                      role="group"
+                      aria-label="Length"
+                    >
+                      {LENGTHS.map((n) => (
+                        <button
+                          key={n}
+                          type="button"
+                          className={`tense-chip ${length === n ? 'is-active' : ''}`}
+                          onClick={() => setLength(n)}
+                        >
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="cta-row">
+                    <button
+                      type="button"
+                      className="primary-btn"
+                      onClick={startExam}
+                    >
+                      Start {sectionLabel} exam
+                    </button>
+                    {Object.keys(progress.bySection).length > 0 && (
+                      <button
+                        type="button"
+                        className="secondary-btn"
+                        onClick={() => setConfirmReset(true)}
+                      >
+                        Reset exam progress
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <aside className="exam-summary-card" aria-label="Exam summary">
+                  <TrackVisual id="exam" />
+                  <h2>{sectionLabel}</h2>
+                  <ul className="exam-summary-list">
+                    <li>
+                      <span>Questions</span>
+                      <strong>{length}</strong>
+                    </li>
+                    <li>
+                      <span>Approx. time</span>
+                      <strong>{Math.max(4, Math.round(length * 0.6))} min</strong>
+                    </li>
+                    <li>
+                      <span>Best score</span>
+                      <strong>
+                        {sectionStats
+                          ? `${sectionStats.bestPercent}%`
+                          : 'No attempts yet'}
+                      </strong>
+                    </li>
+                    <li>
+                      <span>Format</span>
+                      <strong>Type / fill / choice</strong>
+                    </li>
+                  </ul>
+                  <p className="type-meta">
+                    {section === 'grammar'
+                      ? grammarExamCoverageNote(length)
+                      : 'Answers with “/” alternatives are accepted.'}
+                  </p>
+                </aside>
+              </div>
             </section>
           )}
 

@@ -58,10 +58,11 @@ import {
 import { AnswerBurst, useAnswerFeedback } from './components/AnswerBurst'
 import { CardVisual } from './components/CardVisual'
 import { ChapterMark } from './components/ChapterMark'
-import { TrackVisual } from './components/TrackVisual'
 import { ChapterProgress } from './components/ChapterProgress'
 import { FlashcardStudyPanel } from './components/FlashcardStudyPanel'
 import { ResetModal } from './components/ResetModal'
+import { HubHome } from './components/HubHome'
+import { TrackStartHero } from './components/TrackStartHero'
 import './App.css'
 
 type Track =
@@ -528,180 +529,113 @@ function App() {
         9,
     )
 
+    const last = loadSession().lastTrack ?? null
+    const continueLabels: Record<string, string> = {
+      foundations: 'Continue Foundations',
+      grammar: 'Continue Grammar',
+      phrases: 'Continue Requests',
+      daily: 'Continue Daily life',
+      verbs: 'Continue Verbs',
+      numbers: 'Continue Numbers',
+      colors: 'Continue Colors',
+      stories: 'Continue Stories',
+      exam: 'Continue Exam',
+    }
+
     return (
       <div className="app hub-theme">
         <div className="atmosphere" aria-hidden="true" />
-
-        <main className="hub">
-          <header className="hub-header">
-            <div className="hub-hero">
-              <p className="brand">Spanish Deck</p>
-              <h1>Calm, focused Spanish practice</h1>
-              <p className="lede hub-lede">
-                Nine tracks — flashcards, nightly stories, and honest exams. Progress stays on this device.
-              </p>
-            </div>
-            <ChapterProgress
-              className="hub-overall"
-              label="Overall mastery"
-              size="md"
-              percent={overallPct}
-              detail={`Average across ${9} learning tracks`}
-            />
-          </header>
-
-          <div className="hub-grid">
-            <button
-              type="button"
-              className="hub-card hub-foundations"
-              onClick={() => enterTrack('foundations')}
-            >
-              <TrackVisual id="foundations" />
-              <div className="hub-card-body">
-                <div className="hub-card-top">
-                  <h2>Foundations</h2>
-                  <span className="hub-pct">{foundationsMasteryPct}%</span>
-                </div>
-                <p>Days, every day phrases, commands, routines & more</p>
-                <ChapterProgress size="sm" percent={foundationsMasteryPct} />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              className="hub-card hub-grammar"
-              onClick={() => enterTrack('grammar')}
-            >
-              <TrackVisual id="grammar" />
-              <div className="hub-card-body">
-                <div className="hub-card-top">
-                  <h2>Grammar</h2>
-                  <span className="hub-pct">{grammarMasteryPct}%</span>
-                </div>
-                <p>Lessons + drills: por/para, gustar, tenses</p>
-                <ChapterProgress size="sm" percent={grammarMasteryPct} />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              className="hub-card hub-phrases"
-              onClick={() => enterTrack('phrases')}
-            >
-              <TrackVisual id="phrases" />
-              <div className="hub-card-body">
-                <div className="hub-card-top">
-                  <h2>Requests</h2>
-                  <span className="hub-pct">{phraseMasteryPct}%</span>
-                </div>
-                <p>Intentions, polite asks, connectors</p>
-                <ChapterProgress size="sm" percent={phraseMasteryPct} />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              className="hub-card hub-daily"
-              onClick={() => enterTrack('daily')}
-            >
-              <TrackVisual id="daily" />
-              <div className="hub-card-body">
-                <div className="hub-card-top">
-                  <h2>Daily life</h2>
-                  <span className="hub-pct">{dailyMasteryPct}%</span>
-                </div>
-                <p>Situations: café, commands, travel, doctor</p>
-                <ChapterProgress size="sm" percent={dailyMasteryPct} />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              className="hub-card hub-verbs"
-              onClick={() => enterTrack('verbs')}
-            >
-              <TrackVisual id="verbs" />
-              <div className="hub-card-body">
-                <div className="hub-card-top">
-                  <h2>Verbs</h2>
-                  <span className="hub-pct">{verbMasteryPct}%</span>
-                </div>
-                <p>Present, past, future conjugations</p>
-                <ChapterProgress size="sm" percent={verbMasteryPct} />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              className="hub-card hub-numbers"
-              onClick={() => enterTrack('numbers')}
-            >
-              <TrackVisual id="numbers" />
-              <div className="hub-card-body">
-                <div className="hub-card-top">
-                  <h2>Numbers</h2>
-                  <span className="hub-pct">{numberMasteryPct}%</span>
-                </div>
-                <p>1 to 1,000,000</p>
-                <ChapterProgress size="sm" percent={numberMasteryPct} />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              className="hub-card hub-colors"
-              onClick={() => enterTrack('colors')}
-            >
-              <TrackVisual id="colors" />
-              <div className="hub-card-body">
-                <div className="hub-card-top">
-                  <h2>Colors</h2>
-                  <span className="hub-pct">{colorsMasteryPct}%</span>
-                </div>
-                <p>Names, shades, useful phrases</p>
-                <ChapterProgress size="sm" percent={colorsMasteryPct} />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              className="hub-card hub-stories"
-              onClick={() => enterTrack('stories')}
-            >
-              <TrackVisual id="stories" />
-              <div className="hub-card-body">
-                <div className="hub-card-top">
-                  <h2>Stories</h2>
-                  <span className="hub-pct">{storiesMasteryPct}%</span>
-                </div>
-                <p>31 illustrated nights — enjoy reading</p>
-                <ChapterProgress size="sm" percent={storiesMasteryPct} />
-              </div>
-            </button>
-
-            <button
-              type="button"
-              className="hub-card hub-exam"
-              onClick={() => enterTrack('exam')}
-            >
-              <TrackVisual id="exam" />
-              <div className="hub-card-body">
-                <div className="hub-card-top">
-                  <h2>Exam</h2>
-                  <span className="hub-pct">{examMasteryPct}%</span>
-                </div>
-                <p>Latest chapter — test everything you’ve learned</p>
-                <ChapterProgress size="sm" percent={examMasteryPct} />
-              </div>
-            </button>
-          </div>
-
-          <p className="hub-footnote">
-            {canUseStorage()
+        <HubHome
+          overallPct={overallPct}
+          lastTrack={last}
+          continueLabel={
+            last && continueLabels[last]
+              ? continueLabels[last]
+              : 'Continue learning'
+          }
+          onContinue={() => {
+            if (last && last !== 'hub') enterTrack(last as Track)
+          }}
+          onEnter={(id) => enterTrack(id as Track)}
+          storageNote={
+            canUseStorage()
               ? 'Progress saves on this device.'
-              : 'Private browsing may not save progress.'}
-          </p>
-        </main>
+              : 'Private browsing may not save progress.'
+          }
+          tracks={{
+            essentials: [
+              {
+                id: 'foundations',
+                title: 'Foundations',
+                description: 'Days, routines, commands, and core phrases',
+                hubClass: 'hub-foundations',
+                percent: foundationsMasteryPct,
+              },
+              {
+                id: 'grammar',
+                title: 'Grammar',
+                description: 'Lessons and drills for key structures',
+                hubClass: 'hub-grammar',
+                percent: grammarMasteryPct,
+              },
+              {
+                id: 'verbs',
+                title: 'Verbs',
+                description: 'Present, past, and future conjugations',
+                hubClass: 'hub-verbs',
+                percent: verbMasteryPct,
+              },
+              {
+                id: 'numbers',
+                title: 'Numbers',
+                description: 'From 1 to 1,000,000',
+                hubClass: 'hub-numbers',
+                percent: numberMasteryPct,
+              },
+              {
+                id: 'colors',
+                title: 'Colors',
+                description: 'Names, shades, and useful phrases',
+                hubClass: 'hub-colors',
+                percent: colorsMasteryPct,
+              },
+            ],
+            realLife: [
+              {
+                id: 'phrases',
+                title: 'Requests',
+                description: 'Intentions, polite asks, and connectors',
+                hubClass: 'hub-phrases',
+                percent: phraseMasteryPct,
+              },
+              {
+                id: 'daily',
+                title: 'Daily life',
+                description: 'Café, travel, hotel, doctor, and more',
+                hubClass: 'hub-daily',
+                percent: dailyMasteryPct,
+              },
+            ],
+            understanding: [
+              {
+                id: 'stories',
+                title: 'Stories',
+                description: '31 short nights — read, listen, and mark understanding',
+                hubClass: 'hub-stories',
+                percent: storiesMasteryPct,
+              },
+            ],
+            test: [
+              {
+                id: 'exam',
+                title: 'Exam',
+                description: 'Test vocabulary, grammar, and conjugations',
+                hubClass: 'hub-exam',
+                percent: examMasteryPct,
+              },
+            ],
+          }}
+        />
       </div>
     )
   }
@@ -816,141 +750,170 @@ function App() {
 
         <main className="stage">
           {phase === 'start' && (
-            <section className="panel start-panel">
+            <>
               <button
                 type="button"
                 className="back-btn back-hub"
                 onClick={() => enterTrack('hub')}
               >
-                <span className="back-btn-icon" aria-hidden="true">←</span> All tracks
+                <span className="back-btn-icon" aria-hidden="true">
+                  ←
+                </span>{' '}
+                All tracks
               </button>
-              <p className="brand">Spanish Deck</p>
-              <h1>{isVerbs ? 'Verb conjugations' : 'Making requests'}</h1>
-              <p className="subtitle">
-                {isVerbs
-                  ? 'Present · Past · Future · All pronouns'
-                  : 'Intentions & phrases · English → Spanish'}
-              </p>
-              <p className="lede">
-                {isVerbs
-                  ? 'Pick Regular or Irregular, then drill present / past / future. Mastered forms move into your Verbs learned bin.'
-                  : 'Flip each card, mark yourself honestly, and watch phrases move into your Phrases learned bin.'}
-              </p>
-
-              {isVerbs && (
-                <>
-                  <div
-                    className="tense-filters"
-                    role="group"
-                    aria-label="Verb type"
-                  >
-                    <button
-                      type="button"
-                      className={`tense-chip verb-section-chip ${verbGroup === 'regular' ? 'is-active' : ''}`}
-                      onClick={() => setVerbGroup('regular')}
-                    >
-                      Regular
-                      <span className="tense-count">
-                        {deckMasteryPercent(
-                          filterVerbCards(verbCards, { group: 'regular' }),
-                          verbProgress.byId,
-                        )}
-                        %
-                      </span>
+              <TrackStartHero
+                title={isVerbs ? 'Verbs' : 'Requests'}
+                subtitle={
+                  isVerbs
+                    ? 'Present, past, and future conjugations'
+                    : 'Intentions, polite asks, and connectors'
+                }
+                description={
+                  isVerbs
+                    ? 'Drill conjugations by type and tense. Mastered forms move into your Verbs learned bin.'
+                    : 'Practice English → Spanish requests. Flip, listen, and mark yourself until phrases stick.'
+                }
+                visualId={isVerbs ? 'verbs' : 'phrases'}
+                masteryPct={isVerbs ? masteryPct : phraseMasteryPct}
+                masteryLabel={isVerbs ? 'Selected chapter' : 'Track progress'}
+                masteryDetail={
+                  isVerbs
+                    ? `${learnedInSection} of ${activeVerbDeck.length} forms in this chapter`
+                    : `${phraseLearnedTotal} of ${phraseCards.length} phrases mastered`
+                }
+                stats={
+                  isVerbs
+                    ? [
+                        { label: 'Forms', value: String(activeVerbDeck.length) },
+                        { label: 'Learning', value: String(learningLeft) },
+                        { label: 'Learned', value: String(learnedInSection) },
+                      ]
+                    : [
+                        { label: 'Cards', value: String(phraseCards.length) },
+                        { label: 'Learning', value: String(learningLeft) },
+                        { label: 'Learned', value: String(learnedTotal) },
+                      ]
+                }
+                previewPrompt={
+                  isVerbs
+                    ? activeVerbDeck[0]
+                      ? `${activeVerbDeck[0].infinitive} · ${activeVerbDeck[0].pronounEs}`
+                      : 'hablar · yo'
+                    : phraseCards[0]?.front ?? 'I would like…'
+                }
+                previewAnswer={
+                  isVerbs
+                    ? activeVerbDeck[0]?.back ?? 'hablo'
+                    : phraseCards[0]?.back ?? 'Me gustaría…'
+                }
+                actions={
+                  <>
+                    <button type="button" className="primary-btn" onClick={start}>
+                      {hasSavedProgress ? 'Continue studying' : 'Start studying'}
                     </button>
-                    <button
-                      type="button"
-                      className={`tense-chip verb-section-chip ${verbGroup === 'irregular' ? 'is-active' : ''}`}
-                      onClick={() => setVerbGroup('irregular')}
-                    >
-                      Irregular
-                      <span className="tense-count">
-                        {deckMasteryPercent(
-                          filterVerbCards(verbCards, { group: 'irregular' }),
-                          verbProgress.byId,
-                        )}
-                        %
-                      </span>
-                    </button>
-                  </div>
-                  <p className="section-hint">
-                    {verbGroup === 'regular'
-                      ? 'hablar · comer · vivir — predictable endings'
-                      : 'ser · estar · tener · ir · hacer · querer · poder · decir · venir · dar · ver · saber · poner · salir · traer · oír · conocer'}
+                    {hasSavedProgress && (
+                      <button
+                        type="button"
+                        className="secondary-btn"
+                        onClick={() => setConfirmReset(true)}
+                      >
+                        Reset this track
+                      </button>
+                    )}
+                  </>
+                }
+                footer={
+                  <p className="meta">
+                    {isVerbs
+                      ? `${verbGroup === 'regular' ? 'Regular' : 'Irregular'} · ${activeVerbDeck.length} forms · ${learningLeft} still learning`
+                      : `${phraseCards.length} cards · ${STREAK_TO_LEARNED} streak to learn`}
                   </p>
-
-                  <div className="chapter-list" aria-label="Verb chapter progress">
-                    {(
-                      [
-                        ['all', 'All tenses'],
-                        ['present', 'Present'],
-                        ['preterite', 'Past'],
-                        ['future', 'Future'],
-                      ] as const
-                    ).map(([value, label]) => {
-                      const chapter = filterVerbCards(verbCards, {
-                        group: verbGroup,
-                        tenses: value === 'all' ? 'all' : [value],
-                      })
-                      const pct = deckMasteryPercent(chapter, verbProgress.byId)
-                      const learned = learnedCount(chapter, verbProgress.byId)
-                      return (
-                        <button
-                          key={value}
-                          type="button"
-                          className={`chapter-list-item chapter-row ${tenseFilter === value ? 'is-active' : ''}`}
-                          onClick={() => setTenseFilter(value)}
-                        >
-                          <ChapterMark seed={value} label={label} />
-                          <ChapterProgress
-                            size="sm"
-                            label={label}
-                            percent={pct}
-                            detail={`${learned} / ${chapter.length} learned`}
-                          />
-                        </button>
-                      )
-                    })}
-                  </div>
-                </>
-              )}
-
-              {!isVerbs && (
-                <ChapterProgress
-                  label="Chapter progress"
-                  percent={phraseMasteryPct}
-                  detail={`${phraseLearnedTotal} of ${phraseCards.length} phrases mastered`}
-                />
-              )}
-              {isVerbs && (
-                <ChapterProgress
-                  label="Selected chapter"
-                  percent={masteryPct}
-                  detail={`${learnedInSection} of ${activeVerbDeck.length} forms in this chapter`}
-                />
-              )}
-
-              <div className="cta-row">
-                <button type="button" className="primary-btn" onClick={start}>
-                  {hasSavedProgress ? 'Continue studying' : 'Start studying'}
-                </button>
-                {hasSavedProgress && (
-                  <button
-                    type="button"
-                    className="secondary-btn"
-                    onClick={() => setConfirmReset(true)}
-                  >
-                    Reset this track
-                  </button>
+                }
+              >
+                {isVerbs && (
+                  <>
+                    <div
+                      className="tense-filters"
+                      role="group"
+                      aria-label="Verb type"
+                    >
+                      <button
+                        type="button"
+                        className={`tense-chip verb-section-chip ${verbGroup === 'regular' ? 'is-active' : ''}`}
+                        onClick={() => setVerbGroup('regular')}
+                      >
+                        Regular
+                        <span className="tense-count">
+                          {deckMasteryPercent(
+                            filterVerbCards(verbCards, { group: 'regular' }),
+                            verbProgress.byId,
+                          )}
+                          %
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        className={`tense-chip verb-section-chip ${verbGroup === 'irregular' ? 'is-active' : ''}`}
+                        onClick={() => setVerbGroup('irregular')}
+                      >
+                        Irregular
+                        <span className="tense-count">
+                          {deckMasteryPercent(
+                            filterVerbCards(verbCards, { group: 'irregular' }),
+                            verbProgress.byId,
+                          )}
+                          %
+                        </span>
+                      </button>
+                    </div>
+                    <p className="section-hint">
+                      {verbGroup === 'regular'
+                        ? 'hablar · comer · vivir — predictable endings'
+                        : 'ser · estar · tener · ir · hacer · querer · poder · decir · venir · dar · ver · saber · poner · salir · traer · oír · conocer'}
+                    </p>
+                    <div
+                      className="chapter-list"
+                      aria-label="Verb chapter progress"
+                    >
+                      {(
+                        [
+                          ['all', 'All tenses'],
+                          ['present', 'Present'],
+                          ['preterite', 'Past'],
+                          ['future', 'Future'],
+                        ] as const
+                      ).map(([value, label]) => {
+                        const chapter = filterVerbCards(verbCards, {
+                          group: verbGroup,
+                          tenses: value === 'all' ? 'all' : [value],
+                        })
+                        const pct = deckMasteryPercent(
+                          chapter,
+                          verbProgress.byId,
+                        )
+                        const learned = learnedCount(chapter, verbProgress.byId)
+                        return (
+                          <button
+                            key={value}
+                            type="button"
+                            className={`chapter-list-item chapter-row ${tenseFilter === value ? 'is-active' : ''}`}
+                            onClick={() => setTenseFilter(value)}
+                          >
+                            <ChapterMark seed={value} label={label} />
+                            <ChapterProgress
+                              size="sm"
+                              label={label}
+                              percent={pct}
+                              detail={`${learned} / ${chapter.length} learned`}
+                            />
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </>
                 )}
-              </div>
-
-              <p className="meta">
-                {isVerbs
-                  ? `${verbGroup === 'regular' ? 'Regular' : 'Irregular'} · ${activeVerbDeck.length} forms · ${learningLeft} still learning · ${learnedInSection} learned in this section`
-                  : `${phraseCards.length} cards · ${STREAK_TO_LEARNED} streak to learn · ${learnedTotal} already learned`}
-              </p>
-            </section>
+              </TrackStartHero>
+            </>
           )}
 
           {phase === 'study' && current && (

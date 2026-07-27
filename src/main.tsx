@@ -1,5 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import '@fontsource-variable/source-serif-4'
+import '@fontsource-variable/source-sans-3'
 import './styles/tokens.css'
 import './styles/themes.css'
 import './styles/base.css'
@@ -9,6 +11,7 @@ import './App.css'
 import './styles/hub.css'
 import './styles/flashcard.css'
 import './styles/stories.css'
+import './styles/track-start.css'
 import './styles/responsive.css'
 
 createRoot(document.getElementById('root')!).render(
